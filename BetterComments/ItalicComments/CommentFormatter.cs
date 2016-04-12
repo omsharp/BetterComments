@@ -24,7 +24,7 @@ namespace BetterComments.ItalicComments
                 "html comment",
                 "xaml comment"
             };
-        
+
         public CommentsDecorator(ITextView textView,
                                  IClassificationFormatMap formatMap,
                                  IClassificationTypeRegistryService typeRegistryService)
@@ -50,12 +50,16 @@ namespace BetterComments.ItalicComments
 
         private void FormatComments()
         {
+            italicizing = true;
+
             try
             {
-                italicizing = true;
-
                 FormatKnownCommentTypes();
                 FormatUnknowCommentsTypes();
+            }
+            catch (Exception ex)
+            {
+                Debug.Assert(false, $"Exception while trying to format comments : {ex.Message}");
             }
             finally
             {
@@ -68,10 +72,8 @@ namespace BetterComments.ItalicComments
             var knowns = commentTypes.Select(type => typeRegistryService.GetClassificationType(type))
                                      .Where(type => type != null);
 
-            foreach (var classificationType in knowns )
-            {
+            foreach (var classificationType in knowns)
                 Italicize(classificationType);
-            }
         }
 
         private void FormatUnknowCommentsTypes()
@@ -82,23 +84,21 @@ namespace BetterComments.ItalicComments
                            select type;
 
             foreach (var classificationType in unknowns)
-            {
                 Italicize(classificationType);
-            }
         }
-        
-        private void Italicize(IClassificationType type)
+
+        private void Italicize(IClassificationType classificationType)
         {
-            var properties = formatMap.GetTextProperties(type);
+            var properties = formatMap.GetTextProperties(classificationType);
             var typeface = properties.Typeface;
 
             if (typeface.Style == FontStyles.Italic)
                 return;
-            
-            var newTypeface = new Typeface(typeface.FontFamily, FontStyles.Italic, FontWeights.UltraLight, typeface.Stretch);
-            var newProps = properties.SetTypeface(newTypeface).SetFontRenderingEmSize(properties.FontRenderingEmSize - 0.3);
 
-            formatMap.SetTextProperties(type, newProps);
+            var newTypeface = new Typeface(new FontFamily("Lucida Sans"), FontStyles.Italic, FontWeights.Normal, typeface.Stretch);
+            var newproperties = properties.SetTypeface(newTypeface).SetFontRenderingEmSize(properties.FontRenderingEmSize);
+
+            formatMap.SetTextProperties(classificationType, newproperties);
         }
     }
 }
