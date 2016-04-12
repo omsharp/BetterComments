@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Text.Editor;
 
 namespace BetterComments.ItalicComments
 {
-    internal sealed class CommentsDecorator
+    internal sealed class CommentFormatter
     {
         private bool italicizing;
         private readonly IClassificationFormatMap formatMap;
@@ -25,7 +25,7 @@ namespace BetterComments.ItalicComments
                 "xaml comment"
             };
 
-        public CommentsDecorator(ITextView textView,
+        public CommentFormatter(ITextView textView,
                                  IClassificationFormatMap formatMap,
                                  IClassificationTypeRegistryService typeRegistryService)
         {
@@ -43,6 +43,7 @@ namespace BetterComments.ItalicComments
             if (view != null)
                 view.GotAggregateFocus -= TextView_GotAggregateFocus;
 
+            // TODO: Deal with this issue gracefully in release mode.
             Debug.Assert(!italicizing, "Can't format comments while the view is getting focus!");
 
             FormatComments();
@@ -59,7 +60,8 @@ namespace BetterComments.ItalicComments
             }
             catch (Exception ex)
             {
-                Debug.Assert(false, $"Exception while trying to format comments : {ex.Message}");
+                //TODO: Handle the exception gracefully in relaese mode.
+                Debug.Assert(false, $"Exception while formatting! \n", ex.Message);
             }
             finally
             {

@@ -13,17 +13,18 @@ namespace BetterComments.ItalicComments
 
 #pragma warning disable 0649
         [Import]
-        private IClassificationFormatMapService formatMap;
+        private IClassificationFormatMapService formatMapService;
         [Import]
-        private IClassificationTypeRegistryService typeRegistry;
+        private IClassificationTypeRegistryService typeRegistryService;
 #pragma warning restore 0649
 
         public void TextViewCreated(IWpfTextView textView)
         {
-                textView.Properties
-                        .GetOrCreateSingletonProperty(() => new CommentsDecorator(textView,
-                                                                formatMap.GetClassificationFormatMap(textView),
-                                                                typeRegistry));
+            textView.Properties
+                    .GetOrCreateSingletonProperty(() => 
+                           new CommentFormatter(textView, 
+                                                formatMapService.GetClassificationFormatMap(textView),
+                                                typeRegistryService));
         }
     }
 }

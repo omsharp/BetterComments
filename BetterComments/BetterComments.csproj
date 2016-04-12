@@ -44,7 +44,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ItalicComments\CommentsItalicizer.cs" />
+    <Compile Include="ItalicComments\CommentFormatter.cs" />
     <Compile Include="ItalicComments\ViewCreationListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
