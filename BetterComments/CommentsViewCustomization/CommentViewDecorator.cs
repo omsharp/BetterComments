@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 
-namespace BetterComments.CommentsItalicizing
+namespace BetterComments.CommentsViewCustomization
 {
     internal sealed class CommentViewDecorator
     {

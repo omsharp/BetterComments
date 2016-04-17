@@ -10,14 +10,13 @@ namespace BetterComments.CommentsViewCustomization
     [TextViewRole(PredefinedTextViewRoles.Document)]
     internal sealed class CommentViewCreationListener : IWpfTextViewCreationListener
     {
-
 #pragma warning disable 0649
         [Import]
         private IClassificationFormatMapService formatMapService;
         [Import]
         private IClassificationTypeRegistryService typeRegistryService;
 #pragma warning restore 0649
-       
+
         public void TextViewCreated(IWpfTextView textView)
         {
             textView.Properties.GetOrCreateSingletonProperty(() =>

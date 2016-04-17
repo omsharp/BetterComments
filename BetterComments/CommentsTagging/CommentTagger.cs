@@ -40,24 +40,24 @@ namespace BetterComments.CommentsTagging
             var snapshot = spans[0].Snapshot;
 
             if (!snapshot.ContentType.IsOfType("code"))
-                yield break; //! Content is not code. Don't bother!
+                yield break; // Content is not code. Don't bother!
 
-            //! Work through all comment tags associated with the passed spans. Ignore xml doc comments.
+            // Work through all comment tags associated with the passed spans. Ignore xml doc comments.
             foreach (var tagSpanPair in from tag in tagAggregator.GetTags(spans)
                                         let classification = tag.Tag.ClassificationType.Classification
                                         where classification.ContainsCaseIgnored("comment") && !classification.ContainsCaseIgnored("doc")
                                         select tag)
             {
-                //! Get all the spans associated with the current tag, mapped to our snapshot
+                // Get all the spans associated with the current tag, mapped to our snapshot
                 foreach (var span in tagSpanPair.Span.GetSpans(snapshot))
                 {
                     var comment = span.GetText();
                     var commentStarter = comment.StartsWithOneOf(nonMarkupSingleLineCommentStarters);
 
-                    if (!string.IsNullOrEmpty(commentStarter)) //! Comment starts with "//", "'", or "#"                                                     
+                    if (!string.IsNullOrEmpty(commentStarter)) // Comment starts with "//", "'", or "#"                                                     
                     {
                         if (comment.Length < commentStarter.Length + 3)
-                            continue; //! We need at least 3 characters long comment.
+                            continue; // We need at least 3 characters long comment.
                         
                         var commentTrim = comment.TrimStart('/', '\'', '#');
                         var startOffset = IsTaskComment(comment) ? commentStarter.Length : commentStarter.Length + 2;
@@ -65,19 +65,18 @@ namespace BetterComments.CommentsTagging
                         yield return BuildTagSpan(BuildClassificationTag(GetCommentType(commentTrim)),
                                                                          BuildCommentSpan(span, startOffset));
                     }
-                    else //! It could be a markup comment, starting with "<!--" 
-                    {   //! Or a delimited comment, starting with "/*"  or "(*" 
+                    else // Comment deosn't start with "//", "'", or "#". 
+                    {    // It could be a markup comment, starting with "<!--" 
+                         // Or a delimited comment, starting with "/*"  or "(*" 
 
                         if (!IsMarkup(snapshot.ContentType))
                         {//! Content is not markup. It must be a delimited comment
-
-                            ////yield return BuildTagSpan(BuildClassificationTag(CommentType.Task), span);
+                            
                         }
                         else //! It's a markup comment.
                         {
                             //? multiline html comments come intact in a single span.
                             //? multiline xaml comments are broken.
-                            ////yield return BuildTagSpan(BuildClassificationTag(CommentType.Question), span);
                         }
                     }
                 }
@@ -95,7 +94,7 @@ namespace BetterComments.CommentsTagging
         {
             if (IsTaskComment(comment))
                 return CommentType.Task;
-
+            
             //! if there is no space between the token place and the rest of the comment tag it as normal.
             return comment[0] != ' ' && comment[1] != ' '
                  ? CommentType.Normal
@@ -118,6 +117,7 @@ namespace BetterComments.CommentsTagging
                 case "?":
                     return CommentType.Question;
                 case "x":
+                case "X":
                     return CommentType.Strikeout;
                 case "todo":
                     return CommentType.Task;

@@ -50,8 +50,8 @@
     <Compile Include="CommentsTagging\CommentTagger.cs" />
     <Compile Include="CommentsTagging\CommentTaggerProvider.cs" />
     <Compile Include="CommentsTagging\StringExtensions.cs" />
-    <Compile Include="CommentsItalicizing\CommentFormatter.cs" />
-    <Compile Include="CommentsItalicizing\ViewCreationListener.cs" />
+    <Compile Include="CommentsViewCustomization\CommentViewDecorator.cs" />
+    <Compile Include="CommentsViewCustomization\CommentViewCreationListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
