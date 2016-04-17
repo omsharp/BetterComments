@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows;
-using System.Windows.Media;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 
-namespace BetterComments.ItalicComments
+namespace BetterComments.CommentsItalicizing
 {
     internal sealed class CommentFormatter
     {
-        private bool italicizing;
-        private readonly IClassificationFormatMap formatMap;
+        private bool fixing;
+        private readonly IClassificationFormatMap classificationFormatMap;
         private readonly IClassificationTypeRegistryService typeRegistryService;
-
+         
         private static readonly List<string> commentTypes = new List<string>()
             {
                 "comment",
@@ -26,15 +24,15 @@ namespace BetterComments.ItalicComments
             };
 
         public CommentFormatter(ITextView textView,
-                                 IClassificationFormatMap formatMap,
-                                 IClassificationTypeRegistryService typeRegistryService)
+                                IClassificationFormatMap classificationFormatMap,
+                                IClassificationTypeRegistryService typeRegistryService)
         {
             textView.GotAggregateFocus += TextView_GotAggregateFocus;
 
-            this.formatMap = formatMap;
+            this.classificationFormatMap = classificationFormatMap;
             this.typeRegistryService = typeRegistryService;
 
-            FormatComments();
+            FixComments();
         }
 
         private void TextView_GotAggregateFocus(object sender, EventArgs e)
@@ -44,19 +42,19 @@ namespace BetterComments.ItalicComments
                 view.GotAggregateFocus -= TextView_GotAggregateFocus;
 
             // TODO: Deal with this issue gracefully in release mode.
-            Debug.Assert(!italicizing, "Can't format comments while the view is getting focus!");
+            Debug.Assert(!fixing, "Can't format comments while the view is getting focus!");
 
-            FormatComments();
+            FixComments();
         }
 
-        private void FormatComments()
+        private void FixComments()
         {
-            italicizing = true;
+            fixing = true;
 
             try
             {
-                FormatKnownCommentTypes();
-                FormatUnknowCommentsTypes();
+                FixKnownClassificationTypes();
+                FixUnknowClassificationTypes();
             }
             catch (Exception ex)
             {
@@ -65,11 +63,11 @@ namespace BetterComments.ItalicComments
             }
             finally
             {
-                italicizing = false;
+                fixing = false;
             }
         }
 
-        private void FormatKnownCommentTypes()
+        private void FixKnownClassificationTypes()
         {
             var knowns = commentTypes.Select(type => typeRegistryService.GetClassificationType(type))
                                      .Where(type => type != null);
@@ -78,11 +76,11 @@ namespace BetterComments.ItalicComments
                 Italicize(classificationType);
         }
 
-        private void FormatUnknowCommentsTypes()
+        private void FixUnknowClassificationTypes()
         {
-            var unknowns = from type in formatMap.CurrentPriorityOrder.Where(type => type != null)
+            var unknowns = from type in classificationFormatMap.CurrentPriorityOrder.Where(type => type != null)
                            let name = type.Classification.ToLowerInvariant()
-                           where !commentTypes.Contains(name) && name.ToLowerInvariant().Contains("comment")
+                           where name.Contains("comment") && !commentTypes.Contains(name)
                            select type;
 
             foreach (var classificationType in unknowns)
@@ -91,16 +89,12 @@ namespace BetterComments.ItalicComments
 
         private void Italicize(IClassificationType classificationType)
         {
-            var properties = formatMap.GetTextProperties(classificationType);
-            var typeface = properties.Typeface;
-
-            if (typeface.Style == FontStyles.Italic)
+            var properties = classificationFormatMap.GetTextProperties(classificationType);
+            
+            if (properties.Italic)
                 return;
 
-            var newTypeface = new Typeface(new FontFamily("Lucida Sans"), FontStyles.Italic, FontWeights.Normal, typeface.Stretch);
-            var newproperties = properties.SetTypeface(newTypeface).SetFontRenderingEmSize(properties.FontRenderingEmSize);
-
-            formatMap.SetTextProperties(classificationType, newproperties);
+            classificationFormatMap.SetTextProperties(classificationType, properties.SetItalic(true));
         }
     }
 }

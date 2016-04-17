@@ -44,8 +44,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ItalicComments\CommentFormatter.cs" />
-    <Compile Include="ItalicComments\ViewCreationListener.cs" />
+    <Compile Include="CommentsClassification\CommentClassificationDefinitions.cs" />
+    <Compile Include="CommentsClassification\CommentClassificationFormatDefinitions.cs" />
+    <Compile Include="CommentsClassification\Constants.cs" />
+    <Compile Include="CommentsTagging\CommentTagger.cs" />
+    <Compile Include="CommentsTagging\CommentTaggerProvider.cs" />
+    <Compile Include="CommentsTagging\StringExtensions.cs" />
+    <Compile Include="CommentsItalicizing\CommentFormatter.cs" />
+    <Compile Include="CommentsItalicizing\ViewCreationListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +93,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

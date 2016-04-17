@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
 
-namespace BetterComments.ItalicComments
+namespace BetterComments.CommentsItalicizing
 {
     [Export(typeof(IWpfTextViewCreationListener))]
     [ContentType("code")]
@@ -17,14 +17,13 @@ namespace BetterComments.ItalicComments
         [Import]
         private IClassificationTypeRegistryService typeRegistryService;
 #pragma warning restore 0649
-
+       
         public void TextViewCreated(IWpfTextView textView)
         {
-            textView.Properties
-                    .GetOrCreateSingletonProperty(() => 
-                           new CommentFormatter(textView, 
-                                                formatMapService.GetClassificationFormatMap(textView),
-                                                typeRegistryService));
+            textView.Properties.GetOrCreateSingletonProperty(() =>
+                                    new CommentFormatter(textView,
+                                                         formatMapService.GetClassificationFormatMap(textView),
+                                                         typeRegistryService));
         }
     }
 }
