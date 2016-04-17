@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Text.Editor;
 
 namespace BetterComments.CommentsItalicizing
 {
-    internal sealed class CommentFormatter
+    internal sealed class CommentViewDecorator
     {
         private bool fixing;
         private readonly IClassificationFormatMap classificationFormatMap;
@@ -23,7 +23,7 @@ namespace BetterComments.CommentsItalicizing
                 "xaml comment"
             };
 
-        public CommentFormatter(ITextView textView,
+        public CommentViewDecorator(ITextView textView,
                                 IClassificationFormatMap classificationFormatMap,
                                 IClassificationTypeRegistryService typeRegistryService)
         {

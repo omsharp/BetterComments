@@ -3,12 +3,12 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
 
-namespace BetterComments.CommentsItalicizing
+namespace BetterComments.CommentsViewCustomization
 {
     [Export(typeof(IWpfTextViewCreationListener))]
     [ContentType("code")]
     [TextViewRole(PredefinedTextViewRoles.Document)]
-    internal sealed class ViewCreationListener : IWpfTextViewCreationListener
+    internal sealed class CommentViewCreationListener : IWpfTextViewCreationListener
     {
 
 #pragma warning disable 0649
@@ -21,7 +21,7 @@ namespace BetterComments.CommentsItalicizing
         public void TextViewCreated(IWpfTextView textView)
         {
             textView.Properties.GetOrCreateSingletonProperty(() =>
-                                    new CommentFormatter(textView,
+                                    new CommentViewDecorator(textView,
                                                          formatMapService.GetClassificationFormatMap(textView),
                                                          typeRegistryService));
         }
