@@ -33,16 +33,16 @@ namespace BetterComments.CommentsClassification
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = CommentNames.STRIKEOUT_COMMENT)]
-    [Name(CommentNames.STRIKEOUT_COMMENT)]
+    [ClassificationType(ClassificationTypeNames = CommentNames.CROSSED_COMMENT)]
+    [Name(CommentNames.CROSSED_COMMENT)]
     [UserVisible(true)]
     [Order(After = Priority.High)]
-    public sealed class StrikeoutCommentFormat : ClassificationFormatDefinition
+    public sealed class CrossedCommentFormat : ClassificationFormatDefinition
     {
-        public StrikeoutCommentFormat()
+        public CrossedCommentFormat()
         {
-            DisplayName = CommentNames.STRIKEOUT_COMMENT;
-            ForegroundColor = CommentColors.StrikeoutColor;
+            DisplayName = CommentNames.CROSSED_COMMENT;
+            ForegroundColor = CommentColors.CrossedColor;
             TextDecorations = System.Windows.TextDecorations.Strikethrough;
         }
     }

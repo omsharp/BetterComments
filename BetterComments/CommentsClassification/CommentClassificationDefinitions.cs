@@ -20,9 +20,9 @@ namespace BetterComments.CommentsClassification
         internal static ClassificationTypeDefinition QuestionCommentDefinition;
 
         [Export]
-        [Name(CommentNames.STRIKEOUT_COMMENT)]
+        [Name(CommentNames.CROSSED_COMMENT)]
         [BaseDefinition("Comment")]
-        internal static ClassificationTypeDefinition StrikeoutCommentDefinition;
+        internal static ClassificationTypeDefinition CrossedCommentDefinition;
 
         [Export]
         [Name(CommentNames.TASK_COMMENT)]

@@ -22,7 +22,7 @@ namespace BetterComments.CommentsTagging
 
         public static bool StartsWith(this string text, string value, int startIndex, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
-            if (string.IsNullOrEmpty(text) || startIndex > text.Length || string.IsNullOrEmpty(value))
+            if (string.IsNullOrWhiteSpace(text) || startIndex > text.Length || string.IsNullOrWhiteSpace(value))
                 return false;
 
             return text.IndexOf(value, startIndex, comparison) == startIndex;
@@ -30,11 +30,19 @@ namespace BetterComments.CommentsTagging
 
         public static string StartsWithOneOf(this string text, string[] strings, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
         {
-            if (string.IsNullOrEmpty(text) || strings == null || strings.Length == 0)
+            if (string.IsNullOrWhiteSpace(text) || strings.Length == 0)
                 return null;
 
 
             return strings.FirstOrDefault(s => text.StartsWith(s, comparison));
+        }
+
+        public static bool StartsWithAnyOf(this string text, string[] strings, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
+        {
+            if (string.IsNullOrWhiteSpace(text) || strings.Length == 0)
+                return false;
+
+            return !string.IsNullOrWhiteSpace(strings.FirstOrDefault(s => text.StartsWith(s, comparison)));
         }
 
         ////public static bool Contains(this string text, string value, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
