@@ -5,15 +5,16 @@ using System.Linq;
 using System.Windows.Media;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Formatting;
+using BetterComments.Options;
 
 namespace BetterComments.CommentsViewCustomization
 {
     internal sealed class CommentViewDecorator
     {
         private bool fixing;
-        private readonly IClassificationFormatMap classificationFormatMap;
-        private readonly IClassificationTypeRegistryService typeRegistryService;
+        private readonly IClassificationFormatMap formatMap;
+        private readonly IClassificationTypeRegistryService registryService;
+        private readonly FontOptions fontOptions;
 
         private static readonly List<string> commentTypes = new List<string>()
             {
@@ -26,14 +27,14 @@ namespace BetterComments.CommentsViewCustomization
             };
 
         public CommentViewDecorator(ITextView textView,
-                                IClassificationFormatMap classificationFormatMap,
-                                IClassificationTypeRegistryService typeRegistryService)
+                                    IClassificationFormatMap formatMap,
+                                    IClassificationTypeRegistryService registryService)
         {
             textView.GotAggregateFocus += TextView_GotAggregateFocus;
 
-            this.classificationFormatMap = classificationFormatMap;
-            this.typeRegistryService = typeRegistryService;
-
+            fontOptions = new FontOptions();
+            this.formatMap = formatMap;
+            this.registryService = registryService;
             Decorate();
         }
 
@@ -71,7 +72,7 @@ namespace BetterComments.CommentsViewCustomization
 
         private void DecorateKnownClassificationTypes()
         {
-            var knowns = commentTypes.Select(type => typeRegistryService.GetClassificationType(type))
+            var knowns = commentTypes.Select(type => registryService.GetClassificationType(type))
                                      .Where(type => type != null);
 
             foreach (var classificationType in knowns)
@@ -80,7 +81,7 @@ namespace BetterComments.CommentsViewCustomization
 
         private void DecorateUnknowClassificationTypes()
         {
-            var unknowns = from type in classificationFormatMap.CurrentPriorityOrder.Where(type => type != null)
+            var unknowns = from type in formatMap.CurrentPriorityOrder.Where(type => type != null)
                            let name = type.Classification.ToLowerInvariant()
                            where name.Contains("comment") && !commentTypes.Contains(name)
                            select type;
@@ -91,32 +92,15 @@ namespace BetterComments.CommentsViewCustomization
 
         private void SetProperties(IClassificationType classificationType)
         {
-            var properties = classificationFormatMap.GetTextProperties(classificationType);
+            fontOptions.LoadSettings();
 
-            Italicize(ref properties);
-            SetTypeFace(ref properties);
-            SetFontSize(ref properties);
+            var properties = formatMap.GetTextProperties(classificationType)
+                                      .SetItalic(fontOptions.IsItalic)
+                                      .SetBold(fontOptions.IsBold)
+                                      .SetTypeface(new Typeface(fontOptions.Font))
+                                      .SetFontHintingEmSize(fontOptions.Size);
 
-            classificationFormatMap.SetTextProperties(classificationType, properties);
-        }
-
-        private static void Italicize(ref TextFormattingRunProperties properties)
-        {
-            //TODO: check settings...
-            if (!properties.Italic)
-                properties = properties.SetItalic(true);
-        }
-
-        private void SetTypeFace(ref TextFormattingRunProperties properties)
-        {
-            //TODO: check settings...
-            properties = properties.SetTypeface(new Typeface("Monaco"));
-        }
-
-        private void SetFontSize(ref TextFormattingRunProperties properties)
-        {
-            //TODO: check settings...
-            properties = properties.SetFontHintingEmSize(8);
+            formatMap.SetTextProperties(classificationType, properties);
         }
     }
 }

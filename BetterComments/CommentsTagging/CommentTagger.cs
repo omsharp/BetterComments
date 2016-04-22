@@ -35,8 +35,10 @@ namespace BetterComments.CommentsTagging
             this.classificationRegistry = classificationRegistry;
             this.tagAggregator = tagAggregator;
         }
-
-        public event EventHandler<SnapshotSpanEventArgs> TagsChanged { add { } remove { } }
+        
+#pragma warning disable 0067
+        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
+#pragma warning restore 0067
 
         public IEnumerable<ITagSpan<ClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
@@ -51,107 +53,71 @@ namespace BetterComments.CommentsTagging
                                         where classification.ContainsCaseIgnored("comment") && !classification.ContainsCaseIgnored("doc")
                                         select tag)
             {
-                
+
                 // Get all the spans associated with the current tag, mapped to our snapshot
                 foreach (var span in tagSpanPair.Span.GetSpans(snapshot))
                 {
-                    var comment = span.GetText();
-                    var commentStarter = GetCommentStarter(comment);
+                    var commentText = span.GetText();
+                    var commentStarter = GetCommentStarter(commentText);
 
                     if (nonMarkupSingleLineCommentStarters.Contains(commentStarter))
                     { //! A single-line C/C++, C#, VB.NET, Python, or F# comment.
 
-                        if (comment.Length < commentStarter.Length + 3)
+                        if (commentText.Length < commentStarter.Length + 3)
                             continue; // We need at least 3 characters long comment.
 
-                        var trimmedComment = RemoveCommentStarter(comment);
+                        var trimmedComment = RemoveCommentStarter(commentText);
                         var spanStartOffset = GetStartIndex(trimmedComment, commentStarter.Length);
+                        var newspan = new SnapshotSpan(span.Snapshot, span.Start + spanStartOffset, span.Length - spanStartOffset);
 
-                        yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)),
-                                                                         CreateSpan(span, spanStartOffset));
+                        yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), newspan);
                     }
                     else if (nonMarkupDelimitedCommentStarters.Contains(commentStarter))
                     { //! A delimited C/C++, C#, or F# comment.
-                        
-                        var commentTrim = RemoveCommentStarter(comment);
+
                         var commentEnder = delimitedCommentEnders[commentStarter];
 
-                        if (commentTrim.EndsWith(commentEnder))
+                        if (commentText.EndsWith(commentEnder))
                         {
-                            var spanStart = span.Start + 2;
-                            var spanEnd = spanStart + commentTrim.Length - 2;
-                            var newSpan = new SnapshotSpan(spanStart, spanEnd);
+                            var trimmedComment = RemoveCommentStarter(commentText);
+                            var newSpan = new SnapshotSpan(span.Snapshot, span.Start + 2, trimmedComment.Length - 2);
 
-                            Debug.WriteLine("Perfect");
+                            yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), newSpan);
+                        }
+                        else
+                        { //! C/C++ or F# comment in taking multible lines.
+                            var spanEnd = span.End;
+                            var newSpan = new SnapshotSpan(span.Snapshot, span.Start, spanEnd);
+                            var current = span.GetText();
+
+                            while (true)
+                            {
+                                if (spanEnd >= snapshot.Lines.Last().End)
+                                    break;
+
+                                if (!current.EndsWith(commentEnder))
+                                {
+                                    spanEnd = current.Contains(commentEnder) ? spanEnd - 1 : spanEnd + 1;
+                                    newSpan = new SnapshotSpan(span.Snapshot, span.Start, spanEnd);
+                                    current = newSpan.GetText();
+                                    continue;
+                                }
+
+                                current = current.Substring(2, current.Length - 2);
+                                newSpan = new SnapshotSpan(span.Snapshot, span.Start + 2, spanEnd - 2);
+                                yield return BuildTagSpan(BuildClassificationTag(GetCommentType(current)), newSpan);
+                                break;
+                            }
+                            //! after getting the comment span, 
+                            //! break it into lines, 
+                            //! then put each line into it's own span and tag it.
+
+
                             Debug.WriteLine($"Start [");
                             Debug.WriteLine(newSpan.GetText());
                             Debug.WriteLine($"] End");
                             Debug.WriteLine(" ");
-
-                            yield return BuildTagSpan(BuildClassificationTag(GetCommentType(commentTrim)), newSpan);
                         }
-                        else 
-                        { //! C/C++ or F# comment in taking multible lines.
-
-                            Debug.WriteLine("Strange");
-                            Debug.WriteLine($"Start [");
-                            Debug.WriteLine(span.GetText());
-                            Debug.WriteLine($"] End");
-                            Debug.WriteLine(" ");
-
-                            var endPosition = span.End.Position;
-                            var newSpan = new SnapshotSpan(span.Start, endPosition);
-
-                            if (commentTrim.Contains(commentEnder))
-                            { //! Comment needs shrinking.
-                                while (true)
-                                {
-                                    Debug.WriteLine("Span reconstructed (Too Long)");
-                                    Debug.WriteLine($"Start [");
-                                    Debug.WriteLine(newSpan.GetText());
-                                    Debug.WriteLine($"] End");
-                                    Debug.WriteLine(" ");
-
-                                    if(newSpan.End >= newSpan.Snapshot.Lines.Last().End)
-                                        break;
-
-                                    if (!newSpan.GetText().EndsWith(commentEnder))
-                                    {
-                                        endPosition--;
-                                        newSpan = new SnapshotSpan(span.Start, endPosition);
-                                        continue;
-                                    }
-
-                                    yield return BuildTagSpan(BuildClassificationTag(GetCommentType(commentTrim)), newSpan);
-                                    break;
-                                }
-                            }
-                            else
-                            { //! Comment is not complete
-
-                                while (true)
-                                {
-                                    if (newSpan.End >= newSpan.Snapshot.Lines.Last().End)
-                                        break;
-
-                                    if (!newSpan.GetText().EndsWith(commentEnder))
-                                    {
-                                        endPosition++;
-                                        newSpan = new SnapshotSpan(span.Start, endPosition);
-                                        continue;
-                                    }
-                                    Debug.WriteLine("Span reconstructed (Too Short)");
-                                    Debug.WriteLine($"Start [");
-                                    Debug.WriteLine(newSpan.GetText());
-                                    Debug.WriteLine($"] End");
-                                    Debug.WriteLine(" ");
-
-                                    yield return BuildTagSpan(BuildClassificationTag(GetCommentType(commentTrim)), newSpan);
-                                    break;
-                                }
-                            }
-                        }
-
                     }
                     else if (commentStarter.Equals("<!--"))
                     {  //! It's a markup comment.
@@ -161,13 +127,6 @@ namespace BetterComments.CommentsTagging
                     }
                 }
             }
-        }
-
-        private static SnapshotSpan CreateSpan(SnapshotSpan span, int startOffset)
-        {
-            return new SnapshotSpan(/*span.Snapshot,*/
-                                    span.Start + startOffset,
-                                    span.Length - startOffset);
         }
 
         private static string GetCommentStarter(string comment)
@@ -202,10 +161,10 @@ namespace BetterComments.CommentsTagging
             // comments starting with //, /*, or (*
             if (comment.StartsWith("//") || comment.StartsWithAnyOf(nonMarkupDelimitedCommentStarters))
                 return comment.Substring(2, comment.Length - 2);
-            
+
             if (comment.StartsWith("'") || comment.StartsWith("#"))
                 return comment.Substring(1, comment.Length - 1);
-            
+
             return comment;
         }
         private static CommentType GetCommentType(string trimmedComment)
