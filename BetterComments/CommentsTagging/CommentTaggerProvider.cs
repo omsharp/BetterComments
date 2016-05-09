@@ -21,9 +21,10 @@ namespace BetterComments.CommentsTagging
 #pragma warning restore 0649
 
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
-        {   
+        {
             var tagger = new CommentTagger(ClassificationRegistry,
                                            Aggregator.CreateTagAggregator<IClassificationTag>(buffer));
+            
             return tagger as ITagger<T>;
         }
     }
