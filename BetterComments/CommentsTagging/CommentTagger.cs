@@ -17,7 +17,7 @@ namespace BetterComments.CommentsTagging
         Task
     }
 
-    internal class CommentTagger : ITagger<ClassificationTag>
+    internal class CommentTagger : ITagger<ClassificationTag>, IDisposable
     {
         private readonly IClassificationTypeRegistryService classificationRegistry;
         private readonly ITagAggregator<IClassificationTag> tagAggregator;
@@ -205,5 +205,15 @@ namespace BetterComments.CommentsTagging
                     throw new ArgumentException(@"Invalid comment type!", nameof(commentType), null);
             }
         }
+
+        #region "IDisposable"
+
+        public void Dispose()
+        {
+            tagAggregator.Dispose();
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }
