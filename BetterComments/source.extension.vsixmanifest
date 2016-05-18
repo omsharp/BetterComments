@@ -2,9 +2,16 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
     <Identity Id="BetterComments.Omar Rwemi.e985519f-8696-40b7-9400-807054b4ec76" Version="1.0" Language="en-US" Publisher="Omar Rwemi" />
-    <DisplayName>BetterComments</DisplayName>
-    <Description>Empty VSIX Project.</Description>
+    <DisplayName>Better Comments</DisplayName>
+    <Description xml:space="preserve">You can change the comments Font, control their Opacity, Italicize them, or make them Bold if you want, and it's all done independently of the editor’s font settings.
+
+You can also use special tokens to categorize your comments into four types, Task, Important, Question, or Crossedt; and each comment type can have a distinctive color of your choice.
+</Description>
+    <Icon>Resources\Icon.png</Icon>
+    <PreviewImage>Resources\PreviewImage.png</PreviewImage>
+    <Tags>Better, Comments, Italic, Bold, Opacity, Font, Size, Categorize, Color, Colorize</Tags>
   </Metadata>
+
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
   </Installation>

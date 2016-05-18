@@ -42,18 +42,7 @@ namespace BetterComments.CommentsTagging
 #pragma warning disable 0067
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 #pragma warning restore 0067
-
-
-        private static readonly List<string> commentTypes = new List<string>()
-            {
-                "comment",
-                "xml doc comment",
-                "vb xml doc comment",
-                "xml comment",
-                "html comment",
-                "xaml comment"
-            };
-
+        
         public IEnumerable<ITagSpan<ClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
             var snapshot = spans[0].Snapshot;
@@ -88,7 +77,6 @@ namespace BetterComments.CommentsTagging
                     else if (nonMarkupDelimitedCommentStarters.Contains(commentStarter))
                     {   //! A Delimited comment
                         var commentEnder = delimitedCommentEnders[commentStarter];
-
                         if (commentText.EndsWith(commentEnder))
                         { //! A Delimited C/C++, F#, and Javascript comment in a single line.
                           //! Or a C# delimeted comment. Both single and multi line C# comments are handled here.
@@ -277,12 +265,6 @@ namespace BetterComments.CommentsTagging
                 default:
                     throw new ArgumentException(@"Invalid comment type!", nameof(commentType), null);
             }
-        }
-
-        private static bool IsMarkup(IContentType contentType)
-        {
-            return contentType.IsOfType("html") || contentType.IsOfType("htmlx")
-                   || contentType.IsOfType("XAML") || contentType.IsOfType("XML");
         }
     }
 }
