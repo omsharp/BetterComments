@@ -112,22 +112,5 @@ namespace BetterComments.CommentsViewCustomization
 
             formatMap.SetTextProperties(classificationType, properties);
         }
-
-        //////? Implement fading effect?
-        ////void Fade(IClassificationType classification)
-        ////{
-        ////    var properties = formatMap.GetTextProperties(classification);
-
-        ////    var brush = properties.ForegroundBrush as SolidColorBrush;
-
-        ////    ////// If the opacity is already not 1.0, skip this
-        ////    ////if (brush == null || Math.Abs(brush.Opacity - 1.0) > 0.1 )
-        ////    ////    return;
-
-        ////    if (brush != null)
-        ////        properties = properties.SetForegroundBrush(new SolidColorBrush(brush.Color) { Opacity = 0.7 });
-
-        ////    formatMap.SetTextProperties(classification, properties);
-        ////}
     }
 }
