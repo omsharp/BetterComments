@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
@@ -11,10 +12,10 @@ namespace BetterComments.CommentsViewCustomization
 {
     internal sealed class CommentViewDecorator
     {
-        private bool fixing;
+        private bool isDecorating;
+        private readonly double textFontSize;
         private readonly IClassificationFormatMap formatMap;
         private readonly IClassificationTypeRegistryService registryService;
-        private readonly FontOptions fontOptions;
 
         private static readonly List<string> commentTypes = new List<string>()
             {
@@ -31,11 +32,19 @@ namespace BetterComments.CommentsViewCustomization
                                     IClassificationTypeRegistryService registryService)
         {
             textView.GotAggregateFocus += TextView_GotAggregateFocus;
+            FontSettingsManager.SettingsSaved += SettingsSaved;
 
-            fontOptions = new FontOptions();
             this.formatMap = formatMap;
             this.registryService = registryService;
+            textFontSize = formatMap.GetTextProperties(registryService.GetClassificationType("text")).FontRenderingEmSize;
+
             Decorate();
+        }
+
+        private void SettingsSaved(object sender, EventArgs eventArgs)
+        {
+            if (!isDecorating)
+                Decorate();
         }
 
         private void TextView_GotAggregateFocus(object sender, EventArgs e)
@@ -44,29 +53,26 @@ namespace BetterComments.CommentsViewCustomization
             if (view != null)
                 view.GotAggregateFocus -= TextView_GotAggregateFocus;
 
-            // TODO: Deal with this issue gracefully in release mode.
-            Debug.Assert(!fixing, "Can't format comments while the view is getting focus!");
-
-            Decorate();
+            if (!isDecorating)
+                Decorate();
         }
 
         private void Decorate()
         {
-            fixing = true;
-
             try
             {
+                isDecorating = true;
                 DecorateKnownClassificationTypes();
                 DecorateUnknowClassificationTypes();
             }
             catch (Exception ex)
             {
-                //TODO: Handle the exception gracefully in relaese mode.
+                //TODO: Handle the exception gracefully.
                 Debug.Assert(false, $"Exception while formatting! \n", ex.Message);
             }
             finally
             {
-                fixing = false;
+                isDecorating = false;
             }
         }
 
@@ -92,15 +98,36 @@ namespace BetterComments.CommentsViewCustomization
 
         private void SetProperties(IClassificationType classificationType)
         {
-            fontOptions.LoadSettings();
+            var properties = formatMap.GetTextProperties(classificationType);
 
-            var properties = formatMap.GetTextProperties(classificationType)
-                                      .SetItalic(fontOptions.IsItalic)
-                                      .SetBold(fontOptions.IsBold)
-                                      .SetTypeface(new Typeface(fontOptions.Font))
-                                      .SetFontHintingEmSize(fontOptions.Size);
+            if (!string.IsNullOrWhiteSpace(FontSettingsManager.CurrentSettings.Font))
+                properties = properties.SetTypeface(new Typeface(FontSettingsManager.CurrentSettings.Font));
+
+            properties = properties.SetFontRenderingEmSize(textFontSize + FontSettingsManager.CurrentSettings.Size)
+                                   .SetItalic(FontSettingsManager.CurrentSettings.IsItalic)
+                                   .SetBold(FontSettingsManager.CurrentSettings.IsBold);
+
+            if (FontSettingsManager.CurrentSettings.Opacity >= 0.1)
+                properties = properties.SetForegroundOpacity(FontSettingsManager.CurrentSettings.Opacity);
 
             formatMap.SetTextProperties(classificationType, properties);
         }
+
+        //////? Implement fading effect?
+        ////void Fade(IClassificationType classification)
+        ////{
+        ////    var properties = formatMap.GetTextProperties(classification);
+
+        ////    var brush = properties.ForegroundBrush as SolidColorBrush;
+
+        ////    ////// If the opacity is already not 1.0, skip this
+        ////    ////if (brush == null || Math.Abs(brush.Opacity - 1.0) > 0.1 )
+        ////    ////    return;
+
+        ////    if (brush != null)
+        ////        properties = properties.SetForegroundBrush(new SolidColorBrush(brush.Color) { Opacity = 0.7 });
+
+        ////    formatMap.SetTextProperties(classification, properties);
+        ////}
     }
 }

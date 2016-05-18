@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
 
@@ -6,27 +7,19 @@ namespace BetterComments.Options
 {
     public partial class OptionsPageControl
     {
-        public FontOptions Options { get; } = new FontOptions();
-
         public OptionsPageControl()
         {
             InitializeComponent();
             FontsComboBox.ItemsSource = GetInstalledFonts();
-            SizeComboBox.ItemsSource = Enumerable.Range(1, 24).Select(n => (double)n);
-            DataContext = Options;
-        }
-
-        public void SetOptions(FontOptions options)
-        {
-            Options.Font = options.Font;
-            Options.Size = options.Size;
-            Options.IsItalic = options.IsItalic;
-            Options.IsBold = options.IsBold;
+            SizeComboBox.ItemsSource = new[] { -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0 };
+            OpacityComboBox.ItemsSource = new[] { 1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1 };
+            DataContext = FontSettingsManager.CurrentSettings;
         }
 
         private static IEnumerable<string> GetInstalledFonts()
         {
             IEnumerable<string> result;
+
             using (var fonts = new InstalledFontCollection())
                 result = fonts.Families.Select(f => f.Name);
 

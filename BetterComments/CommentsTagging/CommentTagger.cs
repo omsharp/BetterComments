@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Forms;
 using BetterComments.CommentsClassification;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
@@ -24,6 +25,8 @@ namespace BetterComments.CommentsTagging
         private readonly IClassificationTypeRegistryService classificationRegistry;
         private readonly ITagAggregator<IClassificationTag> tagAggregator;
 
+        //TODO: Implement IDisposable and dispose of tagAggregator
+
         private static readonly string[] nonMarkupSingleLineCommentStarters = { "//", "'", "#" };
         private static readonly string[] nonMarkupDelimitedCommentStarters = { "/*", "(*" };
         private static readonly Dictionary<string, string> delimitedCommentEnders
@@ -40,6 +43,17 @@ namespace BetterComments.CommentsTagging
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 #pragma warning restore 0067
 
+
+        private static readonly List<string> commentTypes = new List<string>()
+            {
+                "comment",
+                "xml doc comment",
+                "vb xml doc comment",
+                "xml comment",
+                "html comment",
+                "xaml comment"
+            };
+
         public IEnumerable<ITagSpan<ClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
             var snapshot = spans[0].Snapshot;
@@ -50,7 +64,7 @@ namespace BetterComments.CommentsTagging
             // Work through all comment tags associated with the passed spans. Ignore xml doc comments.
             foreach (var tagSpanPair in from tag in tagAggregator.GetTags(spans)
                                         let classification = tag.Tag.ClassificationType.Classification
-                                        where classification.ContainsCaseIgnored("comment") && !classification.ContainsCaseIgnored("doc")
+                                        where classification.ContainsCaseIgnored("comment") && !classification.ContainsCaseIgnored("xml doc")
                                         select tag)
             {
 
@@ -61,7 +75,7 @@ namespace BetterComments.CommentsTagging
                     var commentStarter = GetCommentStarter(commentText);
 
                     if (nonMarkupSingleLineCommentStarters.Contains(commentStarter))
-                    { //! A single-line C/C++, C#, VB.NET, Python, or F# comment.
+                    { //! A single-line C/C++, C#, VB.NET, Python, Javascript, or F# comment.
 
                         if (commentText.Length < commentStarter.Length + 3)
                             continue; // We need at least 3 characters long comment.
@@ -73,57 +87,79 @@ namespace BetterComments.CommentsTagging
                         yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), newspan);
                     }
                     else if (nonMarkupDelimitedCommentStarters.Contains(commentStarter))
-                    { //! A delimited C/C++, C#, or F# comment.
-
+                    {   //! A Delimited comment
                         var commentEnder = delimitedCommentEnders[commentStarter];
 
                         if (commentText.EndsWith(commentEnder))
-                        {
+                        { //! A Delimited C/C++, F#, and Javascript comment in a single line.
+                          //! Or a C# delimeted comment. Both single and multi line C# comments are handled here.
                             var trimmedComment = RemoveCommentStarter(commentText);
                             var newSpan = new SnapshotSpan(span.Snapshot, span.Start + 2, trimmedComment.Length - 2);
 
                             yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), newSpan);
                         }
                         else
-                        { //! C/C++ or F# comment in taking multible lines.
-                            var spanEnd = span.End;
-                            var newSpan = new SnapshotSpan(span.Snapshot, span.Start, spanEnd);
+                        { //! Delimited C/C++, F#, and Javascript comment spanning multiple lines.
+                            #region "Half baked..."
+                            //var spanEnd = span.End;
+                            var length = span.Length;
                             var current = span.GetText();
+                            var newSpan = new SnapshotSpan(span.Snapshot, new Span(span.Start, length));
 
                             while (true)
                             {
-                                if (spanEnd >= snapshot.Lines.Last().End)
+                                if (newSpan.End >= snapshot.Lines.Last().End)
                                     break;
 
                                 if (!current.EndsWith(commentEnder))
                                 {
-                                    spanEnd = current.Contains(commentEnder) ? spanEnd - 1 : spanEnd + 1;
-                                    newSpan = new SnapshotSpan(span.Snapshot, span.Start, spanEnd);
+                                    length = current.Contains(commentEnder) ? length - 1 : length + 1;
+                                    newSpan = new SnapshotSpan(span.Snapshot, newSpan.Start, length);
                                     current = newSpan.GetText();
                                     continue;
                                 }
 
-                                current = current.Substring(2, current.Length - 2);
-                                newSpan = new SnapshotSpan(span.Snapshot, span.Start + 2, spanEnd - 2);
-                                yield return BuildTagSpan(BuildClassificationTag(GetCommentType(current)), newSpan);
+                                newSpan = new SnapshotSpan(span.Snapshot, new Span(newSpan.Start, length));
                                 break;
                             }
-                            //! after getting the comment span, 
-                            //! break it into lines, 
-                            //! then put each line into it's own span and tag it.
 
+                            //? current = current.Substring(2, current.Length - 2);
+                            Debug.WriteLine("\nGetTag start ------------- {");
+                            Debug.WriteLine($"{GetCommentType(current)} : {{ \n {newSpan.GetText()} \n }} \n");
 
-                            Debug.WriteLine($"Start [");
-                            Debug.WriteLine(newSpan.GetText());
-                            Debug.WriteLine($"] End");
-                            Debug.WriteLine(" ");
+                            var classification = new ClassificationTag(
+                                classificationRegistry.GetClassificationType(CommentNames.TASK_COMMENT));
+
+                            //! break the fixed span into multiple lines and convert each line into its own span.
+                            var spansList = newSpan.Snapshot.Lines.Where(l => l.Start >= newSpan.Start && l.End <= newSpan.End)
+                                                   .Select(line => new SnapshotSpan(span.Snapshot, line.Start, line.Length))
+                                                   .ToList();
+
+                            var tagsList = spansList.Select(s => BuildTagSpan(classification, s));
+
+                            foreach (var tagSpan in tagsList)
+                            {
+                                yield return tagSpan;
+                            }
+
+                            //foreach (var tagSpan in spansList.Select(s => BuildTagSpan(classification, s)))
+                            //{
+                            //    Debug.WriteLine($" Span : {tagSpan.Span}");
+                            //    Debug.WriteLine($"Class : {tagSpan.Tag.ClassificationType.Classification}");
+                            //    Debug.WriteLine("---");
+
+                            //    yield return tagSpan;
+                            //}
+
+                            Debug.WriteLine("}------------ GetTag end\n");
                         }
+                        #endregion
                     }
                     else if (commentStarter.Equals("<!--"))
-                    {  //! It's a markup comment.
-
-                        //? multiline html comments come intact in a single span.
-                        //? multiline xaml comments are broken.
+                    {  //! Hey, look! It's a markup comment!
+                       //! multiline html comments come intact in a single span.
+                       //! multiline xaml comments are broken.
+                    
                     }
                 }
             }
@@ -232,7 +268,7 @@ namespace BetterComments.CommentsTagging
                     return new ClassificationTag(classificationRegistry.GetClassificationType("comment"));
 
                 default:
-                    throw new ArgumentException("Invalid comment type!", nameof(commentType), null);
+                    throw new ArgumentException(@"Invalid comment type!", nameof(commentType), null);
             }
         }
 

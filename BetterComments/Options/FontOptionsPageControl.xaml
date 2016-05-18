@@ -3,42 +3,91 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:BetterComments.Options"
              mc:Ignorable="d" 
-             d:DesignHeight="300" 
-             d:DesignWidth="300"
-             Background="White">
-    <Grid>
+             d:DesignHeight="300"
+             Background="LightGray" 
+             Width="335">
+
+    <Grid Margin="16,10,0,0">
+
         <Grid.RowDefinitions >
-            <RowDefinition Height="Auto"/> 
-            <RowDefinition Height="Auto"/> 
-            <RowDefinition Height="Auto"/> 
-            <RowDefinition Height="Auto"/> 
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Content="Font :" HorizontalAlignment="Right" 
+        <!--! Font -->
+        <Label Grid.Row="0" 
+               Grid.Column="0" 
+               Content="Font :" 
+               HorizontalAlignment="Right" 
                VerticalAlignment="Center"/>
-        <ComboBox x:Name="FontsComboBox" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Width="250"
+
+        <ComboBox x:Name="FontsComboBox" 
+                  Grid.Row="0" 
+                  Grid.Column="1" 
+                  HorizontalAlignment="Left" 
+                  Width="250"
                   SelectedItem="{Binding Font, Mode=TwoWay}"/>
 
-        <Label Grid.Row="1" Grid.Column="0" Content="Size :" HorizontalAlignment="Right" 
+        <!--! Size -->
+        <Label Grid.Row="1" 
+               Grid.Column="0" 
+               Content="Size Em :" 
+               HorizontalAlignment="Right" 
                VerticalAlignment="Center"/>
-        <ComboBox x:Name="SizeComboBox" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Width="50"
-                  SelectedItem="{Binding Size, Mode=TwoWay}"/>
+        
+        <ComboBox x:Name="SizeComboBox" 
+                  Grid.Row="1" 
+                  Grid.Column="1" 
+                  HorizontalAlignment="Left" 
+                  Width="50"
+                  SelectedValue="{Binding Size, Mode=TwoWay}"/>
+        
+        <!--! Italic -->
+        <Label Grid.Row="2" 
+               Grid.Column="0" 
+               Content="Italic :" 
+               HorizontalAlignment="Right" 
+               VerticalAlignment="Center"/>
 
-        <Label Grid.Row="2" Grid.Column="0" Content="Italic :" HorizontalAlignment="Right" 
-               VerticalAlignment="Center"/>
-        <CheckBox x:Name="ItalicCheckBox" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" 
+        <CheckBox x:Name="ItalicCheckBox" 
+                  Grid.Row="2" 
+                  Grid.Column="1" 
+                  VerticalAlignment="Center" 
                   IsChecked="{Binding IsItalic, Mode=TwoWay}"/>
-    
-        <Label Grid.Row="3" Grid.Column="0" Content="Bold :" HorizontalAlignment="Right" 
-               VerticalAlignment="Center"/>
-        <CheckBox x:Name="BoldCheckBox" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" 
-                  IsChecked="{Binding IsBold, Mode=TwoWay}"/>
 
+        <!--! Bold -->
+        <Label Grid.Row="3" 
+               Grid.Column="0" 
+               Content="Bold :" 
+               HorizontalAlignment="Right" 
+               VerticalAlignment="Center"/>
+
+        <CheckBox x:Name="BoldCheckBox" 
+                  Grid.Row="3" 
+                  Grid.Column="1" 
+                  VerticalAlignment="Center" 
+                  IsChecked="{Binding IsBold, Mode=TwoWay}"/>
+        
+        <!--! Opacity -->
+        <Label Grid.Row="4"
+               Grid.Column="0"
+               Content="Opacity :" 
+               HorizontalAlignment="Right" 
+               VerticalAlignment="Center"/>
+
+        <ComboBox x:Name="OpacityComboBox" 
+                  Grid.Row="4" 
+                  Grid.Column="1" 
+                  HorizontalAlignment="Left" 
+                  Width="50"
+                  SelectedValue="{Binding Opacity, Mode=TwoWay}"/>
     </Grid>
 </UserControl>
