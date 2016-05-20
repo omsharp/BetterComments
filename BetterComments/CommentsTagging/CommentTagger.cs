@@ -22,8 +22,8 @@ namespace BetterComments.CommentsTagging
         private readonly IClassificationTypeRegistryService classificationRegistry;
         private readonly ITagAggregator<IClassificationTag> tagAggregator;
 
-        private static readonly string[] nonMarkupSingleLineCommentStarters = { "//", "'", "#" };
-        private static readonly string[] nonMarkupDelimitedCommentStarters = { "/*", "(*" };
+        private static readonly string[] singleLineCommentStarters = { "//", "'", "#" };
+        private static readonly string[] delimitedCommentStarters = { "/*", "(*" };
         private static readonly Dictionary<string, string> delimitedCommentEnders
             = new Dictionary<string, string> { { "/*", "*/" }, { "(*", "*)" } };
 
@@ -58,7 +58,7 @@ namespace BetterComments.CommentsTagging
                     var commentStarter = GetCommentStarter(commentText);
                     var trimmedComment = RemoveCommentStarter(commentText);
 
-                    if (nonMarkupSingleLineCommentStarters.Contains(commentStarter))
+                    if (singleLineCommentStarters.Contains(commentStarter))
                     { //! Single-line C/C++, C#, VB.NET, Python, Javascript, or F# comment.
 
                         if (commentText.Length < commentStarter.Length + 3)
@@ -67,12 +67,12 @@ namespace BetterComments.CommentsTagging
                         var offset = GetStartIndex(trimmedComment, commentStarter.Length);
                         yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, offset, offset));
                     }
-                    else if (nonMarkupDelimitedCommentStarters.Contains(commentStarter))
+                    else if (delimitedCommentStarters.Contains(commentStarter))
                     { //! A Delimited comment
                         var commentEnder = delimitedCommentEnders[commentStarter];
 
                         if (commentText.EndsWith(commentEnder))
-                        { //! Delimited C/C++, F#, and Javascript comment (single line only).
+                        { //! Delimited C/C++, F#, and Javascript comment (single-line only).
                           //! Delimeted C# comment (Both single and multiline).
                             var offset = GetStartIndex(trimmedComment, commentStarter.Length);
                             yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, offset, 4));
@@ -101,12 +101,12 @@ namespace BetterComments.CommentsTagging
 
         private static string GetCommentStarter(string comment)
         {
-            var result = comment.StartsWithOneOf(nonMarkupSingleLineCommentStarters);
+            var result = comment.StartsWithOneOf(singleLineCommentStarters);
 
             if (!string.IsNullOrWhiteSpace(result))
                 return result;
 
-            result = comment.StartsWithOneOf(nonMarkupDelimitedCommentStarters);
+            result = comment.StartsWithOneOf(delimitedCommentStarters);
 
             if (!string.IsNullOrWhiteSpace(result))
                 return result;
@@ -131,7 +131,7 @@ namespace BetterComments.CommentsTagging
         private static string RemoveCommentStarter(string comment)
         {
             // comments starting with //, /*, or (*
-            if (comment.StartsWith("//") || comment.StartsWithAnyOf(nonMarkupDelimitedCommentStarters))
+            if (comment.StartsWith("//") || comment.StartsWithAnyOf(delimitedCommentStarters))
                 return comment.Substring(2, comment.Length - 2);
 
             if (comment.StartsWith("'") || comment.StartsWith("#"))
@@ -145,7 +145,7 @@ namespace BetterComments.CommentsTagging
         private static CommentType GetCommentType(string trimmedComment)
         {
             //! double comment = strikethrough
-            if (trimmedComment.StartsWithAnyOf(nonMarkupSingleLineCommentStarters))
+            if (trimmedComment.StartsWithAnyOf(singleLineCommentStarters))
                 return CommentType.Crossed;
 
             if (IsTaskComment(trimmedComment))
