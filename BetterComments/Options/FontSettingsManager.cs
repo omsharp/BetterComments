@@ -34,8 +34,7 @@ namespace BetterComments.Options
 
                 settingsStore.SetString(COLLECTION_PATH, nameof(FontSettings.Font), CurrentSettings.Font);
                 settingsStore.SetString(COLLECTION_PATH, nameof(FontSettings.Size), CurrentSettings.Size.ToString(CultureInfo.InvariantCulture));
-                settingsStore.SetBoolean(COLLECTION_PATH, nameof(FontSettings.IsItalic), CurrentSettings.IsItalic);
-                settingsStore.SetBoolean(COLLECTION_PATH, nameof(FontSettings.IsBold), CurrentSettings.IsBold);
+                settingsStore.SetBoolean(COLLECTION_PATH, nameof(FontSettings.Italic), CurrentSettings.Italic);
                 settingsStore.SetString(COLLECTION_PATH, nameof(FontSettings.Opacity), CurrentSettings.Opacity.ToString(CultureInfo.InvariantCulture));
 
                 SettingsSaved?.Invoke(null, EventArgs.Empty);
@@ -64,12 +63,9 @@ namespace BetterComments.Options
                     CurrentSettings.Size = size;
                 }
 
-                if (settingsStore.PropertyExists(COLLECTION_PATH, nameof(FontSettings.IsItalic)))
-                    CurrentSettings.IsItalic = settingsStore.GetBoolean(COLLECTION_PATH, nameof(FontSettings.IsItalic));
-
-                if (settingsStore.PropertyExists(COLLECTION_PATH, nameof(FontSettings.IsBold)))
-                    CurrentSettings.IsBold = settingsStore.GetBoolean(COLLECTION_PATH, nameof(FontSettings.IsBold));
-
+                if (settingsStore.PropertyExists(COLLECTION_PATH, nameof(FontSettings.Italic)))
+                    CurrentSettings.Italic = settingsStore.GetBoolean(COLLECTION_PATH, nameof(FontSettings.Italic));
+                
                 if (settingsStore.PropertyExists(COLLECTION_PATH, nameof(FontSettings.Opacity)))
                 {
                     var str = settingsStore.GetString(COLLECTION_PATH, nameof(FontSettings.Opacity));

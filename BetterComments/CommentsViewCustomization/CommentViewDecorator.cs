@@ -96,19 +96,23 @@ namespace BetterComments.CommentsViewCustomization
 
         private void SetProperties(IClassificationType classificationType)
         {
+            //? Might need to benchmark this function for performance.
+
             var properties = formatMap.GetTextProperties(classificationType);
+            var settings = FontSettingsManager.CurrentSettings;
+            var fontSize = GetEditorTextSize() + settings.Size;
 
             if (!string.IsNullOrWhiteSpace(FontSettingsManager.CurrentSettings.Font))
-                properties = properties.SetTypeface(new Typeface(FontSettingsManager.CurrentSettings.Font));
-            
-            properties = properties.SetFontRenderingEmSize(GetEditorTextSize() + FontSettingsManager.CurrentSettings.Size)
-                                   .SetItalic(FontSettingsManager.CurrentSettings.IsItalic)
-                                   .SetBold(FontSettingsManager.CurrentSettings.IsBold);
+                properties = properties.SetTypeface(new Typeface(settings.Font));
 
-            Debug.WriteLine($"FontSize : {FontSettingsManager.CurrentSettings.Size}");
+            if (Math.Abs(fontSize - properties.FontRenderingEmSize) > 0)
+                properties = properties.SetFontRenderingEmSize(fontSize);
 
-            if (FontSettingsManager.CurrentSettings.Opacity >= 0.1)
-                properties = properties.SetForegroundOpacity(FontSettingsManager.CurrentSettings.Opacity);
+            if (properties.Italic != settings.Italic)
+                properties = properties.SetItalic(settings.Italic);
+
+            if (settings.Opacity >= 0.1 && settings.Opacity <= 1)
+                properties = properties.SetForegroundOpacity(settings.Opacity);
 
             formatMap.SetTextProperties(classificationType, properties);
         }

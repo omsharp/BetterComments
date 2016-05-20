@@ -69,19 +69,6 @@
                   VerticalAlignment="Center" 
                   IsChecked="{Binding IsItalic, Mode=TwoWay}"/>
 
-        <!--! Bold -->
-        <Label Grid.Row="3" 
-               Grid.Column="0" 
-               Content="Bold :" 
-               HorizontalAlignment="Right" 
-               VerticalAlignment="Center"/>
-
-        <CheckBox x:Name="BoldCheckBox" 
-                  Grid.Row="3" 
-                  Grid.Column="1" 
-                  VerticalAlignment="Center" 
-                  IsChecked="{Binding IsBold, Mode=TwoWay}"/>
-
         <!--! Opacity -->
         <Label Grid.Row="4"
                Grid.Column="0"

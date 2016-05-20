@@ -7,8 +7,7 @@ namespace BetterComments.Options
     public class FontSettings : INotifyPropertyChanged
     {
         private string font = string.Empty;
-        private bool isBold;
-        private bool isItalic;
+        private bool italic;
         private double size;
         private double opacity;
 
@@ -38,30 +37,18 @@ namespace BetterComments.Options
             }
         }
 
-        public bool IsItalic
+        public bool Italic
         {
-            get { return isItalic; }
+            get { return italic; }
             set
             {
-                if (value == isItalic)
+                if (value == italic)
                     return;
-                isItalic = value;
+                italic = value;
                 OnPropertyChanged();
             }
         }
-
-        public bool IsBold
-        {
-            get { return isBold; }
-            set
-            {
-                if (value == isBold)
-                    return;
-                isBold = value;
-                OnPropertyChanged();
-            }
-        }
-
+        
         public double Opacity
         {
             get { return opacity; }
