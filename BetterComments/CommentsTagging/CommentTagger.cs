@@ -21,7 +21,7 @@ namespace BetterComments.CommentsTagging
     {
         private readonly IClassificationTypeRegistryService classificationRegistry;
         private readonly ITagAggregator<IClassificationTag> tagAggregator;
-        
+
         private static readonly string[] nonMarkupSingleLineCommentStarters = { "//", "'", "#" };
         private static readonly string[] nonMarkupDelimitedCommentStarters = { "/*", "(*" };
         private static readonly Dictionary<string, string> delimitedCommentEnders
@@ -37,7 +37,7 @@ namespace BetterComments.CommentsTagging
 #pragma warning disable 0067
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 #pragma warning restore 0067
-        
+
         public IEnumerable<ITagSpan<ClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
             var snapshot = spans[0].Snapshot;
@@ -65,7 +65,7 @@ namespace BetterComments.CommentsTagging
                             continue; // We need at least 3 characters long comment.
 
                         var spanStartOffset = GetStartIndex(trimmedComment, commentStarter.Length);
-                        
+
                         yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, spanStartOffset, spanStartOffset));
                     }
                     else if (nonMarkupDelimitedCommentStarters.Contains(commentStarter))
@@ -81,7 +81,15 @@ namespace BetterComments.CommentsTagging
                     else if (commentStarter.Equals("<!--"))
                     { //! Hey, look! It's a markup comment!
                         if (commentText.EndsWith("-->"))
-                            yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, 4, 3));
+                        {
+                            var commentType = GetCommentType(trimmedComment);
+
+                            //! Ignore normal markup comments so their foreground color won't be overridden.
+                            if (commentType == CommentType.Normal)
+                                yield break; 
+
+                            yield return BuildTagSpan(BuildClassificationTag(commentType), BuildSnapshotSpan(span, 4, 3));
+                        }
                     }
                 }
             }
@@ -202,7 +210,7 @@ namespace BetterComments.CommentsTagging
                     throw new ArgumentException(@"Invalid comment type!", nameof(commentType), null);
             }
         }
-        
+
         public void Dispose()
         {
             tagAggregator.Dispose();
