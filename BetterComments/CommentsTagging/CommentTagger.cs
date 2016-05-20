@@ -88,7 +88,7 @@ namespace BetterComments.CommentsTagging
                             if (commentType == CommentType.Normal)
                                 yield break; 
 
-                            yield return BuildTagSpan(BuildClassificationTag(commentType), BuildSnapshotSpan(span, 4, 3));
+                            yield return BuildTagSpan(BuildClassificationTag(commentType), BuildSnapshotSpan(span, 4, 7));
                         }
                     }
                 }
