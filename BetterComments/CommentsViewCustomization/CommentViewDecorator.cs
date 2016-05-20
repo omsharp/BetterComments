@@ -13,7 +13,6 @@ namespace BetterComments.CommentsViewCustomization
     internal sealed class CommentViewDecorator
     {
         private bool isDecorating;
-        private readonly double textFontSize;
         private readonly IClassificationFormatMap formatMap;
         private readonly IClassificationTypeRegistryService registryService;
 
@@ -36,7 +35,6 @@ namespace BetterComments.CommentsViewCustomization
 
             this.formatMap = formatMap;
             this.registryService = registryService;
-            textFontSize = formatMap.GetTextProperties(registryService.GetClassificationType("text")).FontRenderingEmSize;
 
             Decorate();
         }
@@ -102,15 +100,22 @@ namespace BetterComments.CommentsViewCustomization
 
             if (!string.IsNullOrWhiteSpace(FontSettingsManager.CurrentSettings.Font))
                 properties = properties.SetTypeface(new Typeface(FontSettingsManager.CurrentSettings.Font));
-
-            properties = properties.SetFontRenderingEmSize(textFontSize + FontSettingsManager.CurrentSettings.Size)
+            
+            properties = properties.SetFontRenderingEmSize(GetEditorTextSize() + FontSettingsManager.CurrentSettings.Size)
                                    .SetItalic(FontSettingsManager.CurrentSettings.IsItalic)
                                    .SetBold(FontSettingsManager.CurrentSettings.IsBold);
+
+            Debug.WriteLine($"FontSize : {FontSettingsManager.CurrentSettings.Size}");
 
             if (FontSettingsManager.CurrentSettings.Opacity >= 0.1)
                 properties = properties.SetForegroundOpacity(FontSettingsManager.CurrentSettings.Opacity);
 
             formatMap.SetTextProperties(classificationType, properties);
+        }
+
+        private double GetEditorTextSize()
+        {
+            return formatMap.GetTextProperties(registryService.GetClassificationType("text")).FontRenderingEmSize;
         }
     }
 }

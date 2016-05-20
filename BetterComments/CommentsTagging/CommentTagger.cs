@@ -21,9 +21,7 @@ namespace BetterComments.CommentsTagging
     {
         private readonly IClassificationTypeRegistryService classificationRegistry;
         private readonly ITagAggregator<IClassificationTag> tagAggregator;
-
-        //TODO: Implement IDisposable and dispose of tagAggregator
-
+        
         private static readonly string[] nonMarkupSingleLineCommentStarters = { "//", "'", "#" };
         private static readonly string[] nonMarkupDelimitedCommentStarters = { "/*", "(*" };
         private static readonly Dictionary<string, string> delimitedCommentEnders
@@ -68,7 +66,7 @@ namespace BetterComments.CommentsTagging
 
                         var spanStartOffset = GetStartIndex(trimmedComment, commentStarter.Length);
                         
-                        yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, spanStartOffset));
+                        yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, spanStartOffset, spanStartOffset));
                     }
                     else if (nonMarkupDelimitedCommentStarters.Contains(commentStarter))
                     { //! A Delimited comment
@@ -77,21 +75,21 @@ namespace BetterComments.CommentsTagging
                         if (commentText.EndsWith(commentEnder))
                         { //! Delimited C/C++, F#, and Javascript comment (single line only).
                           //! Delimeted C# comment (Both single and multiline).
-                            yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, 2));
+                            yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, 2, 2));
                         }
                     }
                     else if (commentStarter.Equals("<!--"))
                     { //! Hey, look! It's a markup comment!
                         if (commentText.EndsWith("-->"))
-                            yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, 4));
+                            yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, 4, 3));
                     }
                 }
             }
         }
 
-        private static SnapshotSpan BuildSnapshotSpan(SnapshotSpan span, int offset)
+        private static SnapshotSpan BuildSnapshotSpan(SnapshotSpan span, int startOffset, int lengthOffset)
         {
-            return new SnapshotSpan(span.Snapshot, span.Start + offset, span.Length - offset);
+            return new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - lengthOffset);
         }
 
         private static string GetCommentStarter(string comment)
@@ -154,7 +152,6 @@ namespace BetterComments.CommentsTagging
 
         private static bool IsTaskComment(string trimmedComment)
         {
-            //! "todo" is 4 characters long.
             return trimmedComment.Length > 4
                    && trimmedComment.IndexOf("todo", 0, StringComparison.OrdinalIgnoreCase) >= 0;
         }
@@ -205,15 +202,11 @@ namespace BetterComments.CommentsTagging
                     throw new ArgumentException(@"Invalid comment type!", nameof(commentType), null);
             }
         }
-
-        #region "IDisposable"
-
+        
         public void Dispose()
         {
             tagAggregator.Dispose();
             GC.SuppressFinalize(this);
         }
-
-        #endregion
     }
 }
