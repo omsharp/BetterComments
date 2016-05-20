@@ -64,8 +64,8 @@ namespace BetterComments.CommentsTagging
                         if (commentText.Length < commentStarter.Length + 3)
                             continue; // We need at least 3 characters long comment.
 
-                        var offset = GetStartIndex(trimmedComment, commentStarter.Length);
-                        yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, offset, offset));
+                        var startIndex = GetStartIndex(trimmedComment, commentStarter.Length);
+                        yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, startIndex, startIndex));
                     }
                     else if (delimitedCommentStarters.Contains(commentStarter))
                     { //! A Delimited comment
@@ -74,8 +74,8 @@ namespace BetterComments.CommentsTagging
                         if (commentText.EndsWith(commentEnder))
                         { //! Delimited C/C++, F#, and Javascript comment (single-line only).
                           //! Delimeted C# comment (Both single and multiline).
-                            var offset = GetStartIndex(trimmedComment, commentStarter.Length);
-                            yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, offset, 4));
+                            var startIndex = GetStartIndex(trimmedComment, commentStarter.Length);
+                            yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, startIndex, startIndex + 2));
                         }
                     }
                     else if (commentStarter.Equals("<!--"))
@@ -85,9 +85,11 @@ namespace BetterComments.CommentsTagging
                             var commentType = GetCommentType(trimmedComment);
                             //! Ignore normal markup comments so their foreground color won't be overridden.
                             if (commentType == CommentType.Normal)
-                                yield break; 
+                                yield break;
 
-                            yield return BuildTagSpan(BuildClassificationTag(commentType), BuildSnapshotSpan(span, 4, 7));
+                            var startIndex = GetStartIndex(trimmedComment, commentStarter.Length);
+
+                            yield return BuildTagSpan(BuildClassificationTag(commentType), BuildSnapshotSpan(span, startIndex, startIndex + 3));
                         }
                     }
                 }
