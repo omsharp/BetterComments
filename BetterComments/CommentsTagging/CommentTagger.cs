@@ -42,58 +42,67 @@ namespace BetterComments.CommentsTagging
         {
             var snapshot = spans[0].Snapshot;
 
-            if (!snapshot.ContentType.IsOfType("code"))
-                yield break; // Content is not code. Don't bother!
+            if (!snapshot.ContentType.IsOfType("code")) yield break;
 
             // Work through all comment tags associated with the passed spans. Ignore xml doc comments.
-            foreach (var tagSpanPair in from tag in tagAggregator.GetTags(spans)
-                                        let classification = tag.Tag.ClassificationType.Classification
-                                        where classification.ContainsCaseIgnored("comment") && !classification.ContainsCaseIgnored("doc")
-                                        select tag)
+            foreach (var tagSpan in tagAggregator.GetTags(spans).Where(t => IsComment(t) && !IsXmlDoc(t)))
             {
                 // Get all the spans associated with the current tag, mapped to our snapshot
-                foreach (var span in tagSpanPair.Span.GetSpans(snapshot))
+                foreach (var span in tagSpan.Span.GetSpans(snapshot))
                 {
-                    var commentText = span.GetText();
-                    var commentStarter = GetCommentStarter(commentText);
-                    var trimmedComment = RemoveCommentStarter(commentText);
+                    TagSpan<ClassificationTag> result = null;
 
-                    if (singleLineCommentStarters.Contains(commentStarter))
-                    { //! Single-line C/C++, C#, VB.NET, Python, Javascript, or F# comment.
+                    try
+                    {
+                        var commentText = span.GetText();
+                        var commentStarter = GetCommentStarter(commentText);
 
                         if (commentText.Length < commentStarter.Length + 3)
-                            continue; // We need at least 3 characters long comment.
+                            continue; // Don't bother processing imature comments.
 
+                        var trimmedComment = RemoveCommentStarter(commentText);
                         var startIndex = GetStartIndex(trimmedComment, commentStarter.Length);
-                        yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, startIndex, startIndex));
-                    }
-                    else if (delimitedCommentStarters.Contains(commentStarter))
-                    { //! A Delimited comment
-                        var commentEnder = delimitedCommentEnders[commentStarter];
+                        var classificationTag = BuildClassificationTag(GetCommentType(trimmedComment));
 
-                        if (commentText.EndsWith(commentEnder))
-                        { //! Delimited C/C++, F#, and Javascript comment (single-line only).
-                          //! Delimeted C# comment (Both single and multiline).
-                            var startIndex = GetStartIndex(trimmedComment, commentStarter.Length);
-                            yield return BuildTagSpan(BuildClassificationTag(GetCommentType(trimmedComment)), BuildSnapshotSpan(span, startIndex, startIndex + 2));
-                        }
-                    }
-                    else if (commentStarter.Equals("<!--"))
-                    { //! Hey, look! It's a markup comment!
-                        if (commentText.EndsWith("-->"))
+                        if (singleLineCommentStarters.Contains(commentStarter)) //! Single-line comment.
                         {
-                            var commentType = GetCommentType(trimmedComment);
-                            //! Ignore normal markup comments so their foreground color won't be overridden.
-                            if (commentType == CommentType.Normal)
-                                yield break;
+                            result = BuildTagSpan(classificationTag, BuildSnapshotSpan(span, startIndex, startIndex));
+                        }
+                        else if (delimitedCommentStarters.Contains(commentStarter)) //! Delimited comment.
+                        {
+                            if (!commentText.EndsWith(delimitedCommentEnders[commentStarter]))
+                                continue; // Comment span is not complete. Multiline comments are ignored. Except in C#.
 
-                            var startIndex = GetStartIndex(trimmedComment, commentStarter.Length);
+                            result = BuildTagSpan(classificationTag, BuildSnapshotSpan(span, startIndex, startIndex + 2));
+                        }
+                        else if (commentStarter.Equals("<!--")) //! Hey, look! It's a markup comment!
+                        {
+                            if (!commentText.EndsWith("-->"))
+                                continue; // Comment span is not complete. Markup multiline comments are ignored.
+                            
+                            if (classificationTag.ClassificationType.Classification == "comment")
+                                continue; // Normal markup comments are ignored so their foreground color won't be overridden.
 
-                            yield return BuildTagSpan(BuildClassificationTag(commentType), BuildSnapshotSpan(span, startIndex, startIndex + 3));
+                            result = BuildTagSpan(classificationTag, BuildSnapshotSpan(span, startIndex, startIndex + 3));
                         }
                     }
+                    catch (Exception) { /*Ignore*/ } //? Not sure if it's a good idea!
+
+                    if (result == null) yield break;
+
+                    yield return result;
                 }
             }
+        }
+
+        private static bool IsComment(IMappingTagSpan<IClassificationTag> tagSpan)
+        {
+            return tagSpan.Tag.ClassificationType.Classification.ContainsCaseIgnored("comment");
+        }
+
+        private static bool IsXmlDoc(IMappingTagSpan<IClassificationTag> tagSpan)
+        {
+            return tagSpan.Tag.ClassificationType.Classification.ContainsCaseIgnored("doc");
         }
 
         private static SnapshotSpan BuildSnapshotSpan(SnapshotSpan span, int startOffset, int lengthOffset)
