@@ -45,7 +45,7 @@ namespace BetterComments.CommentsTagging
             if (!snapshot.ContentType.IsOfType("code")) yield break;
 
             // Work through all comment tags associated with the passed spans. Ignore xml doc comments.
-            foreach (var tagSpan in tagAggregator.GetTags(spans).Where(t => IsComment(t) && !IsXmlDoc(t)))
+            foreach (var tagSpan in tagAggregator.GetTags(spans).Where(m => IsComment(m.Tag) && !IsXmlDoc(m.Tag)))
             {
                 // Get all the spans associated with the current tag, mapped to our snapshot
                 foreach (var span in tagSpan.Span.GetSpans(snapshot))
@@ -95,14 +95,14 @@ namespace BetterComments.CommentsTagging
             }
         }
 
-        private static bool IsComment(IMappingTagSpan<IClassificationTag> tagSpan)
+        private static bool IsComment(IClassificationTag tag)
         {
-            return tagSpan.Tag.ClassificationType.Classification.ContainsCaseIgnored("comment");
+            return tag.ClassificationType.Classification.ContainsCaseIgnored("comment");
         }
 
-        private static bool IsXmlDoc(IMappingTagSpan<IClassificationTag> tagSpan)
+        private static bool IsXmlDoc(IClassificationTag tag)
         {
-            return tagSpan.Tag.ClassificationType.Classification.ContainsCaseIgnored("doc");
+            return tag.ClassificationType.Classification.ContainsCaseIgnored("doc");
         }
 
         private static SnapshotSpan BuildSnapshotSpan(SnapshotSpan span, int startOffset, int lengthOffset)
