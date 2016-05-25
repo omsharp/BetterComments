@@ -4,7 +4,7 @@ It also adds four additional comment classifications, each classification with i
 
 
 <!-- Replace this badge with your own-->
-[![Build status](https://ci.appveyor.com/api/projects/status/hv6uyc059rqbc6fj?svg=true)](https://ci.appveyor.com/project/madskristensen/extensibilitytools)
+[![Build status](https://ci.appveyor.com/api/projects/status/04caiutue4j1hq9d?svg=true)](https://ci.appveyor.com/project/omsharp/bettercomments)
 
 <!-- Update the VS Gallery link after you upload the VSIX-->
 Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/[GuidFromGallery]).
