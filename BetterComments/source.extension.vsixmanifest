@@ -7,6 +7,7 @@
 
 You can also use special tokens to categorize your comments into four types, Task, Important, Question, or Crossedt; and each comment type can have a distinctive color of your choice.
 </Description>
+    <License>Resources\LICENSE</License>
     <Icon>Resources\Icon.png</Icon>
     <PreviewImage>Resources\PreviewImage.png</PreviewImage>
     <Tags>Better, Comments, Italic, Bold, Opacity, Font, Size, Categorize, Color, Colorize</Tags>
