@@ -3,10 +3,7 @@
   <Metadata>
     <Identity Id="BetterComments.Omar Rwemi.e985519f-8696-40b7-9400-807054b4ec76" Version="1.0" Language="en-US" Publisher="Omar Rwemi" />
     <DisplayName>Better Comments</DisplayName>
-    <Description xml:space="preserve">You can change the comments Font, control their Opacity, Italicize them, or make them Bold if you want, and it's all done independently of the editor’s font settings.
-
-You can also use special tokens to categorize your comments into four types, Task, Important, Question, or Crossedt; and each comment type can have a distinctive color of your choice.
-</Description>
+    <Description xml:space="preserve">Better Comments is a Visual Studio extension that gives you the ability to customize the font and opacity of your comments independently of the editor's font settings. It also adds four additional comment classifications, each classification with its own customizable foreground.</Description>
     <License>Resources\LICENSE</License>
     <Icon>Resources\Icon.png</Icon>
     <PreviewImage>Resources\PreviewImage.png</PreviewImage>
