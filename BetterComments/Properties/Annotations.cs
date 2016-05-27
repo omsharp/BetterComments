@@ -142,7 +142,7 @@ namespace BetterComments.Annotations
   ///
   ///   string _name;
   /// 
-  ///   public string Name {
+  ///   public string NAME {
   ///     get { return _name; }
   ///     set { _name = value; NotifyChanged("LastName"); /* Warning */ }
   ///   }
@@ -516,8 +516,8 @@ namespace BetterComments.Annotations
   /// <code>
   /// [SourceTemplate]
   /// public static void something(this Entity x, [Macro(Expression = "guid()", Editable = -1)] string newguid) {
-  ///   /*$ var $x$Id = "$newguid$" + x.ToString();
-  ///   x.DoSomething($x$Id); */
+  ///   /*$ var $x$ID = "$newguid$" + x.ToString();
+  ///   x.DoSomething($x$ID); */
   /// }
   /// </code>
   /// </example>
