@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\LICENSE">
-      <Link>LICENSE</Link>
+      <Link>Resources\LICENSE</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="Key.snk" />
