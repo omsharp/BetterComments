@@ -7,7 +7,7 @@ It also adds four additional comment classifications, each classification with i
 [![Build status](https://ci.appveyor.com/api/projects/status/04caiutue4j1hq9d?svg=true)](https://ci.appveyor.com/project/omsharp/bettercomments)
 
 <!-- Update the VS Gallery link after you upload the VSIX-->
-Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/[GuidFromGallery]).
+Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/2856358f-a098-4237-b044-260443c9a303).
 
 See the [changelog](CHANGELOG.md) for changes and roadmap.
 
