@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
@@ -19,10 +20,12 @@ namespace BetterComments.CommentsViewCustomization
 
         public void TextViewCreated(IWpfTextView textView)
         {
-            textView.Properties.GetOrCreateSingletonProperty(() =>
-                                    new CommentViewDecorator(textView,
-                                                         formatMapService.GetClassificationFormatMap(textView),
-                                                         typeRegistryService));
+            textView.Properties.GetOrCreateSingletonProperty(() => CreateDecorator(textView));
+        }
+
+        public CommentViewDecorator CreateDecorator(IWpfTextView textView)
+        {
+            return new CommentViewDecorator(textView, formatMapService.GetClassificationFormatMap(textView), typeRegistryService);
         }
     }
 }

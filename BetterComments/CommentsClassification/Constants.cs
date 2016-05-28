@@ -12,7 +12,7 @@ namespace BetterComments.CommentsClassification
 
     internal static class CommentColors
     {
-        public static readonly Color ImportantColor = Colors.LawnGreen;
+        public static readonly Color ImportantColor = Colors.LimeGreen;
         public static readonly Color QuestionColor = Colors.DarkRed;
         public static readonly Color CrossedColor = Colors.Gray;
         public static readonly Color TaskColor = Colors.Yellow;
