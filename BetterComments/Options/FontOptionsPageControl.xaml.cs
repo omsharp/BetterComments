@@ -19,7 +19,7 @@ namespace BetterComments.Options
         private static IEnumerable<string> GetInstalledFonts()
         {
             IEnumerable<string> result;
-
+            
             using (var fonts = new InstalledFontCollection())
                 result = fonts.Families.Select(f => f.Name);
 

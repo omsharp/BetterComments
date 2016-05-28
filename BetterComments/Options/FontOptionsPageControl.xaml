@@ -67,7 +67,7 @@
                   Grid.Row="2" 
                   Grid.Column="1" 
                   VerticalAlignment="Center" 
-                  IsChecked="{Binding IsItalic, Mode=TwoWay}"/>
+                  IsChecked="{Binding Italic, Mode=TwoWay}"/>
 
         <!--! Opacity -->
         <Label Grid.Row="4"
