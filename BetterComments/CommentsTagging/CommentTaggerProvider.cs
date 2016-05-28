@@ -22,10 +22,8 @@ namespace BetterComments.CommentsTagging
 
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
         {
-            var tagger = new CommentTagger(ClassificationRegistry,
-                                           Aggregator.CreateTagAggregator<IClassificationTag>(buffer));
-            
-            return tagger as ITagger<T>;
+            var tagAggregator = Aggregator.CreateTagAggregator<IClassificationTag>(buffer);
+            return new CommentTagger(ClassificationRegistry, tagAggregator) as ITagger<T>;
         }
     }
 }

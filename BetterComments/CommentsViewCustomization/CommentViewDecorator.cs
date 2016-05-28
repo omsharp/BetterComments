@@ -84,6 +84,8 @@ namespace BetterComments.CommentsViewCustomization
 
         private void DecorateUnknowClassificationTypes()
         {
+            // Get comment classifications.
+            //! Ignore xml docs.
             var unknowns = from type in formatMap.CurrentPriorityOrder.Where(type => type != null)
                            let name = type.Classification.ToLowerInvariant()
                            where name.Contains("comment") && !commentTypes.Contains(name)

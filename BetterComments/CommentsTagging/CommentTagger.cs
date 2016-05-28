@@ -155,7 +155,7 @@ namespace BetterComments.CommentsTagging
         }
         private static CommentType GetCommentType(string trimmedComment)
         {
-            //! double comment = strikethrough
+            //! double comment = crossed comment
             if (trimmedComment.StartsWithAnyOf(singleLineCommentStarters))
                 return CommentType.Crossed;
 

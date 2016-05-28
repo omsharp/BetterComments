@@ -44,21 +44,5 @@ namespace BetterComments.CommentsTagging
 
             return !string.IsNullOrWhiteSpace(strings.FirstOrDefault(s => text.StartsWith(s, comparison)));
         }
-
-        ////public static bool Contains(this string text, string value, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
-        ////{
-        ////    if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(value))
-        ////        return false;
-
-        ////    return text.IndexOf(value, comparison) >= 0;
-        ////}
-
-        ////public static string StartsWithOneOf(this string text, int startIndex, string[] strings, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
-        ////{
-        ////    if (string.IsNullOrEmpty(text) || strings == null || strings.Length == 0)
-        ////        return null;
-
-        ////    return strings.FirstOrDefault(s => text.StartsWith(s, startIndex, comparison));
-        ////}
     }
 }
