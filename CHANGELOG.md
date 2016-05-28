@@ -6,6 +6,13 @@
 
 # Changelog
 
+## 1.1
+
+**2016-05-28**
+
+- [x] Fixed the Italic option issue. It works properly now.
+
+
 ## 1.0
 
 **2016-05-18**
