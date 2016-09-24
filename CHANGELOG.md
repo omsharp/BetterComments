@@ -1,10 +1,15 @@
 # Roadmap
 
-- [ ] Highlight multiline comments in F#, VB.NET, C/C++, JavaScript, and Python
-- [ ] Highlight multiline comments in HTML and XAML
 - [ ] Font Options preview
 
 # Changelog
+
+## 1.2
+
+**2016-09-24**
+
+- [x] Used slider controls for Size and Opacity instead of the ugly combobox.
+
 
 ## 1.1
 
