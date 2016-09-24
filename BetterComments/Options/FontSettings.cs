@@ -32,6 +32,7 @@ namespace BetterComments.Options
             {
                 if (value.Equals(size))
                     return;
+
                 size = value;
                 OnPropertyChanged();
             }

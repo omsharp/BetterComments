@@ -36,7 +36,7 @@ namespace BetterComments.Options
                 settingsStore.SetString(COLLECTION_PATH, nameof(FontSettings.Size), CurrentSettings.Size.ToString(CultureInfo.InvariantCulture));
                 settingsStore.SetBoolean(COLLECTION_PATH, nameof(FontSettings.Italic), CurrentSettings.Italic);
                 settingsStore.SetString(COLLECTION_PATH, nameof(FontSettings.Opacity), CurrentSettings.Opacity.ToString(CultureInfo.InvariantCulture));
-
+                
                 SettingsSaved?.Invoke(null, EventArgs.Empty);
             }
             catch (Exception ex)

@@ -15,7 +15,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -42,45 +41,73 @@
                Content="Size Offset :" 
                HorizontalAlignment="Right" 
                VerticalAlignment="Center"/>
-        
-        <StackPanel  Grid.Row="1" 
-                     Grid.Column="1" 
-                     Orientation="Horizontal">
-            
-            <ComboBox x:Name="SizeComboBox" 
-                      HorizontalAlignment="Left" 
-                      Width="70"
-                      SelectedValue="{Binding Size, Mode=TwoWay}"/>
-            
-            <Label Content="Relative to the default font size." 
-                   Foreground="DarkRed"/>
+
+        <StackPanel Grid.Row="1" 
+                    Grid.Column="1"
+                    HorizontalAlignment="Left">
+
+            <Label Content="Relative to the default font size."
+                   Foreground="DarkRed" />
+
+            <StackPanel Orientation="Horizontal">
+                <Slider x:Name="SizeValueSlider"
+                            Minimum="-3"
+                            Maximum="3"
+                            TickFrequency="0.5"
+                            IsSnapToTickEnabled="True"
+                            TickPlacement="BottomRight"
+                            Width="285"
+                            Height="30"
+                            Value="{Binding Size, Mode=TwoWay}" />
+
+                <TextBlock Text="{Binding Value, ElementName=SizeValueSlider}"
+                               Padding="5 2"
+                               TextAlignment="Center"/>
+            </StackPanel>
+
         </StackPanel>
-        
+
+
+        <!--! Opacity -->
+        <Label Grid.Row="2"
+               Grid.Column="0"
+               Content="Opacity :" 
+               HorizontalAlignment="Right" />
+
+
+        <StackPanel Grid.Row="2" 
+                    Grid.Column="1" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    Margin="0 5">
+           
+            <Slider x:Name="OpacityeValueSlider"
+                            Minimum="0"
+                            Maximum="1"
+                            TickFrequency="0.1"
+                            IsSnapToTickEnabled="True"
+                            TickPlacement="BottomRight"
+                            Width="285"
+                            Height="30"
+                            Value="{Binding Opacity, Mode=TwoWay}" />
+
+            <TextBlock Text="{Binding Value, ElementName=OpacityeValueSlider}"
+                               Padding="5 2"
+                               TextAlignment="Center"/>
+        </StackPanel>
+
         <!--! Italic -->
-        <Label Grid.Row="2" 
+        <Label Grid.Row="3" 
                Grid.Column="0" 
                Content="Italic :" 
                HorizontalAlignment="Right" 
                VerticalAlignment="Center"/>
 
         <CheckBox x:Name="ItalicCheckBox" 
-                  Grid.Row="2" 
+                  Grid.Row="3" 
                   Grid.Column="1" 
                   VerticalAlignment="Center" 
                   IsChecked="{Binding Italic, Mode=TwoWay}"/>
 
-        <!--! Opacity -->
-        <Label Grid.Row="4"
-               Grid.Column="0"
-               Content="Opacity :" 
-               HorizontalAlignment="Right" 
-               VerticalAlignment="Center"/>
-
-        <ComboBox x:Name="OpacityComboBox" 
-                  Grid.Row="4" 
-                  Grid.Column="1" 
-                  HorizontalAlignment="Left" 
-                  Width="50"
-                  SelectedValue="{Binding Opacity, Mode=TwoWay}"/>
     </Grid>
 </UserControl>
