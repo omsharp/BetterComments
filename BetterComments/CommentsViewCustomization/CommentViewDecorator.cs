@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
+using BetterComments.CommentsTagging;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using BetterComments.Options;
@@ -84,8 +86,6 @@ namespace BetterComments.CommentsViewCustomization
 
         private void DecorateUnknowClassificationTypes()
         {
-            // Get comment classifications.
-            //! Ignore xml docs.
             var unknowns = from type in formatMap.CurrentPriorityOrder.Where(type => type != null)
                            let name = type.Classification.ToLowerInvariant()
                            where name.Contains("comment") && !commentTypes.Contains(name)
@@ -114,7 +114,7 @@ namespace BetterComments.CommentsViewCustomization
 
             if (settings.Opacity >= 0.1 && settings.Opacity <= 1)
                 properties = properties.SetForegroundOpacity(settings.Opacity);
-
+            
             formatMap.SetTextProperties(classificationType, properties);
         }
 

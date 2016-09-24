@@ -23,7 +23,9 @@ namespace BetterComments.CommentsTagging
         private readonly ITagAggregator<IClassificationTag> tagAggregator;
 
         private static readonly string[] singleLineCommentStarters = { "//", "'", "#" };
+
         private static readonly string[] delimitedCommentStarters = { "/*", "(*" };
+
         private static readonly Dictionary<string, string> delimitedCommentEnders
             = new Dictionary<string, string> { { "/*", "*/" }, { "(*", "*)" } };
 
@@ -44,7 +46,7 @@ namespace BetterComments.CommentsTagging
 
             if (!snapshot.ContentType.IsOfType("code")) yield break;
 
-            // Work through all comment tags associated with the passed spans. Ignore xml doc comments.
+            // Work through all comment tags associated with the passed spans. Ignore xml docs.
             foreach (var tagSpan in tagAggregator.GetTags(spans).Where(m => IsComment(m.Tag) && !IsXmlDoc(m.Tag)))
             {
                 // Get all the spans associated with the current tag, mapped to our snapshot
@@ -147,33 +149,32 @@ namespace BetterComments.CommentsTagging
 
             if (comment.StartsWith("'") || comment.StartsWith("#"))
                 return comment.Substring(1, comment.Length - 1);
-
+            
             if (comment.StartsWith("<!--"))
                 return comment.Substring(4, comment.Length - 4);
 
             return comment;
         }
-        private static CommentType GetCommentType(string trimmedComment)
-        {
-            //! double comment = crossed comment
-            if (trimmedComment.StartsWithAnyOf(singleLineCommentStarters))
-                return CommentType.Crossed;
-
-            if (IsTaskComment(trimmedComment))
-                return CommentType.Task;
-
-            //! there must be an empty space between the token place and the rest of the comment.
-            return trimmedComment[0] != ' ' && trimmedComment[1] == ' '
-                 ? ConvertToCommentType(trimmedComment[0].ToString())
-                 : CommentType.Normal;
-        }
-
         private static bool IsTaskComment(string trimmedComment)
         {
             return trimmedComment.Length > 4
                    && trimmedComment.IndexOf("todo", 0, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
+        private static CommentType GetCommentType(string trimmedComment)
+        {
+            // double comment = crossed comment
+            if (trimmedComment.StartsWithAnyOf(singleLineCommentStarters))
+                return CommentType.Crossed;
+
+            if (IsTaskComment(trimmedComment))
+                return CommentType.Task;
+
+            // there must be an empty space between the token place and the rest of the comment.
+            return trimmedComment[0] != ' ' && trimmedComment[1] == ' '
+                 ? ConvertToCommentType(trimmedComment[0].ToString())
+                 : CommentType.Normal;
+        }
         private static CommentType ConvertToCommentType(string token)
         {
             switch (token)
@@ -191,12 +192,7 @@ namespace BetterComments.CommentsTagging
                     return CommentType.Normal;
             }
         }
-
-        private static TagSpan<ClassificationTag> BuildTagSpan(ClassificationTag classificationTag, SnapshotSpan span)
-        {
-            return new TagSpan<ClassificationTag>(span, classificationTag);
-        }
-
+        
         private ClassificationTag BuildClassificationTag(CommentType commentType)
         {
             switch (commentType)
@@ -219,6 +215,11 @@ namespace BetterComments.CommentsTagging
                 default:
                     throw new ArgumentException(@"Invalid comment type!", nameof(commentType), null);
             }
+        }
+
+        private static TagSpan<ClassificationTag> BuildTagSpan(ClassificationTag classificationTag, SnapshotSpan span)
+        {
+            return new TagSpan<ClassificationTag>(span, classificationTag);
         }
 
         public void Dispose()
