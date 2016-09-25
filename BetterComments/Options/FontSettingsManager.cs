@@ -37,6 +37,7 @@ namespace BetterComments.Options
                 settingsStore.SetBoolean(COLLECTION_PATH, nameof(FontSettings.Italic), CurrentSettings.Italic);
                 settingsStore.SetString(COLLECTION_PATH, nameof(FontSettings.Opacity), CurrentSettings.Opacity.ToString(CultureInfo.InvariantCulture));
                 settingsStore.SetBoolean(COLLECTION_PATH, nameof(FontSettings.HighlightKeywordsOnly), CurrentSettings.HighlightKeywordsOnly);
+                settingsStore.SetBoolean(COLLECTION_PATH, nameof(FontSettings.UnderlineImportantComments), CurrentSettings.UnderlineImportantComments);
 
                 SettingsSaved?.Invoke(null, EventArgs.Empty);
             }
@@ -78,6 +79,10 @@ namespace BetterComments.Options
                 if(settingsStore.PropertyExists(COLLECTION_PATH, nameof(FontSettings.HighlightKeywordsOnly)))
                     CurrentSettings.HighlightKeywordsOnly = settingsStore.GetBoolean(COLLECTION_PATH, 
                         nameof(FontSettings.HighlightKeywordsOnly));
+
+                if (settingsStore.PropertyExists(COLLECTION_PATH, nameof(FontSettings.UnderlineImportantComments)))
+                    CurrentSettings.UnderlineImportantComments = settingsStore.GetBoolean(COLLECTION_PATH, 
+                        nameof(FontSettings.UnderlineImportantComments));
 
             }
             catch (Exception ex)

@@ -16,6 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80"/>
@@ -122,6 +123,21 @@
                       IsChecked="{Binding HighlightKeywordsOnly, Mode=TwoWay}" />
 
             <Label Content="Color only the keyword (Task Comments)"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center">
+            </Label>
+        </StackPanel> 
+        
+        <!--! Underline Important Comments-->
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="5"
+                    Grid.Column="1">
+
+            <CheckBox x:Name="UnderlineImportantCommentsCheckBox"
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding UnderlineImportantComments, Mode=TwoWay}" />
+
+            <Label Content="Underline Important Comments"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center">
             </Label>

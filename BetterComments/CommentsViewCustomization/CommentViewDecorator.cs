@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using BetterComments.CommentsClassification;
 using BetterComments.CommentsTagging;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
@@ -114,7 +115,10 @@ namespace BetterComments.CommentsViewCustomization
 
             if (settings.Opacity >= 0.1 && settings.Opacity <= 1)
                 properties = properties.SetForegroundOpacity(settings.Opacity);
-            
+
+            if (settings.UnderlineImportantComments && classificationType.IsOfType(CommentNames.IMPORTANT_COMMENT))
+                properties = properties.SetTextDecorations(TextDecorations.Underline);
+
             formatMap.SetTextProperties(classificationType, properties);
         }
 

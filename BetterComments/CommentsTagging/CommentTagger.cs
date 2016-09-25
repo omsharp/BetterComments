@@ -91,7 +91,8 @@ namespace BetterComments.CommentsTagging
 
                             lengthOffset = startOffset + 3;
                         }
-                        
+
+
                         // build the final result here
                         result = BuildTagSpan(classificationTag, BuildSnapshotSpan(span, startOffset, lengthOffset, commentType));
                     }
@@ -186,7 +187,7 @@ namespace BetterComments.CommentsTagging
                  ? ConvertToCommentType(trimmedComment[0].ToString())
                  : CommentType.Normal;
         }
-
+        
         private static CommentType ConvertToCommentType(string token)
         {
             switch (token)

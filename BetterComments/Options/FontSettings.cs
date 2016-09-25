@@ -11,6 +11,7 @@ namespace BetterComments.Options
         private double size;
         private double opacity;
         private bool highlightKeywordsesOnly;
+        private bool underlineImportantComments;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -69,6 +70,17 @@ namespace BetterComments.Options
             {
                 if (value == highlightKeywordsesOnly) return;
                 highlightKeywordsesOnly = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool UnderlineImportantComments
+        {
+            get { return underlineImportantComments; }
+            set
+            {
+                if (value == underlineImportantComments) return;
+                underlineImportantComments = value;
                 OnPropertyChanged();
             }
         }

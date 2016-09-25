@@ -13,7 +13,7 @@ namespace BetterComments.CommentsClassification
         [Name(CommentNames.IMPORTANT_COMMENT)]
         [BaseDefinition("Comment")]
         internal static ClassificationTypeDefinition ImportantCommentDefinition;
-
+        
         [Export]
         [Name(CommentNames.QUESTION_COMMENT)]
         [BaseDefinition("Comment")]
