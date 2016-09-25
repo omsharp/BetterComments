@@ -88,6 +88,16 @@ Single-line delimited comments (**Works in C#, F#, C/C++, and JavaScript**)
 
 ![Options](screenshots/OpacitySample.png)
 
+- You can choose to color the "Todo" keyword only instead of the whole task comment.
+
+![Options](screenshots/HighlightOnlyKeywordSample.png)
+
+- You can choose to underline the important comments 
+  
+Note: this feature doesn't look perfect with multiline comments, yet! Something to fix in the future. 
+
+![Options](screenshots/UnderlineSample.png)
+
 
 ## Contribute
 Check out the [contribution guidelines](CONTRIBUTING.md)

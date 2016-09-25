@@ -1,8 +1,16 @@
 # Roadmap
 
-- [ ] Font Options preview
+- [ ] Font Options preview.
+- [ ] Fix the multiline underlined important comments issue.
 
 # Changelog
+
+## 1.3
+
+**2016-09-26**
+
+- [x] Added an option to color only the "Todo" keyword instread of the whole task comment.
+- [x] Added an option to underline important comments.
 
 ## 1.2
 

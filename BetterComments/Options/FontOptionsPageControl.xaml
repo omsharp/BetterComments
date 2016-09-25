@@ -122,7 +122,7 @@
                       VerticalAlignment="Center"
                       IsChecked="{Binding HighlightKeywordsOnly, Mode=TwoWay}" />
 
-            <Label Content="Color only the keyword (Task Comments)"
+            <Label Content="Color only the 'Todo' keyword (Task Comments)"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center">
             </Label>
