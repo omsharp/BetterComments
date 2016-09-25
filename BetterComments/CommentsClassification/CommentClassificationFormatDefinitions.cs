@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using System.Windows.Documents;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 

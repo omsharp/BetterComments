@@ -10,6 +10,7 @@ namespace BetterComments.Options
         private bool italic;
         private double size;
         private double opacity;
+        private bool highlightKeywordsesOnly;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -57,6 +58,17 @@ namespace BetterComments.Options
             {
                 if (value.Equals(opacity)) return;
                 opacity = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool HighlightKeywordsOnly
+        {
+            get { return highlightKeywordsesOnly; }
+            set
+            {
+                if (value == highlightKeywordsesOnly) return;
+                highlightKeywordsesOnly = value;
                 OnPropertyChanged();
             }
         }

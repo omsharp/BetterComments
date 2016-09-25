@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300"
-             Background="Transparent" 
+             Background="White" 
              Width="400">
 
     <Grid Margin="16,10,0,0">
@@ -15,9 +15,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="80"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
@@ -33,6 +34,7 @@
                   Grid.Column="1" 
                   HorizontalAlignment="Left" 
                   Width="300"
+                  Margin="0 5"
                   SelectedItem="{Binding Font, Mode=TwoWay}"/>
 
         <!--! Size -->
@@ -80,7 +82,7 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     Margin="0 5">
-           
+
             <Slider x:Name="OpacityeValueSlider"
                             Minimum="0"
                             Maximum="1"
@@ -97,17 +99,33 @@
         </StackPanel>
 
         <!--! Italic -->
-        <Label Grid.Row="3" 
-               Grid.Column="0" 
-               Content="Italic :" 
-               HorizontalAlignment="Right" 
-               VerticalAlignment="Center"/>
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="3"
+                    Grid.Column="1">
 
-        <CheckBox x:Name="ItalicCheckBox" 
-                  Grid.Row="3" 
-                  Grid.Column="1" 
-                  VerticalAlignment="Center" 
-                  IsChecked="{Binding Italic, Mode=TwoWay}"/>
+            <CheckBox x:Name="ItalicCheckBox"
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding Italic, Mode=TwoWay}" />
+
+            <Label Content="Italic"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!--! Highlight Keywords Only -->
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="4"
+                    Grid.Column="1">
+
+            <CheckBox x:Name="HighlightKeywordsOnlyCheckBox"
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding HighlightKeywordsOnly, Mode=TwoWay}" />
+
+            <Label Content="Color only the keyword (Task Comments)"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center">
+            </Label>
+        </StackPanel>
 
     </Grid>
 </UserControl>

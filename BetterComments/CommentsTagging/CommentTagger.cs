@@ -5,6 +5,7 @@ using BetterComments.CommentsClassification;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
+using BetterComments.Options;
 
 namespace BetterComments.CommentsTagging
 {
@@ -63,38 +64,54 @@ namespace BetterComments.CommentsTagging
                             continue; // Don't bother processing imature comments.
 
                         var trimmedComment = RemoveCommentStarter(commentText);
-                        var startIndex = GetStartIndex(trimmedComment, commentStarter.Length);
-                        var classificationTag = BuildClassificationTag(GetCommentType(trimmedComment));
+                        var commentType = GetCommentType(trimmedComment);
+                        var startOffset = ComputeSpanStartOffset(trimmedComment, commentStarter.Length);
+                        var classificationTag = BuildClassificationTag(commentType);
+
+                        var lengthOffset = 0;
 
                         if (singleLineCommentStarters.Contains(commentStarter)) //! Single-line comment.
                         {
-                            result = BuildTagSpan(classificationTag, BuildSnapshotSpan(span, startIndex, startIndex));
+                            lengthOffset = startOffset;
                         }
                         else if (delimitedCommentStarters.Contains(commentStarter)) //! Delimited comment.
                         {
                             if (!commentText.EndsWith(delimitedCommentEnders[commentStarter]))
-                                continue; // Comment span is not complete. Multiline comments are ignored. Except in C#.
+                                continue; // Comment span is not complete. Multiline comments are ignored, except in C#.
 
-                            result = BuildTagSpan(classificationTag, BuildSnapshotSpan(span, startIndex, startIndex + 2));
+                            lengthOffset = startOffset + 2;
                         }
                         else if (commentStarter.Equals("<!--")) //! Hey, look! It's a markup comment!
                         {
                             if (!commentText.EndsWith("-->"))
                                 continue; // Comment span is not complete. Markup multiline comments are ignored.
-                            
+
                             if (classificationTag.ClassificationType.Classification == "comment")
                                 continue; // Normal markup comments are ignored so their foreground color won't be overridden.
 
-                            result = BuildTagSpan(classificationTag, BuildSnapshotSpan(span, startIndex, startIndex + 3));
+                            lengthOffset = startOffset + 3;
                         }
+                        
+                        // build the final result here
+                        result = BuildTagSpan(classificationTag, BuildSnapshotSpan(span, startOffset, lengthOffset, commentType));
                     }
                     catch (Exception) { /*Ignore*/ } //? Not sure if it's a good idea!
 
-                    if (result == null) yield break;
+                    if (result == null)
+                        yield break;
 
                     yield return result;
                 }
             }
+        }
+
+
+        private static SnapshotSpan BuildSnapshotSpan(SnapshotSpan span, int startOffset, int lengthOffset, CommentType commentType)
+        {
+            if (FontSettingsManager.CurrentSettings.HighlightKeywordsOnly && commentType == CommentType.Task)
+                return new SnapshotSpan(span.Snapshot, span.Start + startOffset, 4);
+
+            return new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - lengthOffset);
         }
 
         private static bool IsComment(IClassificationTag tag)
@@ -106,12 +123,6 @@ namespace BetterComments.CommentsTagging
         {
             return tag.ClassificationType.Classification.ContainsCaseIgnored("doc");
         }
-
-        private static SnapshotSpan BuildSnapshotSpan(SnapshotSpan span, int startOffset, int lengthOffset)
-        {
-            return new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - lengthOffset);
-        }
-
         private static string GetCommentStarter(string comment)
         {
             var result = comment.StartsWithOneOf(singleLineCommentStarters);
@@ -130,7 +141,7 @@ namespace BetterComments.CommentsTagging
             return string.Empty;
         }
 
-        private static int GetStartIndex(string trimmedComment, int commentStarterLength)
+        private static int ComputeSpanStartOffset(string trimmedComment, int commentStarterLength)
         {
             if (trimmedComment.StartsWith("//"))
                 return 4;
@@ -149,7 +160,7 @@ namespace BetterComments.CommentsTagging
 
             if (comment.StartsWith("'") || comment.StartsWith("#"))
                 return comment.Substring(1, comment.Length - 1);
-            
+
             if (comment.StartsWith("<!--"))
                 return comment.Substring(4, comment.Length - 4);
 
@@ -175,6 +186,7 @@ namespace BetterComments.CommentsTagging
                  ? ConvertToCommentType(trimmedComment[0].ToString())
                  : CommentType.Normal;
         }
+
         private static CommentType ConvertToCommentType(string token)
         {
             switch (token)
@@ -192,7 +204,7 @@ namespace BetterComments.CommentsTagging
                     return CommentType.Normal;
             }
         }
-        
+
         private ClassificationTag BuildClassificationTag(CommentType commentType)
         {
             switch (commentType)

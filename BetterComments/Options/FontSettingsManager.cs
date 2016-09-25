@@ -36,7 +36,8 @@ namespace BetterComments.Options
                 settingsStore.SetString(COLLECTION_PATH, nameof(FontSettings.Size), CurrentSettings.Size.ToString(CultureInfo.InvariantCulture));
                 settingsStore.SetBoolean(COLLECTION_PATH, nameof(FontSettings.Italic), CurrentSettings.Italic);
                 settingsStore.SetString(COLLECTION_PATH, nameof(FontSettings.Opacity), CurrentSettings.Opacity.ToString(CultureInfo.InvariantCulture));
-                
+                settingsStore.SetBoolean(COLLECTION_PATH, nameof(FontSettings.HighlightKeywordsOnly), CurrentSettings.HighlightKeywordsOnly);
+
                 SettingsSaved?.Invoke(null, EventArgs.Empty);
             }
             catch (Exception ex)
@@ -73,6 +74,11 @@ namespace BetterComments.Options
                     double.TryParse(str, out opacity);
                     CurrentSettings.Opacity = opacity ;
                 }
+
+                if(settingsStore.PropertyExists(COLLECTION_PATH, nameof(FontSettings.HighlightKeywordsOnly)))
+                    CurrentSettings.HighlightKeywordsOnly = settingsStore.GetBoolean(COLLECTION_PATH, 
+                        nameof(FontSettings.HighlightKeywordsOnly));
+
             }
             catch (Exception ex)
             {
