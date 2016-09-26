@@ -19,7 +19,7 @@
 
 **2016-09-25**
 
-- [x] Added an option to color only the "Todo" keyword instread of the whole task comment.
+- [x] Added an option to color only the "TODO" keyword instead of the whole task comment.
 - [x] Added an option to underline important comments.
 
 
