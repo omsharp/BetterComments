@@ -1,8 +1,8 @@
 ## Things to look into
 
-- [ ] Font options preview pane. That would be a nice touch to have.
+- [ ] Add a preview pane in the options page. That would be a nice touch to have.
 - [ ] Multiline comments don't look good with Strikethough or Underline decorations.
-- [ ] Decoration doesn't apply on collapsed XML comments.
+- [ ] Font options are not applied on collapsed XML comments.
 
 ---
 
