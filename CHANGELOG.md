@@ -1,7 +1,8 @@
 ## Things to look into
 
-- [ ] Font Options preview.
-- [ ] Fix the multiline underlined important comments issue.
+- [ ] Font options preview pane. That would be a nice touch to have.
+- [ ] Multiline comments don't look good with Strikethough or Underline decorations.
+- [ ] Decoration doesn't apply on collapsed XML comments.
 
 ---
 
@@ -16,7 +17,7 @@
 
 ### 1.3
 
-**2016-09-26**
+**2016-09-25**
 
 - [x] Added an option to color only the "Todo" keyword instread of the whole task comment.
 - [x] Added an option to underline important comments.
