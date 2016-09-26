@@ -1,32 +1,42 @@
-# Roadmap
+## Things to look into
 
 - [ ] Font Options preview.
 - [ ] Fix the multiline underlined important comments issue.
 
-# Changelog
+---
 
-## 1.3
+## Changelog
+
+### 1.4
+
+**2016-09-26**
+
+- [x] Bug fix.
+
+
+### 1.3
 
 **2016-09-26**
 
 - [x] Added an option to color only the "Todo" keyword instread of the whole task comment.
 - [x] Added an option to underline important comments.
 
-## 1.2
+
+### 1.2
 
 **2016-09-24**
 
 - [x] Used slider controls for Size and Opacity instead of the ugly combobox.
 
 
-## 1.1
+### 1.1
 
 **2016-05-28**
 
 - [x] Fixed the Italic option issue. It works properly now.
 
 
-## 1.0
+### 1.0
 
 **2016-05-18**
 
