@@ -24,7 +24,7 @@ namespace BetterComments.CommentsTagging
         {
             if (string.IsNullOrWhiteSpace(text) || startIndex > text.Length || string.IsNullOrWhiteSpace(value))
                 return false;
-
+            
             return text.IndexOf(value, startIndex, comparison) == startIndex;
         }
 

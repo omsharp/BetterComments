@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using BetterComments.CommentsClassification;
-using BetterComments.CommentsTagging;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using BetterComments.Options;
@@ -116,8 +115,8 @@ namespace BetterComments.CommentsViewCustomization
             if (settings.Opacity >= 0.1 && settings.Opacity <= 1)
                 properties = properties.SetForegroundOpacity(settings.Opacity);
 
-            if (settings.UnderlineImportantComments && classificationType.IsOfType(CommentNames.IMPORTANT_COMMENT))
-                properties = properties.SetTextDecorations(TextDecorations.Underline);
+            if (classificationType.IsOfType(CommentNames.IMPORTANT_COMMENT))
+                properties = properties.SetTextDecorations(GetTextDecoration(settings));
 
             formatMap.SetTextProperties(classificationType, properties);
         }
@@ -125,6 +124,13 @@ namespace BetterComments.CommentsViewCustomization
         private double GetEditorTextSize()
         {
             return formatMap.GetTextProperties(registryService.GetClassificationType("text")).FontRenderingEmSize;
+        }
+
+        private TextDecorationCollection GetTextDecoration(FontSettings settings)
+        {
+            return settings.UnderlineImportantComments
+                       ? new TextDecorationCollection { TextDecorations.Underline }
+                       : new TextDecorationCollection();
         }
     }
 }
