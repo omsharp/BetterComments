@@ -12,7 +12,7 @@ namespace BetterComments.CommentsTagging
     [TagType(typeof(ClassificationTag))]
     internal class CommentTaggerProvider : IViewTaggerProvider
     {
-
+        
 #pragma warning disable 0649
         [Import]
         internal IClassificationTypeRegistryService ClassificationRegistry;

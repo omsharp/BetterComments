@@ -105,8 +105,7 @@ namespace BetterComments.CommentsTagging
                 }
             }
         }
-
-
+        
         private static SnapshotSpan BuildSnapshotSpan(SnapshotSpan span, int startOffset, int lengthOffset, CommentType commentType)
         {
             if (FontSettingsManager.CurrentSettings.HighlightKeywordsOnly && commentType == CommentType.Task)
