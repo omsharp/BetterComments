@@ -5,14 +5,14 @@
 // ------------------------------------------------------------------------------
 namespace BetterComments
 {
-    static class Vsix
-    {
-        public const string Id = "BetterComments.Omar Rwemi.e985519f-8696-40b7-9400-807054b4ec76";
-        public const string Name = "Better Comments";
-        public const string Description = @"Better Comments is a Visual Studio extension that gives you the ability to customize the font and opacity of your comments independently of the editor's font settings. It also adds four additional comment classifications, each classification with its own customizable foreground.";
-        public const string Language = "en-US";
-        public const string Version = "1.5";
-        public const string Author = "Omar Rwemi";
-        public const string Tags = "Better, Comments, Italic, Bold, Opacity, Font, Size, Categorize, Color, Colorize";
-    }
+   static class Vsix
+   {
+      public const string Id = "BetterComments.Omar Rwemi.e985519f-8696-40b7-9400-807054b4ec76";
+      public const string Name = "Better Comments";
+      public const string Description = @"Better Comments is a Visual Studio extension that gives you the ability to customize the font and opacity of your comments independently of the editor's font settings. It also adds four additional comment classifications, each classification with its own customizable foreground.";
+      public const string Language = "en-US";
+      public const string Version = "1.6";
+      public const string Author = "Omar Rwemi";
+      public const string Tags = "Better, Comments, Italic, Bold, Opacity, Font, Size, Categorize, Color, Colorize";
+   }
 }

@@ -30,17 +30,17 @@ namespace BetterComments.CommentsTagging
         private static readonly Dictionary<string, string> delimitedCommentEnders
             = new Dictionary<string, string> { { "/*", "*/" }, { "(*", "*)" } };
 
-        public CommentTagger(IClassificationTypeRegistryService classificationRegistry,
-                             ITagAggregator<IClassificationTag> tagAggregator)
+        public CommentTagger(IClassificationTypeRegistryService reg,
+                              ITagAggregator<IClassificationTag> agg)
         {
-            this.classificationRegistry = classificationRegistry;
-            this.tagAggregator = tagAggregator;
+            this.classificationRegistry = reg;
+            this.tagAggregator = agg;
         }
 
 #pragma warning disable 0067
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 #pragma warning restore 0067
-
+        
         public IEnumerable<ITagSpan<ClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
             var snapshot = spans[0].Snapshot;
@@ -108,7 +108,7 @@ namespace BetterComments.CommentsTagging
         
         private static SnapshotSpan BuildSnapshotSpan(SnapshotSpan span, int startOffset, int lengthOffset, CommentType commentType)
         {
-            if (FontSettingsManager.CurrentSettings.HighlightKeywordsOnly && commentType == CommentType.Task)
+            if (SettingsManager.CurrentSettings.HighlightKeywordsOnly && commentType == CommentType.Task)
                 return new SnapshotSpan(span.Snapshot, span.Start + startOffset, 4);
 
             return new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - lengthOffset);
