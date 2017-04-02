@@ -31,13 +31,13 @@ namespace BetterComments.Options
             if (!settingsStore.CollectionExists(COLLECTION_PATH))
                settingsStore.CreateCollection(COLLECTION_PATH);
 
-            settingsStore.SetString(COLLECTION_PATH, nameof(Settings.Font), CurrentSettings.Font);
-            settingsStore.SetString(COLLECTION_PATH, nameof(Settings.Size), CurrentSettings.Size.ToString(CultureInfo.InvariantCulture));
-            settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.Italic), CurrentSettings.Italic);
-            settingsStore.SetString(COLLECTION_PATH, nameof(Settings.Opacity), CurrentSettings.Opacity.ToString(CultureInfo.InvariantCulture));
-            settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.HighlightKeywordsOnly), CurrentSettings.HighlightKeywordsOnly);
-            settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.UnderlineImportantComments), CurrentSettings.UnderlineImportantComments);
-
+            settingsStore.SetString(COLLECTION_PATH, nameof(Settings.Font), settings.Font);
+            settingsStore.SetString(COLLECTION_PATH, nameof(Settings.Size), settings.Size.ToString(CultureInfo.InvariantCulture));
+            settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.Italic), settings.Italic);
+            settingsStore.SetString(COLLECTION_PATH, nameof(Settings.Opacity), settings.Opacity.ToString(CultureInfo.InvariantCulture));
+            settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.HighlightKeywordsOnly), settings.HighlightKeywordsOnly);
+            settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.UnderlineImportantComments), settings.UnderlineImportantComments);
+            
             CurrentSettings.Copy(settings);
 
             SettingsSaved?.Invoke(null, EventArgs.Empty);
@@ -47,7 +47,7 @@ namespace BetterComments.Options
             Debug.Fail(ex.Message);
          }
       }
-
+      
       private static void Load()
       {
          try

@@ -14,9 +14,9 @@ namespace BetterComments.Options
          FontsComboBox.ItemsSource = GetInstalledFonts();
       }
 
-      public void SetDataContext(Settings settings)
+      public void Refresh()
       {
-         Settings.Copy(settings);
+         Settings.Copy(SettingsManager.CurrentSettings);
          DataContext = Settings;
       }
 

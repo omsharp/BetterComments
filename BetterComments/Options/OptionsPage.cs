@@ -19,7 +19,7 @@ namespace BetterComments.Options
 
       protected override void OnActivate(CancelEventArgs e)
       {
-         pageControl.SetDataContext(SettingsManager.CurrentSettings);
+         pageControl.Refresh();
 
          base.OnActivate(e);
       }
