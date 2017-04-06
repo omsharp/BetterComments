@@ -77,7 +77,6 @@
                Content="Opacity :" 
                HorizontalAlignment="Right" />
 
-
         <StackPanel Grid.Row="2" 
                     Grid.Column="1" 
                     Orientation="Horizontal"

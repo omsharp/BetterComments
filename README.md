@@ -7,12 +7,11 @@ It also adds four additional comment classifications, each classification with i
 [![Build status](https://ci.appveyor.com/api/projects/status/04caiutue4j1hq9d?svg=true)](https://ci.appveyor.com/project/omsharp/bettercomments)
 
 <!-- Update the VS Gallery link after you upload the VSIX-->
-Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/2856358f-a098-4237-b044-260443c9a303).
+Download this extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=OmarRwemi.BetterComments).
 
-See the [changelog](CHANGELOG.md) for changes and roadmap.
+Download the latest build from [VSIX Gallery](http://vsixgallery.com/extension/BetterComments.Omar%20Rwemi.e985519f-8696-40b7-9400-807054b4ec76/).
 
 ---------------------------------------
-
 
 ## Features
 
@@ -21,7 +20,9 @@ See the [changelog](CHANGELOG.md) for changes and roadmap.
 - Customize the font settings and opacity of your comments.
 - Works with C#, F#, VB.NET, C/C++, JavaScript, Python, HTML, and XAML.
 
-#### Comment Classifications
+<br>
+
+### Comment Classifications
 
 - Use '!' for Important.
 - Use '?' for Question.
@@ -52,7 +53,9 @@ Single-line delimited comments (**Works in C#, F#, C/C++, and JavaScript**)
 
 ![Sample1](screenshots/ClassificationDelimited.png)
 
-#### Custom Foreground Color for each Classification 
+<br>
+
+### Custom Foreground Color for each Classification 
 
 - You can set each comment classification foreground color to whatever you like.
 
@@ -63,12 +66,13 @@ Single-line delimited comments (**Works in C#, F#, C/C++, and JavaScript**)
 
 ![Sample1](screenshots/CommentsColors.png)
 
+<br>
 
-#### Independent Font Settings
+### Independent Font Settings
 
 - You can change the comments font settings without affecting the editor's font settings.
 
-   Go to Tools => Options => Better Comments => Font Options
+   Go to Tools -> Options -> Better Comments -> Font Options
 
 ![Options](screenshots/Options.png)
 
@@ -99,9 +103,15 @@ Note: this feature doesn't look perfect with multiline comments, yet! Something 
 ![Options](screenshots/UnderlineSample.png)
 
 
+<br>
+
 ## Contribute
-Check out the [contribution guidelines](CONTRIBUTING.md)
+- Check out the [contribution guidelines](CONTRIBUTING.md)
 if you want to contribute to this project.
+
+- See the [changelog](CHANGELOG.md) for changes and roadmap.
+
+<br>
 
 ## License
 [Apache 2.0](LICENSE)
