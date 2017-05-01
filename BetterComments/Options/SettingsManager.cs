@@ -35,9 +35,9 @@ namespace BetterComments.Options
             settingsStore.SetString(COLLECTION_PATH, nameof(Settings.Size), settings.Size.ToString(CultureInfo.InvariantCulture));
             settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.Italic), settings.Italic);
             settingsStore.SetString(COLLECTION_PATH, nameof(Settings.Opacity), settings.Opacity.ToString(CultureInfo.InvariantCulture));
-            settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.HighlightKeywordsOnly), settings.HighlightKeywordsOnly);
+            settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.HighlightTaskKeywordOnly), settings.HighlightTaskKeywordOnly);
             settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.UnderlineImportantComments), settings.UnderlineImportantComments);
-            
+
             CurrentSettings.Copy(settings);
 
             SettingsSaved?.Invoke(null, EventArgs.Empty);
@@ -47,7 +47,7 @@ namespace BetterComments.Options
             Debug.Fail(ex.Message);
          }
       }
-      
+
       private static void Load()
       {
          try
@@ -75,9 +75,9 @@ namespace BetterComments.Options
                CurrentSettings.Opacity = opacity;
             }
 
-            if (settingsStore.PropertyExists(COLLECTION_PATH, nameof(Settings.HighlightKeywordsOnly)))
-               CurrentSettings.HighlightKeywordsOnly = settingsStore.GetBoolean(COLLECTION_PATH,
-                   nameof(Settings.HighlightKeywordsOnly));
+            if (settingsStore.PropertyExists(COLLECTION_PATH, nameof(Settings.HighlightTaskKeywordOnly)))
+               CurrentSettings.HighlightTaskKeywordOnly = settingsStore.GetBoolean(COLLECTION_PATH,
+                   nameof(Settings.HighlightTaskKeywordOnly));
 
             if (settingsStore.PropertyExists(COLLECTION_PATH, nameof(Settings.UnderlineImportantComments)))
                CurrentSettings.UnderlineImportantComments = settingsStore.GetBoolean(COLLECTION_PATH,

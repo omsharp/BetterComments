@@ -28,7 +28,7 @@ namespace BetterComments.Options
       {
          if (e.ApplyBehavior == ApplyKind.Apply)
             SettingsManager.Save(pageControl.Settings);
-         
+
          base.OnApply(e);
       }
    }

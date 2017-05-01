@@ -10,7 +10,7 @@ namespace BetterComments.Options
       private double size = 0;
       private double opacity = 1;
       private bool italic = false;
-      private bool highlightKeywordsesOnly = false;
+      private bool highlightTaskKeywordOnly = false;
       private bool underlineImportantComments = false;
 
       public event PropertyChangedEventHandler PropertyChanged;
@@ -63,13 +63,13 @@ namespace BetterComments.Options
          }
       }
 
-      public bool HighlightKeywordsOnly
+      public bool HighlightTaskKeywordOnly
       {
-         get { return highlightKeywordsesOnly; }
+         get { return highlightTaskKeywordOnly; }
          set
          {
-            if (value == highlightKeywordsesOnly) return;
-            highlightKeywordsesOnly = value;
+            if (value == highlightTaskKeywordOnly) return;
+            highlightTaskKeywordOnly = value;
             OnPropertyChanged();
          }
       }
@@ -91,7 +91,7 @@ namespace BetterComments.Options
          Size = source.Size;
          Italic = source.Italic;
          Opacity = source.Opacity;
-         HighlightKeywordsOnly = source.HighlightKeywordsOnly;
+         HighlightTaskKeywordOnly = source.HighlightTaskKeywordOnly;
          UnderlineImportantComments = source.UnderlineImportantComments;
       }
 
