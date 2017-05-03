@@ -12,6 +12,7 @@ namespace BetterComments.Options
       private bool italic = false;
       private bool highlightTaskKeywordOnly = false;
       private bool underlineImportantComments = false;
+      private bool disableStrikethrough = false;
 
       public event PropertyChangedEventHandler PropertyChanged;
       
@@ -84,6 +85,17 @@ namespace BetterComments.Options
             OnPropertyChanged();
          }
       }
+      
+      public bool DisableStrikethrough
+      {
+         get { return disableStrikethrough; }
+         set
+         {
+            if (value == disableStrikethrough) return;
+            disableStrikethrough = value;
+            OnPropertyChanged();
+         }
+      }
 
       public void Copy(Settings source)
       {
@@ -93,6 +105,7 @@ namespace BetterComments.Options
          Opacity = source.Opacity;
          HighlightTaskKeywordOnly = source.HighlightTaskKeywordOnly;
          UnderlineImportantComments = source.UnderlineImportantComments;
+         DisableStrikethrough = source.DisableStrikethrough;
       }
 
       [NotifyPropertyChangedInvocator]

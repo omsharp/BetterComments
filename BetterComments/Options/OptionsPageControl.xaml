@@ -17,6 +17,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80"/>
@@ -137,6 +138,21 @@
                       IsChecked="{Binding UnderlineImportantComments, Mode=TwoWay}" />
 
             <Label Content="Underline Important Comments"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center">
+            </Label>
+        </StackPanel>
+
+        <!--! Underline Important Comments-->
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="6"
+                    Grid.Column="1">
+
+            <CheckBox x:Name="DisableStrikethroughCheckBox"
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding DisableStrikethrough, Mode=TwoWay}" />
+
+            <Label Content="Disable Strikethrough"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Center">
             </Label>

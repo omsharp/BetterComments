@@ -65,6 +65,10 @@ namespace BetterComments.CommentsTagging
 
                   var trimmedComment = RemoveCommentStarter(commentText);
                   var commentType = GetCommentType(trimmedComment);
+
+                  if (commentType == CommentType.Crossed && SettingsManager.CurrentSettings.DisableStrikethrough)
+                     yield break;
+
                   var startOffset = ComputeSpanStartOffset(trimmedComment, commentStarter.Length);
                   var classificationTag = BuildClassificationTag(commentType);
 

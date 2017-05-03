@@ -37,6 +37,7 @@ namespace BetterComments.Options
             settingsStore.SetString(COLLECTION_PATH, nameof(Settings.Opacity), settings.Opacity.ToString(CultureInfo.InvariantCulture));
             settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.HighlightTaskKeywordOnly), settings.HighlightTaskKeywordOnly);
             settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.UnderlineImportantComments), settings.UnderlineImportantComments);
+            settingsStore.SetBoolean(COLLECTION_PATH, nameof(Settings.DisableStrikethrough), settings.DisableStrikethrough);
 
             CurrentSettings.Copy(settings);
 
@@ -82,6 +83,10 @@ namespace BetterComments.Options
             if (settingsStore.PropertyExists(COLLECTION_PATH, nameof(Settings.UnderlineImportantComments)))
                CurrentSettings.UnderlineImportantComments = settingsStore.GetBoolean(COLLECTION_PATH,
                    nameof(Settings.UnderlineImportantComments));
+
+            if (settingsStore.PropertyExists(COLLECTION_PATH, nameof(Settings.DisableStrikethrough)))
+               CurrentSettings.DisableStrikethrough = settingsStore.GetBoolean(COLLECTION_PATH,
+                   nameof(Settings.DisableStrikethrough));
          }
          catch (Exception ex)
          {
