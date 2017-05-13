@@ -65,7 +65,7 @@ namespace BetterComments.CommentsTagging
 
          if (!snapshot.ContentType.IsOfType("code")) yield break;
 
-         // Work through all comment tags associated with the passed spans. Ignore xml docs.
+         // Work through all comment tags associated with the passed spans. Ignore XML docs.
          foreach (var tagSpan in tagAggregator.GetTags(spans).Where(m => IsComment(m.Tag) && !IsXmlDoc(m.Tag)))
          {
             // Get all the spans associated with the current tag, mapped to our snapshot
@@ -85,7 +85,7 @@ namespace BetterComments.CommentsTagging
                   var commentType = GetCommentType(trimmedComment);
 
                   if (commentType == CommentType.Crossed && settings.DisableStrikethrough)
-                     yield break;
+                     continue;
 
                   var startOffset = ComputeSpanStartOffset(trimmedComment, commentStarter.Length);
                   var classificationTag = BuildClassificationTag(commentType);
