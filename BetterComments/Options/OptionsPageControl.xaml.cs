@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.VisualStudio.PlatformUI;
+using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
 

@@ -16,7 +16,7 @@ namespace BetterComments.Options
       {
          get { return pageControl ?? (pageControl = new OptionsPageControl()); }
       }
-
+      
       protected override void OnActivate(CancelEventArgs e)
       {
          SettingsStore.LoadSettings(pageControl.Settings);

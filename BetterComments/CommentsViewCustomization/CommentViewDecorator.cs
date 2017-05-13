@@ -45,7 +45,7 @@ namespace BetterComments.CommentsViewCustomization
 
          formatMap = map;
          regService = service;
-
+         
          Decorate();
       }
 
@@ -108,7 +108,7 @@ namespace BetterComments.CommentsViewCustomization
       private void SetProperties(IClassificationType classificationType)
       {
          //? Might need to benchmark this function for performance.
-
+         
          var properties = formatMap.GetTextProperties(classificationType);
          var fontSize = GetEditorTextSize() + settings.Size;
 
