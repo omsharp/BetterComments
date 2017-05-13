@@ -19,7 +19,7 @@ namespace BetterComments.Options
 
       protected override void OnActivate(CancelEventArgs e)
       {
-         pageControl.Refresh();
+         SettingsStore.LoadSettings(pageControl.Settings);
 
          base.OnActivate(e);
       }
@@ -27,7 +27,7 @@ namespace BetterComments.Options
       protected override void OnApply(PageApplyEventArgs e)
       {
          if (e.ApplyBehavior == ApplyKind.Apply)
-            SettingsManager.Save(pageControl.Settings);
+            SettingsStore.SaveSettings(pageControl.Settings);
 
          base.OnApply(e);
       }

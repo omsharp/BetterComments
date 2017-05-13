@@ -1,165 +1,184 @@
-﻿<UserControl x:Class="BetterComments.Options.OptionsPageControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="300"
-             Width="400">
+﻿<UserControl
+   x:Class="BetterComments.Options.OptionsPageControl"
+   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+   Width="400"
+   d:DesignHeight="300"
+   mc:Ignorable="d">
 
-    <Grid Margin="16,10,0,0">
+   <Grid Margin="16,10,0,0">
 
-        <Grid.RowDefinitions >
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+         <ColumnDefinition Width="80" />
+         <ColumnDefinition />
+      </Grid.ColumnDefinitions>
 
-        <!--! Font -->
-        <Label Grid.Row="0" 
-               Grid.Column="0" 
-               Content="Font :" 
-               HorizontalAlignment="Right" 
-               VerticalAlignment="Center" />
+      <!--! Font-->
+      <Label
+         Grid.Row="0"
+         Grid.Column="0"
+         HorizontalAlignment="Right"
+         VerticalAlignment="Center"
+         Content="Font :" />
 
-        <ComboBox x:Name="FontsComboBox"
-                  BorderBrush="Black"
-                  BorderThickness="1"
-                  Grid.Row="0" 
-                  Grid.Column="1" 
-                  HorizontalAlignment="Left" 
-                  Width="300"
-                  Margin="0 5"
-                  SelectedItem="{Binding Font, Mode=TwoWay}"/>
+      <ComboBox
+         x:Name="FontsComboBox"
+         Grid.Row="0"
+         Grid.Column="1"
+         Width="300"
+         Margin="0,5"
+         HorizontalAlignment="Left"
+         BorderBrush="Black"
+         BorderThickness="1"
+         SelectedItem="{Binding Font, Mode=TwoWay}" />
 
-        <!--! Size -->
-        <Label Grid.Row="1" 
-               Grid.Column="0" 
-               Content="Size Offset :" 
-               HorizontalAlignment="Right" 
-               VerticalAlignment="Center" 
-               Margin="0 22 0 0"/>
+      <!--! Size-->
+      <Label
+         Grid.Row="1"
+         Grid.Column="0"
+         Margin="0,22,0,0"
+         HorizontalAlignment="Right"
+         VerticalAlignment="Center"
+         Content="Size Offset :" />
 
-        <StackPanel Grid.Row="1" 
-                    Grid.Column="1"
-                    HorizontalAlignment="Left"
-                    Margin="0 10 0 0">
+      <StackPanel
+         Grid.Row="1"
+         Grid.Column="1"
+         Margin="0,10,0,0"
+         HorizontalAlignment="Left">
 
-            <Label Content="Relative to the default font size."
-                   Foreground="DarkRed" />
+         <Label Content="Relative to the default font size." Foreground="DarkRed" />
 
-            <StackPanel Orientation="Horizontal">
-                <Slider x:Name="SizeValueSlider"
-                            Minimum="-3"
-                            Maximum="3"
-                            TickFrequency="0.5"
-                            IsSnapToTickEnabled="True"
-                            TickPlacement="BottomRight"
-                            Width="285"
-                            Height="30"
-                            Value="{Binding Size, Mode=TwoWay}" />
+         <StackPanel Orientation="Horizontal">
+            <Slider
+               x:Name="SizeValueSlider"
+               Width="285"
+               Height="30"
+               IsSnapToTickEnabled="True"
+               Maximum="3"
+               Minimum="-3"
+               TickFrequency="0.5"
+               TickPlacement="BottomRight"
+               Value="{Binding Size, Mode=TwoWay}" />
 
-                <TextBlock Text="{Binding Value, ElementName=SizeValueSlider}"
-                               Padding="5 2"
-                               TextAlignment="Center"/>
-            </StackPanel>
+            <TextBlock
+               Padding="5,2"
+               Text="{Binding Value, ElementName=SizeValueSlider}"
+               TextAlignment="Center" />
+         </StackPanel>
 
-        </StackPanel>
+      </StackPanel>
 
 
-        <!--! Opacity -->
-        <Label Grid.Row="2"
-               Grid.Column="0"
-               Content="Opacity :" 
-               HorizontalAlignment="Right" />
+      <!--! Opacity-->
+      <Label
+         Grid.Row="2"
+         Grid.Column="0"
+         HorizontalAlignment="Right"
+         Content="Opacity :" />
 
-        <StackPanel Grid.Row="2" 
-                    Grid.Column="1" 
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Left"
-                    Margin="0 5">
+      <StackPanel
+         Grid.Row="2"
+         Grid.Column="1"
+         Margin="0,5"
+         HorizontalAlignment="Left"
+         Orientation="Horizontal">
 
-            <Slider x:Name="OpacityeValueSlider"
-                            Minimum="0"
-                            Maximum="1"
-                            TickFrequency="0.1"
-                            IsSnapToTickEnabled="True"
-                            TickPlacement="BottomRight"
-                            Width="285"
-                            Height="30"
-                            Value="{Binding Opacity, Mode=TwoWay}" />
+         <Slider
+            x:Name="OpacityeValueSlider"
+            Width="285"
+            Height="30"
+            IsSnapToTickEnabled="True"
+            Maximum="1"
+            Minimum="0"
+            TickFrequency="0.1"
+            TickPlacement="BottomRight"
+            Value="{Binding Opacity, Mode=TwoWay}" />
 
-            <TextBlock Text="{Binding Value, ElementName=OpacityeValueSlider}"
-                               Padding="5 2"
-                               TextAlignment="Center"/>
-        </StackPanel>
+         <TextBlock
+            Padding="5,2"
+            Text="{Binding Value, ElementName=OpacityeValueSlider}"
+            TextAlignment="Center" />
+      </StackPanel>
 
-        <!--! Italic -->
-        <StackPanel Orientation="Horizontal"
-                    Grid.Row="3"
-                    Grid.Column="1">
+      <!--! Italic-->
+      <StackPanel
+         Grid.Row="3"
+         Grid.Column="1"
+         Orientation="Horizontal">
 
-            <CheckBox x:Name="ItalicCheckBox"
-                      VerticalAlignment="Center"
-                      IsChecked="{Binding Italic, Mode=TwoWay}" />
+         <CheckBox
+            x:Name="ItalicCheckBox"
+            VerticalAlignment="Center"
+            IsChecked="{Binding Italic, Mode=TwoWay}" />
 
-            <Label Content="Italic"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center"/>
-        </StackPanel>
+         <Label
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Content="Italic" />
+      </StackPanel>
 
-        <!--! Highlight Keywords Only -->
-        <StackPanel Orientation="Horizontal"
-                    Grid.Row="4"
-                    Grid.Column="1">
+      <!--! Highlight Keywords Only-->
+      <StackPanel
+         Grid.Row="4"
+         Grid.Column="1"
+         Orientation="Horizontal">
 
-            <CheckBox x:Name="HighlightKeywordsOnlyCheckBox"
-                      VerticalAlignment="Center"
-                      IsChecked="{Binding HighlightTaskKeywordOnly, Mode=TwoWay}" />
+         <CheckBox
+            x:Name="HighlightKeywordsOnlyCheckBox"
+            VerticalAlignment="Center"
+            IsChecked="{Binding HighlightTaskKeywordOnly, Mode=TwoWay}" />
 
-            <Label Content="Color only the 'Todo' keyword (Task Comments)"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center">
-            </Label>
-        </StackPanel>
+         <Label
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Content="Color only the 'Todo' keyword (Task Comments)" />
+      </StackPanel>
 
-        <!--! Underline Important Comments-->
-        <StackPanel Orientation="Horizontal"
-                    Grid.Row="5"
-                    Grid.Column="1">
+      <!--! Underline Important Comments-->
+      <StackPanel
+         Grid.Row="5"
+         Grid.Column="1"
+         Orientation="Horizontal">
 
-            <CheckBox x:Name="UnderlineImportantCommentsCheckBox"
-                      VerticalAlignment="Center"
-                      IsChecked="{Binding UnderlineImportantComments, Mode=TwoWay}" />
+         <CheckBox
+            x:Name="UnderlineImportantCommentsCheckBox"
+            VerticalAlignment="Center"
+            IsChecked="{Binding UnderlineImportantComments, Mode=TwoWay}" />
 
-            <Label Content="Underline Important Comments"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center">
-            </Label>
-        </StackPanel>
+         <Label
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Content="Underline Important Comments" />
+      </StackPanel>
 
-        <!--! Disable Strikethrough -->
-        <StackPanel Orientation="Horizontal"
-                    Grid.Row="6"
-                    Grid.Column="1">
+      <!--! Disable Strikethrough-->
+      <StackPanel
+         Grid.Row="6"
+         Grid.Column="1"
+         Orientation="Horizontal">
 
-            <CheckBox x:Name="DisableStrikethroughCheckBox"
-                      VerticalAlignment="Center"
-                      IsChecked="{Binding DisableStrikethrough, Mode=TwoWay}" />
+         <CheckBox
+            x:Name="DisableStrikethroughCheckBox"
+            VerticalAlignment="Center"
+            IsChecked="{Binding DisableStrikethrough, Mode=TwoWay}" />
 
-            <Label Content="Disable Strikethrough"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center">
-            </Label>
-        </StackPanel>
+         <Label
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Content="Disable Strikethrough" />
+      </StackPanel>
 
-    </Grid>
+   </Grid>
 </UserControl>

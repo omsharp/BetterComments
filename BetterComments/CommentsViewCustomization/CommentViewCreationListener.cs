@@ -24,7 +24,9 @@ namespace BetterComments.CommentsViewCustomization
 
       public CommentViewDecorator CreateDecorator(IWpfTextView textView)
       {
-         return new CommentViewDecorator(textView, formatMapService.GetClassificationFormatMap(textView), typeRegistryService);
+         return CommentViewDecorator.Create(textView, 
+                                            formatMapService.GetClassificationFormatMap(textView), 
+                                            typeRegistryService);
       }
    }
 }

@@ -10,14 +10,10 @@ namespace BetterComments.Options
 
       public OptionsPageControl()
       {
+         DataContext = Settings;
+
          InitializeComponent();
          FontsComboBox.ItemsSource = GetInstalledFonts();
-      }
-
-      public void Refresh()
-      {
-         Settings.Copy(SettingsManager.CurrentSettings);
-         DataContext = Settings;
       }
 
       private static IEnumerable<string> GetInstalledFonts()

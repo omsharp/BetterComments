@@ -1,118 +1,100 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using BetterComments.Annotations;
+using System.Collections.Generic;
 
 namespace BetterComments.Options
 {
-   public class Settings : INotifyPropertyChanged
+   public class Settings : ISettings, INotifyPropertyChanged
    {
+      #region Fields
       private string font = string.Empty;
-      private double size = 0;
-      private double opacity = 1;
-      private bool italic = false;
+      private double size = -1.5;
+      private double opacity = 0.8;
+      private bool italic = true;
       private bool highlightTaskKeywordOnly = false;
       private bool underlineImportantComments = false;
       private bool disableStrikethrough = false;
+      #endregion
 
-      public event PropertyChangedEventHandler PropertyChanged;
-      
+      #region Settings Properties
+
+      [Setting]
       public string Font
       {
          get { return font; }
-         set
-         {
-            if (value == font)
-               return;
-            font = value;
-            OnPropertyChanged();
-         }
+         set { SetField(ref font, value); }
       }
 
+      [Setting]
       public double Size
       {
          get { return size; }
-         set
-         {
-            if (value.Equals(size))
-               return;
-
-            size = value;
-            OnPropertyChanged();
-         }
+         set { SetField(ref size, value); }
       }
 
+      [Setting]
       public bool Italic
       {
          get { return italic; }
-         set
-         {
-            if (value == italic)
-               return;
-            italic = value;
-            OnPropertyChanged();
-         }
+         set { SetField(ref italic, value); }
       }
 
+      [Setting]
       public double Opacity
       {
          get { return opacity; }
-         set
-         {
-            if (value.Equals(opacity)) return;
-            opacity = value;
-            OnPropertyChanged();
-         }
+         set { SetField(ref opacity, value); }
       }
 
+      [Setting]
       public bool HighlightTaskKeywordOnly
       {
          get { return highlightTaskKeywordOnly; }
-         set
-         {
-            if (value == highlightTaskKeywordOnly) return;
-            highlightTaskKeywordOnly = value;
-            OnPropertyChanged();
-         }
+         set { SetField(ref highlightTaskKeywordOnly, value); }
       }
 
+      [Setting]
       public bool UnderlineImportantComments
       {
          get { return underlineImportantComments; }
-         set
-         {
-            if (value == underlineImportantComments) return;
-            underlineImportantComments = value;
-            OnPropertyChanged();
-         }
+         set { SetField(ref underlineImportantComments, value); }
       }
-      
+
+      [Setting]
       public bool DisableStrikethrough
       {
          get { return disableStrikethrough; }
-         set
-         {
-            if (value == disableStrikethrough) return;
-            disableStrikethrough = value;
-            OnPropertyChanged();
-         }
+         set { SetField(ref disableStrikethrough, value); }
       }
 
-      public void Copy(Settings source)
-      {
-         Font = source.Font;
-         Size = source.Size;
-         Italic = source.Italic;
-         Opacity = source.Opacity;
-         HighlightTaskKeywordOnly = source.HighlightTaskKeywordOnly;
-         UnderlineImportantComments = source.UnderlineImportantComments;
-         DisableStrikethrough = source.DisableStrikethrough;
-      }
+      #endregion
 
-      [NotifyPropertyChangedInvocator]
+      #region ISettings Members
+
+      public string Key => "BetterComments";
+
+      #endregion
+
+      #region INotifyPropertyChanged Members
+
+      public event PropertyChangedEventHandler PropertyChanged;
+
       protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
       {
          PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
       }
+
+      private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+      {
+         if (EqualityComparer<T>.Default.Equals(field, value))
+            return;
+
+         field = value;
+
+         OnPropertyChanged(propertyName);
+      }
+
+      #endregion
    }
 
 }

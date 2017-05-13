@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using BetterComments.Options;
+using Microsoft.VisualStudio.Text.Editor;
 
 namespace BetterComments.CommentsTagging
 {
@@ -20,6 +21,8 @@ namespace BetterComments.CommentsTagging
 
    internal class CommentTagger : ITagger<ClassificationTag>, IDisposable
    {
+      private readonly Settings settings = new Settings();
+
       private readonly IClassificationTypeRegistryService classificationRegistry;
       private readonly ITagAggregator<IClassificationTag> tagAggregator;
 
@@ -30,11 +33,26 @@ namespace BetterComments.CommentsTagging
       private static readonly Dictionary<string, string> delimitedCommentEnders
           = new Dictionary<string, string> { { "/*", "*/" }, { "(*", "*)" } };
 
-      public CommentTagger(IClassificationTypeRegistryService reg,
+      public static CommentTagger Create(ITextView view,
+                                      IClassificationTypeRegistryService reg,
+                                      ITagAggregator<IClassificationTag> agg)
+      {
+         return view.Properties.GetOrCreateSingletonProperty(() => new CommentTagger(reg, agg));
+      }
+
+      private CommentTagger(IClassificationTypeRegistryService reg,
                             ITagAggregator<IClassificationTag> agg)
       {
-         this.classificationRegistry = reg;
-         this.tagAggregator = agg;
+         classificationRegistry = reg;
+         tagAggregator = agg;
+         
+         SettingsStore.LoadSettings(settings);
+         SettingsStore.SettingsChanged += OnSettingsChanged;
+      }
+
+      private void OnSettingsChanged()
+      {
+         SettingsStore.LoadSettings(settings);
       }
 
 #pragma warning disable 0067
@@ -66,7 +84,7 @@ namespace BetterComments.CommentsTagging
                   var trimmedComment = RemoveCommentStarter(commentText);
                   var commentType = GetCommentType(trimmedComment);
 
-                  if (commentType == CommentType.Crossed && SettingsManager.CurrentSettings.DisableStrikethrough)
+                  if (commentType == CommentType.Crossed && settings.DisableStrikethrough)
                      yield break;
 
                   var startOffset = ComputeSpanStartOffset(trimmedComment, commentStarter.Length);
@@ -112,11 +130,11 @@ namespace BetterComments.CommentsTagging
          }
       }
       
-      private static SnapshotSpan BuildSnapshotSpan(SnapshotSpan span, int start, int length, CommentType commentType)
+      private SnapshotSpan BuildSnapshotSpan(SnapshotSpan span, int start, int length, CommentType commentType)
       {
          switch (commentType)
          {
-            case CommentType.Task when SettingsManager.CurrentSettings.HighlightTaskKeywordOnly:
+            case CommentType.Task when settings.HighlightTaskKeywordOnly:
                return BuildTaskSnapshotSpan(span);
 
             default:
@@ -252,6 +270,7 @@ namespace BetterComments.CommentsTagging
 
       public void Dispose()
       {
+         SettingsStore.SettingsChanged -= OnSettingsChanged;
          tagAggregator.Dispose();
          GC.SuppressFinalize(this);
       }

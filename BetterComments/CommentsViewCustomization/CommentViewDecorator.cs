@@ -14,8 +14,10 @@ namespace BetterComments.CommentsViewCustomization
    internal sealed class CommentViewDecorator
    {
       private bool isDecorating;
-      private readonly IClassificationFormatMap map;
+      private readonly IClassificationFormatMap formatMap;
       private readonly IClassificationTypeRegistryService regService;
+
+      private readonly Settings settings = new Settings();
 
       private static readonly List<string> commentTypes = new List<string>()
             {
@@ -27,21 +29,30 @@ namespace BetterComments.CommentsViewCustomization
                 "xaml comment"
             };
 
-      // TODO : Try making singleton with a static Create() method
-      public CommentViewDecorator(ITextView view, IClassificationFormatMap map,
+      public static CommentViewDecorator Create(ITextView view, IClassificationFormatMap map,
+                                                IClassificationTypeRegistryService service)
+      {
+         return view.Properties.GetOrCreateSingletonProperty(() => new CommentViewDecorator( view, map,service));
+      }
+
+      private CommentViewDecorator(ITextView view, IClassificationFormatMap map,
                                    IClassificationTypeRegistryService service)
       {
          view.GotAggregateFocus += TextView_GotAggregateFocus;
-         SettingsManager.SettingsSaved += SettingsSaved;
 
-         this.map = map;
+         SettingsStore.LoadSettings(settings);
+         SettingsStore.SettingsChanged += OnSettingsChanged;
+
+         formatMap = map;
          regService = service;
 
          Decorate();
       }
 
-      private void SettingsSaved(object sender, EventArgs eventArgs)
+      private void OnSettingsChanged()
       {
+         SettingsStore.LoadSettings(settings);
+
          if (!isDecorating)
             Decorate();
       }
@@ -85,7 +96,7 @@ namespace BetterComments.CommentsViewCustomization
 
       private void DecorateUnknowClassificationTypes()
       {
-         var unknowns = from type in map.CurrentPriorityOrder.Where(type => type != null)
+         var unknowns = from type in formatMap.CurrentPriorityOrder.Where(type => type != null)
                         let name = type.Classification.ToLowerInvariant()
                         where name.Contains("comment") && !commentTypes.Contains(name)
                         select type;
@@ -98,8 +109,7 @@ namespace BetterComments.CommentsViewCustomization
       {
          //? Might need to benchmark this function for performance.
 
-         var properties = map.GetTextProperties(classificationType);
-         var settings = SettingsManager.CurrentSettings;
+         var properties = formatMap.GetTextProperties(classificationType);
          var fontSize = GetEditorTextSize() + settings.Size;
 
          if (!string.IsNullOrWhiteSpace(settings.Font))
@@ -117,13 +127,13 @@ namespace BetterComments.CommentsViewCustomization
          if (classificationType.IsOfType(CommentNames.IMPORTANT_COMMENT))
             properties = properties.SetTextDecorations(GetTextDecoration(settings));
 
-         map.SetTextProperties(classificationType, properties);
+         formatMap.SetTextProperties(classificationType, properties);
       }
 
       private double GetEditorTextSize()
       {
-         return map.GetTextProperties(regService.GetClassificationType("text"))
-                   .FontRenderingEmSize;
+         return formatMap.GetTextProperties(regService.GetClassificationType("text"))
+                         .FontRenderingEmSize;
       }
 
       private TextDecorationCollection GetTextDecoration(Settings settings)
