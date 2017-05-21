@@ -4,10 +4,11 @@ using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Settings;
 using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace BetterComments.Options
 {
-
    public static class SettingsStore
    {
       private static readonly WritableSettingsStore store
@@ -22,36 +23,31 @@ namespace BetterComments.Options
             if (store.CollectionExists(settings.Key) != true)
                store.CreateCollection(settings.Key);
 
-            var anySaved = false;
-
-            var type = settings.GetType();
-
-            foreach (var prop in type.GetProperties().Where(p => Attribute.IsDefined(p, typeof(SettingAttribute))))
+            foreach (var prop in GetProperties(settings))
             {
-               if (prop.PropertyType == typeof(bool))
+               switch (prop.GetValue(settings))
                {
-                  store.SetBoolean(settings.Key, prop.Name, ((bool)(prop.GetValue(settings))));
-                  anySaved = true;
-               }
-               else if (prop.PropertyType == typeof(int))
-               {
-                  store.SetInt32(settings.Key, prop.Name, ((int)(prop.GetValue(settings))));
-                  anySaved = true;
-               }
-               else if (prop.PropertyType == typeof(double))
-               {
-                  store.SetString(settings.Key, prop.Name, prop.GetValue(settings).ToString());
-                  anySaved = true;
-               }
-               else if (prop.PropertyType == typeof(string))
-               {
-                  store.SetString(settings.Key, prop.Name, ((string)(prop.GetValue(settings))));
-                  anySaved = true;
+                  case bool b:
+                     store.SetBoolean(settings.Key, prop.Name, b);
+                     SettingsChanged?.Invoke();
+                     break;
+
+                  case int i:
+                     store.SetInt32(settings.Key, prop.Name, i);
+                     SettingsChanged?.Invoke();
+                     break;
+
+                  case double d:
+                     store.SetString(settings.Key, prop.Name, d.ToString());
+                     SettingsChanged?.Invoke();
+                     break;
+
+                  case string s:
+                     store.SetString(settings.Key, prop.Name, s);
+                     SettingsChanged?.Invoke();
+                     break;
                }
             }
-
-            if (anySaved)
-               SettingsChanged?.Invoke();
          }
          catch (Exception ex)
          {
@@ -66,32 +62,28 @@ namespace BetterComments.Options
             if (store.CollectionExists(settings.Key) != true)
                return;
 
-            var type = settings.GetType();
-
-            foreach (var prop in type.GetProperties().Where(p => Attribute.IsDefined(p, typeof(SettingAttribute))))
+            foreach (var prop in GetProperties(settings))
             {
-               if (prop.PropertyType == typeof(bool))
+               if (!store.PropertyExists(settings.Key, prop.Name))
+                  continue;
+
+               switch (prop.GetValue(settings))
                {
-                  if (store.PropertyExists(settings.Key, prop.Name))
+                  case bool b:
                      prop.SetValue(settings, store.GetBoolean(settings.Key, prop.Name));
-               }
-               else if (prop.PropertyType == typeof(int))
-               {
-                  if (store.PropertyExists(settings.Key, prop.Name))
+                     break;
+
+                  case int i:
                      prop.SetValue(settings, store.GetInt32(settings.Key, prop.Name));
-               }
-               else if (prop.PropertyType == typeof(double))
-               {
-                  if (store.PropertyExists(settings.Key, prop.Name))
-                  {
-                     if (double.TryParse(store.GetString(settings.Key, prop.Name), out double value))
-                        prop.SetValue(settings, value);
-                  }
-               }
-               else if (prop.PropertyType == typeof(string))
-               {
-                  if (store.PropertyExists(settings.Key, prop.Name))
+                     break;
+
+                  case double d when double.TryParse(store.GetString(settings.Key, prop.Name), out double value):
+                     prop.SetValue(settings, value);
+                     break;
+
+                  case string s:
                      prop.SetValue(settings, store.GetString(settings.Key, prop.Name));
+                     break;
                }
             }
          }
@@ -99,6 +91,13 @@ namespace BetterComments.Options
          {
             Debug.Fail(ex.Message);
          }
+      }
+
+      private static IEnumerable<PropertyInfo> GetProperties(ISettings settings)
+      {
+         return settings.GetType()
+                        .GetProperties()
+                        .Where(p => Attribute.IsDefined(p, typeof(SettingAttribute)));
       }
    }
 }
