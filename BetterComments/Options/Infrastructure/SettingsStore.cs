@@ -53,7 +53,7 @@ namespace BetterComments.Options
 
       private static bool SaveSettingsIntoStore(ISettings settings)
       {
-         var settingsSaved = false;
+         var saved = false;
 
          foreach (var prop in GetProperties(settings))
          {
@@ -61,27 +61,27 @@ namespace BetterComments.Options
             {
                case bool b:
                   store.SetBoolean(settings.Key, prop.Name, b);
-                  settingsSaved = true;
+                  saved = true;
                   break;
 
                case int i:
                   store.SetInt32(settings.Key, prop.Name, i);
-                  settingsSaved = true;
+                  saved = true;
                   break;
 
                case double d:
                   store.SetString(settings.Key, prop.Name, d.ToString());
-                  settingsSaved = true;
+                  saved = true;
                   break;
 
                case string s:
                   store.SetString(settings.Key, prop.Name, s);
-                  settingsSaved = true;
+                  saved = true;
                   break;
             }
          }
 
-         return settingsSaved;
+         return saved;
       }
 
       private static void LoadSettingsFromStore(ISettings settings)
