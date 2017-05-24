@@ -20,33 +20,14 @@ namespace BetterComments.Options
       {
          try
          {
-            if (store.CollectionExists(settings.Key) != true)
-               store.CreateCollection(settings.Key);
-
-            foreach (var prop in GetProperties(settings))
+            if (!store.CollectionExists(settings.Key))
             {
-               switch (prop.GetValue(settings))
-               {
-                  case bool b:
-                     store.SetBoolean(settings.Key, prop.Name, b);
-                     SettingsChanged?.Invoke();
-                     break;
+               store.CreateCollection(settings.Key);
+            }
 
-                  case int i:
-                     store.SetInt32(settings.Key, prop.Name, i);
-                     SettingsChanged?.Invoke();
-                     break;
-
-                  case double d:
-                     store.SetString(settings.Key, prop.Name, d.ToString());
-                     SettingsChanged?.Invoke();
-                     break;
-
-                  case string s:
-                     store.SetString(settings.Key, prop.Name, s);
-                     SettingsChanged?.Invoke();
-                     break;
-               }
+            if (SaveSettingsIntoStore(settings))
+            {
+               SettingsChanged?.Invoke();
             }
          }
          catch (Exception ex)
@@ -59,14 +40,56 @@ namespace BetterComments.Options
       {
          try
          {
-            if (store.CollectionExists(settings.Key) != true)
-               return;
-
-            foreach (var prop in GetProperties(settings))
+            if (store.CollectionExists(settings.Key))
             {
-               if (!store.PropertyExists(settings.Key, prop.Name))
-                  continue;
+               LoadSettingsFromStore(settings);
+            }
+         }
+         catch (Exception ex)
+         {
+            Debug.Fail(ex.Message);
+         }
+      }
 
+      private static bool SaveSettingsIntoStore(ISettings settings)
+      {
+         var settingsSaved = false;
+
+         foreach (var prop in GetProperties(settings))
+         {
+            switch (prop.GetValue(settings))
+            {
+               case bool b:
+                  store.SetBoolean(settings.Key, prop.Name, b);
+                  settingsSaved = true;
+                  break;
+
+               case int i:
+                  store.SetInt32(settings.Key, prop.Name, i);
+                  settingsSaved = true;
+                  break;
+
+               case double d:
+                  store.SetString(settings.Key, prop.Name, d.ToString());
+                  settingsSaved = true;
+                  break;
+
+               case string s:
+                  store.SetString(settings.Key, prop.Name, s);
+                  settingsSaved = true;
+                  break;
+            }
+         }
+
+         return settingsSaved;
+      }
+
+      private static void LoadSettingsFromStore(ISettings settings)
+      {
+         foreach (var prop in GetProperties(settings))
+         {
+            if (store.PropertyExists(settings.Key, prop.Name))
+            {
                switch (prop.GetValue(settings))
                {
                   case bool b:
@@ -86,10 +109,6 @@ namespace BetterComments.Options
                      break;
                }
             }
-         }
-         catch (Exception ex)
-         {
-            Debug.Fail(ex.Message);
          }
       }
 
