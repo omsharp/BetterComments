@@ -13,7 +13,7 @@ namespace BetterComments.Options
       private bool italic = true;
       private bool highlightTaskKeywordOnly = false;
       private bool underlineImportantComments = false;
-      private bool disableStrikethrough = false;
+      private bool strikethroughDoubleComments = false;
       #endregion
 
       #region Settings Properties
@@ -61,10 +61,10 @@ namespace BetterComments.Options
       }
 
       [Setting]
-      public bool DisableStrikethrough
+      public bool StrikethroughDoubleComments
       {
-         get { return disableStrikethrough; }
-         set { SetField(ref disableStrikethrough, value); }
+         get { return strikethroughDoubleComments; }
+         set { SetField(ref strikethroughDoubleComments, value); }
       }
 
       #endregion

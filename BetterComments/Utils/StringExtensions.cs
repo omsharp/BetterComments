@@ -1,10 +1,47 @@
 ﻿using System;
 using System.Linq;
 
-namespace BetterComments.CommentsTagging
+namespace BetterComments
 {
    internal static class StringExtensions
    {
+      public static int IndexOfFirstChar(this string source, int start = 0)
+      {
+         var index = 0;
+
+         for(var i = start; i < source.Length; i++)
+         {
+            if(source[i] != ' ')
+            {
+               index = i;
+               break;
+            }
+         }
+
+         return index;
+      }
+
+      public static int IndexOfFirstCharReverse(this string source, int start)
+      {
+         var index = -1;
+
+         for (var i = start; i >= 0; i--)
+         {
+            if (source[i] != ' ')
+            {
+               index = i;
+               break;
+            }
+         }
+
+         return index;
+      }
+
+      public static bool IsNullOrWhiteSpace(this string source)
+      {
+         return string.IsNullOrWhiteSpace(source);
+      }
+
       public static string TrimFromTheBeginning(this string source, int numberOfCharacters)
       {
          return source.Substring(numberOfCharacters, source.Length - numberOfCharacters);

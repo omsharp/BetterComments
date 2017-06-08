@@ -62,7 +62,18 @@
     <Compile Include="CommentsClassification\Constants.cs" />
     <Compile Include="CommentsTagging\CommentTagger.cs" />
     <Compile Include="CommentsTagging\CommentTaggerProvider.cs" />
-    <Compile Include="CommentsTagging\StringExtensions.cs" />
+    <Compile Include="CommentsTagging\Parsers\CppCommentParser.cs" />
+    <Compile Include="CommentsTagging\Parsers\JavaScriptCommentParser.cs" />
+    <Compile Include="Utils\IClassificationTagExtensions.cs" />
+    <Compile Include="CommentsTagging\Infrastructure\Comment.cs" />
+    <Compile Include="CommentsTagging\Infrastructure\CommentParser.cs" />
+    <Compile Include="CommentsTagging\Parsers\CSharpCommentParser.cs" />
+    <Compile Include="CommentsTagging\Parsers\FSharpCommentParser.cs" />
+    <Compile Include="CommentsTagging\Parsers\HTMLCommentParser.cs" />
+    <Compile Include="CommentsTagging\Infrastructure\ICommentParser.cs" />
+    <Compile Include="CommentsTagging\Parsers\PythonCommentParser.cs" />
+    <Compile Include="CommentsTagging\Parsers\VBCommentParser.cs" />
+    <Compile Include="CommentsTagging\Parsers\XAMLCommentParser.cs" />
     <Compile Include="CommentsViewCustomization\CommentViewDecorator.cs" />
     <Compile Include="CommentsViewCustomization\CommentViewCreationListener.cs" />
     <Compile Include="Options\Infrastructure\ISettings.cs" />
@@ -71,6 +82,7 @@
     <Compile Include="Options\OptionsPageControl.xaml.cs">
       <DependentUpon>OptionsPageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\StringExtensions.cs" />
     <Compile Include="VSPackage.cs" />
     <Compile Include="Options\OptionsPage.cs">
       <SubType>Component</SubType>

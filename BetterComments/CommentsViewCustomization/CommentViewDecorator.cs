@@ -26,13 +26,14 @@ namespace BetterComments.CommentsViewCustomization
                 "vb xml doc comment",
                 "xml comment",
                 "html comment",
-                "xaml comment"
+                "xaml comment",
+                "Comment - Important"
             };
 
       public static CommentViewDecorator Create(ITextView view, IClassificationFormatMap map,
                                                 IClassificationTypeRegistryService service)
       {
-         return view.Properties.GetOrCreateSingletonProperty(() => new CommentViewDecorator( view, map,service));
+         return view.Properties.GetOrCreateSingletonProperty(() => new CommentViewDecorator(view, map, service));
       }
 
       private CommentViewDecorator(ITextView view, IClassificationFormatMap map,
@@ -45,7 +46,7 @@ namespace BetterComments.CommentsViewCustomization
 
          formatMap = map;
          regService = service;
-         
+
          Decorate();
       }
 
@@ -77,7 +78,7 @@ namespace BetterComments.CommentsViewCustomization
          catch (Exception ex)
          {
             //TODO: Handle the exception gracefully.
-            Debug.Assert(false, $"Exception while formatting! \n", ex.Message);
+            Debug.Assert(false, "Exception while formatting! \n", ex.Message);
          }
          finally
          {
@@ -108,7 +109,7 @@ namespace BetterComments.CommentsViewCustomization
       private void SetProperties(IClassificationType classificationType)
       {
          //? Might need to benchmark this function for performance.
-         
+
          var properties = formatMap.GetTextProperties(classificationType);
          var fontSize = GetEditorTextSize() + settings.Size;
 
