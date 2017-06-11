@@ -25,11 +25,11 @@ namespace BetterComments.CommentsTagging
          {
             commentSpans.Add(span);
          }
-         else if (Settings.HighlightTaskKeywordOnly && commentType == CommentType.Task) //! Tag only the "Todo" keyword.
+         else if (Settings.HighlightTaskKeywordOnly && commentType == CommentType.Task) // Color only the "Todo" keyword.
          {
             commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + spanText.IndexOfFirstChar(4), 4));
          }
-         else if (spanText.Contains("<!--") && spanText.Contains("-->")) // spanText.Contains("<!--")
+         else if (spanText.Contains("<!--") && spanText.Contains("-->"))
          {
             var startOffset = commentType == CommentType.Task ? spanText.IndexOf("todo") : spanText.IndexOfFirstChar(5);
             var spanLength = spanText.IndexOfFirstCharReverse(spanText.IndexOf("-->") - 1) - (startOffset - 1);
