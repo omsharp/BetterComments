@@ -39,8 +39,6 @@
          Width="300"
          Margin="0,5"
          HorizontalAlignment="Left"
-         BorderBrush="Black"
-         BorderThickness="1"
          SelectedItem="{Binding Font, Mode=TwoWay}" />
 
       <!--! Size-->

@@ -1,12 +1,20 @@
 ## Things to look into
 
 - [ ] Add a preview pane in the options page. That would be a nice touch to have.
-- [ ] Multiline comments don't look good with Strikethough or Underline decorations.
-- [ ] Font options are not applied on collapsed XML comments.
 
 ---
 
 ## Changelog
+
+### 2.0
+
+**2017-06-12**
+
+- [x] Redesigned the whole tagging process
+   - Every content type (language) has its own comment parser
+- [x] Fixed the issue with Strikethrough and Underline decorations.
+- [x] Added an option to disable the strikethrough of double comments.
+
 
 ### 1.6
 

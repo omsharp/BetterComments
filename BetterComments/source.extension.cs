@@ -11,7 +11,7 @@ namespace BetterComments
       public const string Name = "Better Comments";
       public const string Description = @"Better Comments is a Visual Studio extension that gives you the ability to customize the font and opacity of your comments independently of the editor's font settings. It also adds four additional comment classifications, each classification with its own customizable foreground.";
       public const string Language = "en-US";
-      public const string Version = "1.6";
+      public const string Version = "2.0";
       public const string Author = "Omar Rwemi";
       public const string Tags = "Better, Comments, Italic, Bold, Opacity, Font, Size, Categorize, Color, Colorize";
    }
