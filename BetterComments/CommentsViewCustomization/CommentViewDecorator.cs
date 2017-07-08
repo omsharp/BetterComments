@@ -27,7 +27,6 @@ namespace BetterComments.CommentsViewCustomization
                 "xml comment",
                 "html comment",
                 "xaml comment",
-                "Comment - Important"
             };
 
       public static CommentViewDecorator Create(ITextView view, IClassificationFormatMap map,

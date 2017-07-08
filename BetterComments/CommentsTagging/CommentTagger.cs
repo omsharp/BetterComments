@@ -8,7 +8,6 @@ using Microsoft.VisualStudio.Text.Tagging;
 using BetterComments.Options;
 using Microsoft.VisualStudio.Utilities;
 using System.Diagnostics;
-using System.Windows;
 
 namespace BetterComments.CommentsTagging
 {
@@ -38,7 +37,6 @@ namespace BetterComments.CommentsTagging
          SettingsStore.SettingsChanged += OnSettingsChanged;
       }
 
-
 #pragma warning disable 0067
       public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 #pragma warning restore 0067
@@ -58,6 +56,12 @@ namespace BetterComments.CommentsTagging
             // Get all the spans associated with the current tag, mapped to our snapshot
             foreach (var span in tagSpan.Span.GetSpans(snapshot).Where(s => parser.IsValidComment(s)))
             {
+               /*? hello
+                                     asdf*/
+
+                              /* Todo 
+                               * hello */
+
                try
                {
                   results.AddRange(CreateTagSpans(parser.Parse(span)));

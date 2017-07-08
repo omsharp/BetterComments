@@ -56,13 +56,15 @@ namespace BetterComments.CommentsTagging
                for (var i = firstLine; i <= lastLine; i++)
                {
                   var line = span.Snapshot.GetLineFromLineNumber(i);
-                  var lineText = line.GetText();
+                  var lineText = line.GetText().ToLower();
 
                   if (i == firstLine) //! First line.
                   {
                      //! Handle first line, ONLY if it is more than just a comment starter
-                     var trimmedLineText = lineText.Trim();
-                     if ((trimmedLineText.Length - trimmedLineText.IndexOf("/*")) > 3) 
+                     var indx = lineText.IndexOf("/*");
+                     var text = lineText.Substring(indx).Trim(); ;
+
+                     if(text.Length > 3)
                      {
                         startOffset = commentType == CommentType.Task
                                                       ? lineText.IndexOf("todo")
