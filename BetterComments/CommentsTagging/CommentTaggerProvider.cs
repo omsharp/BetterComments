@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using System.Diagnostics;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
@@ -24,7 +25,11 @@ namespace BetterComments.CommentsTagging
       {
          var tagAggregator = agg.CreateTagAggregator<IClassificationTag>(buffer);
 
-         return textView.Properties.GetOrCreateSingletonProperty(() => new CommentTagger(reg, tagAggregator)) as ITagger<T>;
+         Debug.WriteLine("ITagger<T> Created");
+
+         return new CommentTagger(reg, tagAggregator) as ITagger<T>;
+
+         //return textView.Properties.GetOrCreateSingletonProperty(() => new CommentTagger(reg, tagAggregator)) as ITagger<T>;
       }
    }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.Text;
 using BetterComments.Options;
+using System.Diagnostics;
 
 namespace BetterComments.CommentsTagging
 {
@@ -62,9 +63,7 @@ namespace BetterComments.CommentsTagging
                   {
                      //! Handle first line, ONLY if it is more than just a comment starter
                      var indx = lineText.IndexOf("/*");
-                     var text = lineText.Substring(indx).Trim(); ;
-
-                     if(text.Length > 3)
+                     if(indx >= 0 && lineText.Substring(indx).Trim().Length > 3)
                      {
                         startOffset = commentType == CommentType.Task
                                                       ? lineText.IndexOf("todo")

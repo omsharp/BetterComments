@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using BetterComments.Options;
 using Microsoft.VisualStudio.Text;
 
@@ -35,9 +36,10 @@ namespace BetterComments.CommentsTagging
             var startOffset = commentType == CommentType.Task ? spanText.IndexOf("todo") : spanText.IndexOfFirstChar(5);
             var spanLength = spanText.IndexOfFirstCharReverse(spanText.IndexOf("-->") - 1) - (startOffset - 1);
 
-            commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, spanLength));
+            if (spanLength > 0)
+               commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, spanLength));
          }
-        
+
 
          return new Comment(commentSpans, commentType);
       }

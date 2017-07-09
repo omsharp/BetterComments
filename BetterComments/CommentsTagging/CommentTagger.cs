@@ -26,7 +26,7 @@ namespace BetterComments.CommentsTagging
 
       private readonly IClassificationTypeRegistryService classRegistry;
       private readonly ITagAggregator<IClassificationTag> tagAggregator;
-
+      
       public CommentTagger(IClassificationTypeRegistryService reg,
                            ITagAggregator<IClassificationTag> agg)
       {
@@ -49,19 +49,13 @@ namespace BetterComments.CommentsTagging
 
          if (parser == null) // Content is not supported
             return results;
-
+         
          // Work through all comment tags associated with the passed spans. Ignore XML docs.
          foreach (var tagSpan in tagAggregator.GetTags(spans).Where(m => m.Tag.IsComment() && !m.Tag.IsXmlDoc()))
          {
             // Get all the spans associated with the current tag, mapped to our snapshot
             foreach (var span in tagSpan.Span.GetSpans(snapshot).Where(s => parser.IsValidComment(s)))
             {
-               /*? hello
-                                     asdf*/
-
-                              /* Todo 
-                               * hello */
-
                try
                {
                   results.AddRange(CreateTagSpans(parser.Parse(span)));
@@ -122,6 +116,9 @@ namespace BetterComments.CommentsTagging
 
          if (contentType.IsOfType("JScript") || contentType.IsOfType("TypeScript"))
             return new JavaScriptCommentParser(settings);
+
+         if (contentType.IsOfType("RazorCSharp"))
+            return new HTMLCommentParser(settings);
 
          var temp = contentType.TypeName.ToLower();
 
