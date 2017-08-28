@@ -53,35 +53,30 @@ namespace BetterComments.Options
 
       private static bool SaveSettingsIntoStore(ISettings settings)
       {
-         var saved = false;
-
          foreach (var prop in GetProperties(settings))
          {
             switch (prop.GetValue(settings))
             {
-               case bool b:
-                  store.SetBoolean(settings.Key, prop.Name, b);
-                  saved = true;
-                  break;
+               case bool value:
+                  store.SetBoolean(settings.Key, prop.Name, value);
+                  return true;
 
-               case int i:
-                  store.SetInt32(settings.Key, prop.Name, i);
-                  saved = true;
-                  break;
+               case int value:
+                  store.SetInt32(settings.Key, prop.Name, value);
+                  return true;
 
-               case double d:
-                  store.SetString(settings.Key, prop.Name, d.ToString());
-                  saved = true;
-                  break;
+               case double value:
+                  store.SetString(settings.Key, prop.Name, value.ToString());
+                  return true;
 
-               case string s:
-                  store.SetString(settings.Key, prop.Name, s);
-                  saved = true;
-                  break;
+
+               case string value:
+                  store.SetString(settings.Key, prop.Name, value);
+                  return true;
             }
          }
 
-         return saved;
+         return false;
       }
 
       private static void LoadSettingsFromStore(ISettings settings)

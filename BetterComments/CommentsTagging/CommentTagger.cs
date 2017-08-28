@@ -19,7 +19,7 @@ namespace BetterComments.CommentsTagging
       Crossed,
       Task
    }
-
+   
    internal class CommentTagger : ITagger<ClassificationTag>, IDisposable
    {
       private readonly Settings settings = new Settings();
