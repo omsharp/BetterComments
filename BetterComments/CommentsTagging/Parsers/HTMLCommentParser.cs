@@ -33,7 +33,9 @@ namespace BetterComments.CommentsTagging
          }
          else if (!spanText.Contains("\r\n")) // Single line
          {
-            var startOffset = commentType == CommentType.Task ? spanText.IndexOf("todo") : spanText.IndexOfFirstChar(5);
+            string keyword = Settings.TokenValues[commentType.ToString()];
+            var startOffset = spanText.IndexOf(keyword);
+            //var startOffset = commentType == CommentType.Task ? spanText.IndexOf("todo") : spanText.IndexOfFirstChar(5);
             var spanLength = spanText.IndexOfFirstCharReverse(spanText.IndexOf("-->") - 1) - (startOffset - 1);
 
             if (spanLength > 0)

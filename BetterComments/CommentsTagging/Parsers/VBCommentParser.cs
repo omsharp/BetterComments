@@ -33,7 +33,9 @@ namespace BetterComments.CommentsTagging
          }
          else //! CommentType is not Normal and HighlightTaskKeywordOnly is off  == Process the whole span.
          {
-            var startOffset = commentType == CommentType.Task ? spanText.IndexOf("todo") : spanText.IndexOfFirstChar(2); ;
+            string keyword = Settings.TokenValues[commentType.ToString()];
+            var startOffset = spanText.IndexOf(keyword);
+            //var startOffset = commentType == CommentType.Task ? spanText.IndexOf("todo") : spanText.IndexOfFirstChar(2); ;
 
             commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - startOffset));
          }

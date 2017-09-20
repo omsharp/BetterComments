@@ -5,7 +5,8 @@ using Microsoft.VisualStudio.Shell;
 
 namespace BetterComments
 {
-   [ProvideOptionPage(typeof(OptionsPage), "Better Comments", "Font Options", 0, 0, true)]
+   [ProvideOptionPage(typeof(OptionsGeneralPage), "Better Comments", "Font Options", 0, 0, true)]
+   [ProvideOptionPage(typeof(OptionsTokensPage), "Better Comments", "Tokens Options", 0, 0, true)]
    [PackageRegistration(UseManagedResourcesOnly = true)]
    [InstalledProductRegistration("#110", "#112", Vsix.Id, IconResourceID = 400)]
    [Guid(PACKAGE_GUID_STRING)]

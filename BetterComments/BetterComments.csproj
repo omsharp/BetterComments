@@ -62,8 +62,16 @@
     <Compile Include="CommentsClassification\Constants.cs" />
     <Compile Include="CommentsTagging\CommentTagger.cs" />
     <Compile Include="CommentsTagging\CommentTaggerProvider.cs" />
+    <Compile Include="CommentsTagging\Infrastructure\CommentAttribute.cs" />
     <Compile Include="CommentsTagging\Parsers\CppCommentParser.cs" />
     <Compile Include="CommentsTagging\Parsers\JavaScriptCommentParser.cs" />
+    <Compile Include="Options\OptionsTokensPageControl.xaml.cs">
+      <DependentUpon>OptionsTokensPageControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\OptionsTokensPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Utils\EnumExtensions.cs" />
     <Compile Include="Utils\IClassificationTagExtensions.cs" />
     <Compile Include="CommentsTagging\Infrastructure\Comment.cs" />
     <Compile Include="CommentsTagging\Infrastructure\CommentParser.cs" />
@@ -79,12 +87,15 @@
     <Compile Include="Options\Infrastructure\ISettings.cs" />
     <Compile Include="Options\Infrastructure\SettingAttribute.cs" />
     <Compile Include="Options\Settings.cs" />
-    <Compile Include="Options\OptionsPageControl.xaml.cs">
-      <DependentUpon>OptionsPageControl.xaml</DependentUpon>
+    <Compile Include="Options\OptionsGeneralPageControl.xaml.cs">
+      <DependentUpon>OptionsGeneralPageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\RequiredAndUniqueRule.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
+    <Compile Include="Utils\TokenValuesBehavior.cs" />
+    <Compile Include="Utils\TokenValuesToValueConverter.cs" />
     <Compile Include="VSPackage.cs" />
-    <Compile Include="Options\OptionsPage.cs">
+    <Compile Include="Options\OptionsGeneralPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Options\Infrastructure\SettingsStore.cs" />
@@ -200,7 +211,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Options\OptionsPageControl.xaml">
+    <Page Include="Options\OptionsTokensPageControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\OptionsGeneralPageControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

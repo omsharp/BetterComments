@@ -43,7 +43,9 @@ namespace BetterComments.CommentsTagging
 
             if (firstLine == lastLine) //! The comment span consists of a single line.
             {
-               startOffset = commentType == CommentType.Task ? spanText.IndexOf("todo") : spanText.IndexOfFirstChar(3);
+               string keyword = Settings.TokenValues[commentType.ToString()];
+               startOffset = spanText.IndexOf(keyword);
+               //startOffset = commentType == CommentType.Task ? spanText.IndexOf("todo") : spanText.IndexOfFirstChar(3);
 
                spanLength = spanText.StartsWith("//")
                              ? span.Length - startOffset
@@ -65,9 +67,12 @@ namespace BetterComments.CommentsTagging
                      var indx = lineText.IndexOf("/*");
                      if(indx >= 0 && lineText.Substring(indx).Trim().Length > 3)
                      {
-                        startOffset = commentType == CommentType.Task
-                                                      ? lineText.IndexOf("todo")
-                                                      : lineText.IndexOfFirstChar(lineText.IndexOf("/*") + 3);
+                        string keyword = Settings.TokenValues[commentType.ToString()];
+                        startOffset = lineText.IndexOf(keyword);
+
+                        //startOffset = commentType == CommentType.Task
+                        //                              ? lineText.IndexOf("todo")
+                        //                              : lineText.IndexOfFirstChar(lineText.IndexOf("/*") + 3);
 
                         commentSpans.Add(new SnapshotSpan(span.Snapshot, line.Start + startOffset, line.Length - startOffset));
                      }

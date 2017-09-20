@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace BetterComments.Options
 {
-   public partial class OptionsPageControl
+   public partial class OptionsGeneralPageControl
    {
       public Settings Settings { get; } = new Settings();
 
-      public OptionsPageControl()
+      public OptionsGeneralPageControl()
       {
          DataContext = Settings;
 

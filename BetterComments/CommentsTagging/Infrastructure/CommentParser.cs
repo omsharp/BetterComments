@@ -1,36 +1,32 @@
 ﻿using BetterComments.Options;
 using Microsoft.VisualStudio.Text;
 
-namespace BetterComments.CommentsTagging
-{
-   internal abstract class CommentParser : ICommentParser
-   {
-      protected Settings Settings;
+namespace BetterComments.CommentsTagging {
+    internal abstract class CommentParser : ICommentParser {
+        protected Settings Settings;
 
-      protected CommentParser(Settings settings)
-      {
-         Settings = settings;
-      }
+        protected CommentParser(Settings settings) {
+            Settings = settings;
+        }
 
-      protected virtual CommentType GetCommentType(string commentText)
-      {
-         if (commentText.StartsWith("!"))
-            return CommentType.Important;
+        protected virtual CommentType GetCommentType(string commentText) {
+            if (commentText.StartsWith(Settings.TokenValues[CommentType.Important.ToString()]))
+                return CommentType.Important;
 
-         if (commentText.StartsWith("?"))
-            return CommentType.Question;
+            if (commentText.StartsWith(Settings.TokenValues[CommentType.Question.ToString()]))
+                return CommentType.Question;
 
-         if (commentText.StartsWith("x"))
-            return CommentType.Crossed;
-         
-         if (commentText.Trim().StartsWith("todo"))
-            return CommentType.Task;
+            if (commentText.StartsWith(Settings.TokenValues[CommentType.Crossed.ToString()]))
+                return CommentType.Crossed;
 
-         return CommentType.Normal;
-      }
+            if (commentText.Trim().StartsWith(Settings.TokenValues[CommentType.Task.ToString()]))
+                return CommentType.Task;
 
-      public abstract bool IsValidComment(SnapshotSpan span);
+            return CommentType.Normal;
+        }
 
-      public abstract Comment Parse(SnapshotSpan span);
-   }
+        public abstract bool IsValidComment(SnapshotSpan span);
+
+        public abstract Comment Parse(SnapshotSpan span);
+    }
 }
