@@ -49,7 +49,7 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <ItemsControl x:Name="listTokens"
+        <ItemsControl x:Name="ListTokens"
                       ItemTemplate="{StaticResource DataTemplateListToken}" />
         
         <Button Grid.Column="1" Content="_Use Defaults" HorizontalAlignment="Center" 

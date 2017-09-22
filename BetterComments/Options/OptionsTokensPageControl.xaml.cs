@@ -14,7 +14,7 @@ namespace BetterComments.Options {
             DataContext = Settings;
 
             InitializeComponent();
-            listTokens.ItemsSource = GetCommentTypeTokens();
+            ListTokens.ItemsSource = GetCommentTypeTokens();
         }
 
         private static IEnumerable<String> GetCommentTypeTokens() {
@@ -27,8 +27,8 @@ namespace BetterComments.Options {
         }
 
         public void RefreshItemControls() {
-            listTokens.ItemsSource = null;
-            listTokens.ItemsSource = GetCommentTypeTokens();
+            ListTokens.ItemsSource = null;
+            ListTokens.ItemsSource = GetCommentTypeTokens();
         }
     }
 }
