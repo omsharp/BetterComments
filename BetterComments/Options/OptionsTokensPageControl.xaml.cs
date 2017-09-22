@@ -4,7 +4,6 @@ using System.Drawing.Text;
 using System.Linq;
 using System;
 using BetterComments.CommentsTagging;
-using BetterComments.Utils;
 using System.Windows.Controls;
 
 namespace BetterComments.Options {

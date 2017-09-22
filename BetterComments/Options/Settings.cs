@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System;
 using BetterComments.CommentsTagging;
 using System.Linq;
-using BetterComments.Utils;
 
 namespace BetterComments.Options {
     public class Settings : ISettings, INotifyPropertyChanged {

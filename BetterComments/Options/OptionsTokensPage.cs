@@ -6,7 +6,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using BetterComments.CommentsTagging;
-using BetterComments.Utils;
 
 namespace BetterComments.Options {
 

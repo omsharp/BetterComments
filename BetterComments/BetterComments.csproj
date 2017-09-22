@@ -71,7 +71,7 @@
     <Compile Include="Options\OptionsTokensPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Utils\EnumExtensions.cs" />
+    <Compile Include="Options\Infrastructure\EnumExtensions.cs" />
     <Compile Include="Utils\IClassificationTagExtensions.cs" />
     <Compile Include="CommentsTagging\Infrastructure\Comment.cs" />
     <Compile Include="CommentsTagging\Infrastructure\CommentParser.cs" />
@@ -90,10 +90,10 @@
     <Compile Include="Options\OptionsGeneralPageControl.xaml.cs">
       <DependentUpon>OptionsGeneralPageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utils\RequiredAndUniqueRule.cs" />
+    <Compile Include="Options\Infrastructure\RequiredAndUniqueRule.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
-    <Compile Include="Utils\TokenValuesBehavior.cs" />
-    <Compile Include="Utils\TokenValuesToValueConverter.cs" />
+    <Compile Include="Options\Infrastructure\TokenValuesBehavior.cs" />
+    <Compile Include="Options\Infrastructure\TokenValuesToValueConverter.cs" />
     <Compile Include="VSPackage.cs" />
     <Compile Include="Options\OptionsGeneralPage.cs">
       <SubType>Component</SubType>

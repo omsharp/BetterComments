@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace BetterComments.Utils {
+namespace BetterComments.Options {
     public class TokenValuesToValueConverter : Freezable, IValueConverter {
 
         #region Tokens

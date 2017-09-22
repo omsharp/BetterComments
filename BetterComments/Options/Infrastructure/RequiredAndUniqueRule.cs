@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace BetterComments.Utils {
+namespace BetterComments.Options {
     public class RequiredAndUniqueRule : ValidationRule {
 
         private Dictionary<String, String> m_Tokens;

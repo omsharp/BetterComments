@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace BetterComments.Utils {
+namespace BetterComments.Options {
 
     public static class TokenValuesBehavior {
 
