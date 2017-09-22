@@ -7,6 +7,12 @@ using System.Linq;
 
 namespace BetterComments.Options {
     public class Settings : ISettings, INotifyPropertyChanged {
+
+        private static Lazy<Settings> s_Instance = new Lazy<Settings>(() => new Settings());
+        public static Settings Instance {
+            get { return s_Instance.Value; }
+        }
+
         #region Fields
         private string font = string.Empty;
         private double size = -1.5;
@@ -70,6 +76,11 @@ namespace BetterComments.Options {
 
         #endregion
 
+        private Settings() {
+            SettingsStore.LoadSettings(this);
+            SettingsStore.SettingsChanged += OnSettingsChanged;
+        }
+
         #region ISettings Members
 
         public string Key => "BetterComments";
@@ -105,6 +116,10 @@ namespace BetterComments.Options {
 
             return dictionary;
 
+        }
+
+        private void OnSettingsChanged() {
+            SettingsStore.LoadSettings(this);
         }
 
     }

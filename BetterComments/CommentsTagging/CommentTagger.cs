@@ -24,7 +24,7 @@ namespace BetterComments.CommentsTagging {
     }
 
     internal class CommentTagger : ITagger<ClassificationTag>, IDisposable {
-        private readonly Settings settings = new Settings();
+        private readonly Settings settings = Settings.Instance;
 
         private readonly IClassificationTypeRegistryService classRegistry;
         private readonly ITagAggregator<IClassificationTag> tagAggregator;
@@ -34,8 +34,8 @@ namespace BetterComments.CommentsTagging {
             classRegistry = reg;
             tagAggregator = agg;
 
-            SettingsStore.LoadSettings(settings);
-            SettingsStore.SettingsChanged += OnSettingsChanged;
+            //SettingsStore.LoadSettings(settings);
+            //SettingsStore.SettingsChanged += OnSettingsChanged;
         }
 
 #pragma warning disable 0067
@@ -122,14 +122,14 @@ namespace BetterComments.CommentsTagging {
             return null;
         }
 
-        private void OnSettingsChanged() {
-            SettingsStore.LoadSettings(settings);
-        }
+        //private void OnSettingsChanged() {
+        //    SettingsStore.LoadSettings(settings);
+        //}
 
         #region IDisposable
 
         public void Dispose() {
-            SettingsStore.SettingsChanged -= OnSettingsChanged;
+            //SettingsStore.SettingsChanged -= OnSettingsChanged;
             tagAggregator.Dispose();
             GC.SuppressFinalize(this);
         }

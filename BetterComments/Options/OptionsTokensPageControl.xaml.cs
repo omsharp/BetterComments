@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 namespace BetterComments.Options {
     public partial class OptionsTokensPageControl {
-        public Settings Settings { get; } = new Settings();
+        public Settings Settings { get; } = Settings.Instance;
 
         public OptionsTokensPageControl() {
             DataContext = Settings;

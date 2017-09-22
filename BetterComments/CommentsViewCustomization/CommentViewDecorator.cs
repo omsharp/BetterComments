@@ -17,7 +17,7 @@ namespace BetterComments.CommentsViewCustomization
       private readonly IClassificationFormatMap formatMap;
       private readonly IClassificationTypeRegistryService regService;
 
-      private readonly Settings settings = new Settings();
+        private readonly Settings settings = Settings.Instance;
 
       private static readonly List<string> commentTypes = new List<string>()
             {
@@ -40,7 +40,7 @@ namespace BetterComments.CommentsViewCustomization
       {
          view.GotAggregateFocus += TextView_GotAggregateFocus;
 
-         SettingsStore.LoadSettings(settings);
+         //SettingsStore.LoadSettings(settings);
          SettingsStore.SettingsChanged += OnSettingsChanged;
 
          formatMap = map;
@@ -51,7 +51,7 @@ namespace BetterComments.CommentsViewCustomization
 
       private void OnSettingsChanged()
       {
-         SettingsStore.LoadSettings(settings);
+         //SettingsStore.LoadSettings(settings);
 
          if (!isDecorating)
             Decorate();

@@ -17,12 +17,12 @@ namespace BetterComments.Options
          get { return pageControl ?? (pageControl = new OptionsGeneralPageControl()); }
       }
       
-      protected override void OnActivate(CancelEventArgs e)
-      {
-         SettingsStore.LoadSettings(pageControl.Settings);
+      //protected override void OnActivate(CancelEventArgs e)
+      //{
+      //   SettingsStore.LoadSettings(pageControl.Settings);
 
-         base.OnActivate(e);
-      }
+      //   base.OnActivate(e);
+      //}
 
       protected override void OnApply(PageApplyEventArgs e)
       {

@@ -7,7 +7,7 @@ namespace BetterComments.Options
 {
    public partial class OptionsGeneralPageControl
    {
-      public Settings Settings { get; } = new Settings();
+      public Settings Settings { get; } = Settings.Instance;
 
       public OptionsGeneralPageControl()
       {
