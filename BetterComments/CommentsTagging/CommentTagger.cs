@@ -33,9 +33,6 @@ namespace BetterComments.CommentsTagging {
                              ITagAggregator<IClassificationTag> agg) {
             classRegistry = reg;
             tagAggregator = agg;
-
-            //SettingsStore.LoadSettings(settings);
-            //SettingsStore.SettingsChanged += OnSettingsChanged;
         }
 
 #pragma warning disable 0067
@@ -122,14 +119,9 @@ namespace BetterComments.CommentsTagging {
             return null;
         }
 
-        //private void OnSettingsChanged() {
-        //    SettingsStore.LoadSettings(settings);
-        //}
-
         #region IDisposable
 
         public void Dispose() {
-            //SettingsStore.SettingsChanged -= OnSettingsChanged;
             tagAggregator.Dispose();
             GC.SuppressFinalize(this);
         }

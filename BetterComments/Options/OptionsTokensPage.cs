@@ -21,7 +21,6 @@ namespace BetterComments.Options {
         }
 
         protected override void OnActivate(CancelEventArgs e) {
-            //SettingsStore.LoadSettings(pageControl.Settings);
             pageControl.RefreshItemControls();
 
             base.OnActivate(e);

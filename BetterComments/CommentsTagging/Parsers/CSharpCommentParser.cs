@@ -45,8 +45,7 @@ namespace BetterComments.CommentsTagging
             {
                string keyword = Settings.TokenValues[commentType.ToString()];
                startOffset = spanText.IndexOf(keyword);
-               //startOffset = commentType == CommentType.Task ? spanText.IndexOf("todo") : spanText.IndexOfFirstChar(3);
-
+              
                spanLength = spanText.StartsWith("//")
                              ? span.Length - startOffset
                              : spanText.IndexOfFirstCharReverse(spanText.IndexOf("*/") - 1) - (startOffset - 1);
@@ -69,10 +68,6 @@ namespace BetterComments.CommentsTagging
                      {
                         string keyword = Settings.TokenValues[commentType.ToString()];
                         startOffset = lineText.IndexOf(keyword);
-
-                        //startOffset = commentType == CommentType.Task
-                        //                              ? lineText.IndexOf("todo")
-                        //                              : lineText.IndexOfFirstChar(lineText.IndexOf("/*") + 3);
 
                         commentSpans.Add(new SnapshotSpan(span.Snapshot, line.Start + startOffset, line.Length - startOffset));
                      }
