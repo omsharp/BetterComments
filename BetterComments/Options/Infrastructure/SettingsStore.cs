@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
@@ -122,7 +123,7 @@ namespace BetterComments.Options {
         }
 
         private static String GetSubCollectionName(ISettings settings, PropertyInfo property) {
-            return $"{settings.Key}.{property.Name}";
+            return Path.Combine(settings.Key, property.Name);
         }
 
         private static IEnumerable<PropertyInfo> GetProperties(ISettings settings) {
