@@ -16,9 +16,6 @@ namespace BetterComments.Options {
 
         public static event Action SettingsChanged;
 
-        private const String DICO_KEYVALUESEPARATOR = "===";
-        private const String DICO_ITEMSEPERATOR = "&&&";
-
         public static void SaveSettings(ISettings settings) {
             try {
                 if (!store.CollectionExists(settings.Key)) {
