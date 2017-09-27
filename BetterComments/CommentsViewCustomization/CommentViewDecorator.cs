@@ -1,25 +1,25 @@
-﻿using System;
+﻿using BetterComments.CommentsClassification;
+using BetterComments.Options;
+using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Editor;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using BetterComments.CommentsClassification;
-using Microsoft.VisualStudio.Text.Classification;
-using Microsoft.VisualStudio.Text.Editor;
-using BetterComments.Options;
 
 namespace BetterComments.CommentsViewCustomization
 {
-   internal sealed class CommentViewDecorator
-   {
-      private bool isDecorating;
-      private readonly IClassificationFormatMap formatMap;
-      private readonly IClassificationTypeRegistryService regService;
+    internal sealed class CommentViewDecorator
+    {
+        private bool isDecorating;
+        private readonly IClassificationFormatMap formatMap;
+        private readonly IClassificationTypeRegistryService regService;
 
-      private readonly Settings settings = new Settings();
+        private readonly Settings settings = Settings.Instance;
 
-      private static readonly List<string> commentTypes = new List<string>()
+        private static readonly List<string> commentTypes = new List<string>()
             {
                 "comment",
                 "xml doc comment",
@@ -29,118 +29,115 @@ namespace BetterComments.CommentsViewCustomization
                 "xaml comment",
             };
 
-      public static CommentViewDecorator Create(ITextView view, IClassificationFormatMap map,
-                                                IClassificationTypeRegistryService service)
-      {
-         return view.Properties.GetOrCreateSingletonProperty(() => new CommentViewDecorator(view, map, service));
-      }
+        public static CommentViewDecorator Create(ITextView view, IClassificationFormatMap map,
+                                                  IClassificationTypeRegistryService service)
+        {
+            return view.Properties.GetOrCreateSingletonProperty(() => new CommentViewDecorator(view, map, service));
+        }
 
-      private CommentViewDecorator(ITextView view, IClassificationFormatMap map,
-                                   IClassificationTypeRegistryService service)
-      {
-         view.GotAggregateFocus += TextView_GotAggregateFocus;
+        private CommentViewDecorator(ITextView view, IClassificationFormatMap map,
+                                     IClassificationTypeRegistryService service)
+        {
+            view.GotAggregateFocus += TextView_GotAggregateFocus;
 
-         SettingsStore.LoadSettings(settings);
-         SettingsStore.SettingsChanged += OnSettingsChanged;
+            SettingsStore.SettingsChanged += OnSettingsChanged;
 
-         formatMap = map;
-         regService = service;
+            formatMap = map;
+            regService = service;
 
-         Decorate();
-      }
-
-      private void OnSettingsChanged()
-      {
-         SettingsStore.LoadSettings(settings);
-
-         if (!isDecorating)
             Decorate();
-      }
+        }
 
-      private void TextView_GotAggregateFocus(object sender, EventArgs e)
-      {
-         if (sender is ITextView view)
-            view.GotAggregateFocus -= TextView_GotAggregateFocus;
+        private void OnSettingsChanged()
+        {
+            if (!isDecorating)
+                Decorate();
+        }
 
-         if (!isDecorating)
-            Decorate();
-      }
+        private void TextView_GotAggregateFocus(object sender, EventArgs e)
+        {
+            if (sender is ITextView view)
+                view.GotAggregateFocus -= TextView_GotAggregateFocus;
 
-      private void Decorate()
-      {
-         try
-         {
-            isDecorating = true;
-            DecorateKnownClassificationTypes();
-            DecorateUnknowClassificationTypes();
-         }
-         catch (Exception ex)
-         {
-            //TODO: Handle the exception gracefully.
-            Debug.Assert(false, "Exception while formatting! \n", ex.Message);
-         }
-         finally
-         {
-            isDecorating = false;
-         }
-      }
+            if (!isDecorating)
+                Decorate();
+        }
 
-      private void DecorateKnownClassificationTypes()
-      {
-         var knowns = commentTypes.Select(type => regService.GetClassificationType(type))
-                                  .Where(type => type != null);
+        private void Decorate()
+        {
+            try
+            {
+                isDecorating = true;
+                DecorateKnownClassificationTypes();
+                DecorateUnknowClassificationTypes();
+            }
+            catch (Exception ex)
+            {
+                //TODO: Handle the exception gracefully.
+                Debug.Assert(false, "Exception while formatting! \n", ex.Message);
+            }
+            finally
+            {
+                isDecorating = false;
+            }
+        }
 
-         foreach (var classificationType in knowns)
-            SetProperties(classificationType);
-      }
+        private void DecorateKnownClassificationTypes()
+        {
+            var knowns = commentTypes.Select(type => regService.GetClassificationType(type))
+                                     .Where(type => type != null);
 
-      private void DecorateUnknowClassificationTypes()
-      {
-         var unknowns = from type in formatMap.CurrentPriorityOrder.Where(type => type != null)
-                        let name = type.Classification.ToLowerInvariant()
-                        where name.Contains("comment") && !commentTypes.Contains(name)
-                        select type;
+            foreach (var classificationType in knowns)
+                SetProperties(classificationType);
+        }
 
-         foreach (var classificationType in unknowns)
-            SetProperties(classificationType);
-      }
+        private void DecorateUnknowClassificationTypes()
+        {
+            var unknowns = from type in formatMap.CurrentPriorityOrder.Where(type => type != null)
+                           let name = type.Classification.ToLowerInvariant()
+                           where name.Contains("comment") && !commentTypes.Contains(name)
+                           select type;
 
-      private void SetProperties(IClassificationType classificationType)
-      {
-         //? Might need to benchmark this function for performance.
+            foreach (var classificationType in unknowns)
+                SetProperties(classificationType);
+        }
 
-         var properties = formatMap.GetTextProperties(classificationType);
-         var fontSize = GetEditorTextSize() + settings.Size;
+        private void SetProperties(IClassificationType classificationType)
+        {
+            //? Might need to benchmark this function for performance.
 
-         if (!string.IsNullOrWhiteSpace(settings.Font))
-            properties = properties.SetTypeface(new Typeface(settings.Font));
+            var properties = formatMap.GetTextProperties(classificationType);
+            var fontSize = GetEditorTextSize() + settings.Size;
 
-         if (Math.Abs(fontSize - properties.FontRenderingEmSize) > 0)
-            properties = properties.SetFontRenderingEmSize(fontSize);
+            if (!string.IsNullOrWhiteSpace(settings.Font))
+                properties = properties.SetTypeface(new Typeface(settings.Font));
 
-         if (properties.Italic != settings.Italic)
-            properties = properties.SetItalic(settings.Italic);
+            if (Math.Abs(fontSize - properties.FontRenderingEmSize) > 0)
+                properties = properties.SetFontRenderingEmSize(fontSize);
 
-         if (settings.Opacity >= 0.1 && settings.Opacity <= 1)
-            properties = properties.SetForegroundOpacity(settings.Opacity);
+            if (properties.Italic != settings.Italic)
+                properties = properties.SetItalic(settings.Italic);
 
-         if (classificationType.IsOfType(CommentNames.IMPORTANT_COMMENT))
-            properties = properties.SetTextDecorations(GetTextDecoration(settings));
+            if (settings.Opacity >= 0.1 && settings.Opacity <= 1)
+                properties = properties.SetForegroundOpacity(settings.Opacity);
 
-         formatMap.SetTextProperties(classificationType, properties);
-      }
+            if (classificationType.IsOfType(CommentNames.IMPORTANT_COMMENT))
+                properties = properties.SetTextDecorations(GetTextDecoration(settings));
 
-      private double GetEditorTextSize()
-      {
-         return formatMap.GetTextProperties(regService.GetClassificationType("text"))
-                         .FontRenderingEmSize;
-      }
+            formatMap.SetTextProperties(classificationType, properties);
+        }
 
-      private TextDecorationCollection GetTextDecoration(Settings settings)
-      {
-         return settings.UnderlineImportantComments
-                    ? new TextDecorationCollection { TextDecorations.Underline }
-                    : new TextDecorationCollection();
-      }
-   }
+        private double GetEditorTextSize()
+        {
+            return formatMap.GetTextProperties(regService.GetClassificationType("text"))
+                            .FontRenderingEmSize;
+        }
+
+        private TextDecorationCollection GetTextDecoration(Settings settings)
+        {
+            return settings.UnderlineImportantComments
+                       ? new TextDecorationCollection { TextDecorations.Underline }
+                       : new TextDecorationCollection();
+        }
+    }
 }

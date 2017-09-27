@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="BetterComments.Options.OptionsTokensPageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:BetterComments.Options"
+             Width="400" d:DesignHeight="300"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type local:Settings}}">
+
+    <UserControl.Resources>
+        <local:TokenValuesToValueConverter x:Key="TokenValuesToValueConverter" Tokens="{Binding TokenValues}" />
+
+        <Style x:Key="StyleListTokenTextBox" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Validation.ErrorTemplate">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <DockPanel>
+                                    <TextBlock Foreground="Red" FontSize="20" Margin="2,0,2,1">!</TextBlock>
+                                    <Border BorderBrush="Red" BorderThickness="1">
+                                        <AdornedElementPlaceholder />
+                                    </Border>
+                                </DockPanel>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate x:Key="DataTemplateListToken">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <Label HorizontalAlignment="Left" VerticalAlignment="Center" Width="75"
+                               Content="{Binding}" Grid.Column="0" Margin="0,0,5,0" />
+                <TextBox Grid.Column="1" Width="200" VerticalContentAlignment="Center"
+                         Style="{StaticResource StyleListTokenTextBox}"
+                         local:TokenValuesBehavior.Key="{Binding}"
+                         local:TokenValuesBehavior.Converter="{StaticResource TokenValuesToValueConverter}" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Margin="16,10,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <ItemsControl x:Name="ListTokens"
+                      ItemTemplate="{StaticResource DataTemplateListToken}" />
+
+        <Button Grid.Column="1" Content="_Use Defaults" HorizontalAlignment="Center"
+                VerticalAlignment="Top" Margin="5" Height="24" Width="94"
+                Click="Button_Click" />
+    </Grid>
+</UserControl>

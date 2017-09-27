@@ -1,100 +1,143 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using BetterComments.CommentsTagging;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace BetterComments.Options
 {
-   public class Settings : ISettings, INotifyPropertyChanged
-   {
-      #region Fields
-      private string font = string.Empty;
-      private double size = -1.5;
-      private double opacity = 0.8;
-      private bool italic = true;
-      private bool highlightTaskKeywordOnly = false;
-      private bool underlineImportantComments = false;
-      private bool strikethroughDoubleComments = false;
-      #endregion
+    public class Settings : ISettings, INotifyPropertyChanged
+    {
+        private static Lazy<Settings> instance = new Lazy<Settings>(() => new Settings());
 
-      #region Settings Properties
+        public static Settings Instance
+        {
+            get { return instance.Value; }
+        }
 
-      [Setting]
-      public string Font
-      {
-         get { return font; }
-         set { SetField(ref font, value); }
-      }
+        #region Fields
 
-      [Setting]
-      public double Size
-      {
-         get { return size; }
-         set { SetField(ref size, value); }
-      }
+        private string font = string.Empty;
+        private double size = -1.5;
+        private double opacity = 0.8;
+        private bool italic = true;
+        private bool highlightTaskKeywordOnly = false;
+        private bool underlineImportantComments = false;
+        private bool strikethroughDoubleComments = false;
+        private Dictionary<string, string> tokenValues = GetTokenDefaultValues();
 
-      [Setting]
-      public bool Italic
-      {
-         get { return italic; }
-         set { SetField(ref italic, value); }
-      }
+        #endregion Fields
 
-      [Setting]
-      public double Opacity
-      {
-         get { return opacity; }
-         set { SetField(ref opacity, value); }
-      }
+        #region Settings Properties
 
-      [Setting]
-      public bool HighlightTaskKeywordOnly
-      {
-         get { return highlightTaskKeywordOnly; }
-         set { SetField(ref highlightTaskKeywordOnly, value); }
-      }
+        [Setting]
+        public string Font
+        {
+            get { return font; }
+            set { SetField(ref font, value); }
+        }
 
-      [Setting]
-      public bool UnderlineImportantComments
-      {
-         get { return underlineImportantComments; }
-         set { SetField(ref underlineImportantComments, value); }
-      }
+        [Setting]
+        public double Size
+        {
+            get { return size; }
+            set { SetField(ref size, value); }
+        }
 
-      [Setting]
-      public bool StrikethroughDoubleComments
-      {
-         get { return strikethroughDoubleComments; }
-         set { SetField(ref strikethroughDoubleComments, value); }
-      }
+        [Setting]
+        public bool Italic
+        {
+            get { return italic; }
+            set { SetField(ref italic, value); }
+        }
 
-      #endregion
+        [Setting]
+        public double Opacity
+        {
+            get { return opacity; }
+            set { SetField(ref opacity, value); }
+        }
 
-      #region ISettings Members
+        [Setting]
+        public bool HighlightTaskKeywordOnly
+        {
+            get { return highlightTaskKeywordOnly; }
+            set { SetField(ref highlightTaskKeywordOnly, value); }
+        }
 
-      public string Key => "BetterComments";
+        [Setting]
+        public bool UnderlineImportantComments
+        {
+            get { return underlineImportantComments; }
+            set { SetField(ref underlineImportantComments, value); }
+        }
 
-      #endregion
+        [Setting]
+        public bool StrikethroughDoubleComments
+        {
+            get { return strikethroughDoubleComments; }
+            set { SetField(ref strikethroughDoubleComments, value); }
+        }
 
-      #region INotifyPropertyChanged Members
+        [Setting]
+        public Dictionary<string, string> TokenValues
+        {
+            get { return tokenValues; }
+            set { SetField(ref tokenValues, value); }
+        }
 
-      public event PropertyChangedEventHandler PropertyChanged;
+        #endregion Settings Properties
 
-      protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-      {
-         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-      }
+        private Settings()
+        {
+            SettingsStore.LoadSettings(this);
+            SettingsStore.SettingsChanged += OnSettingsChanged;
+        }
 
-      private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-      {
-         if (EqualityComparer<T>.Default.Equals(field, value))
-            return;
+        #region ISettings Members
 
-         field = value;
+        public string Key => "BetterComments";
 
-         OnPropertyChanged(propertyName);
-      }
+        #endregion ISettings Members
 
-      #endregion
-   }
+        #region INotifyPropertyChanged Members
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+                return;
+
+            field = value;
+
+            OnPropertyChanged(propertyName);
+        }
+
+        #endregion INotifyPropertyChanged Members
+
+        public static Dictionary<string, string> GetTokenDefaultValues()
+        {
+            var dictionary = new Dictionary<String, String>();
+            var keys = Enum.GetNames(typeof(CommentType)).Where(p => ((CommentType)Enum.Parse(typeof(CommentType), p)).GetAttribute<CommentIgnoreAttribute>() == null);
+
+            foreach (var key in keys)
+            {
+                dictionary.Add(key, ((CommentType)Enum.Parse(typeof(CommentType), key)).GetAttribute<CommentDefaultAttribute>()?.Value);
+            }
+
+            return dictionary;
+        }
+
+        private void OnSettingsChanged()
+        {
+            SettingsStore.LoadSettings(this);
+        }
+    }
 }

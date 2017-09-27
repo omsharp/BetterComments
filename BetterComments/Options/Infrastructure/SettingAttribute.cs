@@ -2,6 +2,5 @@
 
 namespace BetterComments.Options
 {
-   public class SettingAttribute : Attribute
-   { }
+    public class SettingAttribute : Attribute { }
 }
