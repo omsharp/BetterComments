@@ -1,7 +1,5 @@
 ﻿using System;
 
-namespace BetterComments.Options
-{
-   public class SettingAttribute : Attribute
-   { }
+namespace BetterComments.Options {
+    public class SettingAttribute : Attribute { }
 }

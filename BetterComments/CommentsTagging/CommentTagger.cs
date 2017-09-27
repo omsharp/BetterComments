@@ -10,7 +10,8 @@ using Microsoft.VisualStudio.Utilities;
 using System.Diagnostics;
 
 namespace BetterComments.CommentsTagging {
-    public enum CommentType {
+    public enum CommentType 
+    {
         [CommentIgnore]
         Normal,
         [CommentDefault("!")]
@@ -23,7 +24,8 @@ namespace BetterComments.CommentsTagging {
         Task
     }
 
-    internal class CommentTagger : ITagger<ClassificationTag>, IDisposable {
+    internal class CommentTagger : ITagger<ClassificationTag>, IDisposable 
+    {
         private readonly Settings settings = Settings.Instance;
 
         private readonly IClassificationTypeRegistryService classRegistry;

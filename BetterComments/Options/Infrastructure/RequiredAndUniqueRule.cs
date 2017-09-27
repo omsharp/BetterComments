@@ -7,17 +7,22 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace BetterComments.Options {
-    public class RequiredAndUniqueRule : ValidationRule {
+    public class RequiredAndUniqueRule : ValidationRule 
+    {
 
-        private Dictionary<String, String> m_Tokens;
+        private Dictionary<string, string> tokens;
 
-        public RequiredAndUniqueRule(Dictionary<String, String> tokens) {
-            m_Tokens = tokens;
+        public RequiredAndUniqueRule(Dictionary<string, string> tokens) 
+        {
+            this.tokens = tokens;
         }
 
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo) {
-            if (value is String str) {
-                if (String.IsNullOrEmpty(str)) {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo) 
+        {
+            if (value is String str) 
+            {
+                if (String.IsNullOrEmpty(str)) 
+                {
                     return new ValidationResult(false, "Value is required");
                 }
                 return ValidationResult.ValidResult;

@@ -6,11 +6,13 @@ using BetterComments.CommentsTagging;
 using System.Linq;
 
 namespace BetterComments.Options {
-    public class Settings : ISettings, INotifyPropertyChanged {
+    public class Settings : ISettings, INotifyPropertyChanged 
+    {
 
-        private static Lazy<Settings> s_Instance = new Lazy<Settings>(() => new Settings());
-        public static Settings Instance {
-            get { return s_Instance.Value; }
+        private static Lazy<Settings> instance = new Lazy<Settings>(() => new Settings());
+        public static Settings Instance 
+        {
+            get { return instance.Value; }
         }
 
         #region Fields
@@ -21,7 +23,7 @@ namespace BetterComments.Options {
         private bool highlightTaskKeywordOnly = false;
         private bool underlineImportantComments = false;
         private bool strikethroughDoubleComments = false;
-        private Dictionary<String, String> tokenValues = GetTokenDefaultValues();
+        private Dictionary<string, string> tokenValues = GetTokenDefaultValues();
         #endregion
 
         #region Settings Properties
@@ -69,14 +71,15 @@ namespace BetterComments.Options {
         }
 
         [Setting]
-        public Dictionary<String, String> TokenValues {
+        public Dictionary<string, string> TokenValues {
             get { return tokenValues; }
             set { SetField(ref tokenValues, value); }
         }
 
         #endregion
 
-        private Settings() {
+        private Settings() 
+        {
             SettingsStore.LoadSettings(this);
             SettingsStore.SettingsChanged += OnSettingsChanged;
         }
@@ -106,19 +109,21 @@ namespace BetterComments.Options {
 
         #endregion
 
-        public static Dictionary<String, String> GetTokenDefaultValues() {
-            Dictionary<String, String> dictionary = new Dictionary<String, String>();
+        public static Dictionary<string, string> GetTokenDefaultValues() 
+        {
+            var dictionary = new Dictionary<String, String>();
+            var keys = Enum.GetNames(typeof(CommentType)).Where(p => ((CommentType)Enum.Parse(typeof(CommentType), p)).GetAttribute<CommentIgnoreAttribute>() == null);
 
-            IEnumerable<String> keys = Enum.GetNames(typeof(CommentType)).Where(p => ((CommentType)Enum.Parse(typeof(CommentType), p)).GetAttribute<CommentIgnoreAttribute>() == null);
-            foreach(String key in keys) {
+            foreach(var key in keys) 
+            {
                 dictionary.Add(key, ((CommentType)Enum.Parse(typeof(CommentType), key)).GetAttribute<CommentDefaultAttribute>()?.Value);
             }
 
             return dictionary;
-
         }
 
-        private void OnSettingsChanged() {
+        private void OnSettingsChanged() 
+        {
             SettingsStore.LoadSettings(this);
         }
 

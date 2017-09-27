@@ -19,16 +19,20 @@ namespace BetterComments.Options {
             new PropertyMetadata(null)
         );
 
-        public Dictionary<String, String> Tokens {
+        public Dictionary<String, String> Tokens 
+        {
             get { return (Dictionary<String, String>)GetValue(TokensProperty); }
             set { SetValue(TokensProperty, value); }
         }
 
         #endregion
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            if (Tokens != null && value is String key) {
-                if (!Tokens.ContainsKey(key)) {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) 
+        {
+            if (Tokens != null && value is String key) 
+            {
+                if (!Tokens.ContainsKey(key)) 
+                {
                     Tokens.Add(key, String.Empty);
                 }
                 return Tokens[key];
@@ -36,11 +40,13 @@ namespace BetterComments.Options {
             return Binding.DoNothing;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) 
+        {
             throw new NotImplementedException();
         }
-        
-        protected override Freezable CreateInstanceCore() {
+
+        protected override Freezable CreateInstanceCore() 
+        {
             return new TokenValuesToValueConverter();
         }
 

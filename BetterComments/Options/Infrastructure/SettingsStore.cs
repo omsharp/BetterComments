@@ -66,14 +66,16 @@ namespace BetterComments.Options {
                         break;
 
                     case Dictionary<string, string> dico:
-                        String collectionName = GetSubCollectionName(settings, prop);
-                        if (!store.CollectionExists(collectionName)) {
+                        var collectionName = GetSubCollectionName(settings, prop);
+                        if (!store.CollectionExists(collectionName)) 
+                        {
                             store.CreateCollection(collectionName);
                         } else {
                             store.GetPropertyNames(collectionName).ToList().ForEach(p => store.DeleteProperty(collectionName, p));
                         }
 
-                        foreach (KeyValuePair<string, string> item in dico) {
+                        foreach (var item in dico) 
+                        {
                             store.SetString(collectionName, item.Key, item.Value);
                         }
                         saved = true;
@@ -105,10 +107,12 @@ namespace BetterComments.Options {
                             break;
 
                         case Dictionary<String, String> dico:
-                            String collectionName = GetSubCollectionName(settings, prop);
-                            if (store.CollectionExists(collectionName)) {
-                                Dictionary<String, String> dicoToLoad = new Dictionary<string, string>();
-                                foreach (string property in store.GetPropertyNames(collectionName)) {
+                            var collectionName = GetSubCollectionName(settings, prop);
+                            if (store.CollectionExists(collectionName)) 
+                            {
+                                var dicoToLoad = new Dictionary<string, string>();
+                                foreach (var property in store.GetPropertyNames(collectionName)) 
+                                {
                                     dicoToLoad.Add(property, store.GetString(collectionName, property));
                                 }
                                 prop.SetValue(settings, dicoToLoad);

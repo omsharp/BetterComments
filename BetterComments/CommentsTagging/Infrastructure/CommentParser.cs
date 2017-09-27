@@ -3,13 +3,15 @@ using Microsoft.VisualStudio.Text;
 
 namespace BetterComments.CommentsTagging {
     internal abstract class CommentParser : ICommentParser {
+
         protected Settings Settings;
 
         protected CommentParser(Settings settings) {
             Settings = settings;
         }
 
-        protected virtual CommentType GetCommentType(string commentText) {
+        protected virtual CommentType GetCommentType(string commentText) 
+        {
             if (commentText.StartsWith(Settings.TokenValues[CommentType.Important.ToString()]))
                 return CommentType.Important;
 
