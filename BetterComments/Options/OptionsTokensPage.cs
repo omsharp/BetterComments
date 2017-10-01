@@ -40,12 +40,12 @@ namespace BetterComments.Options
 
         private void CheckTokensAndReplaceInvalidByDefault()
         {
-            foreach (KeyValuePair<String, String> item in pageControl.Settings.TokenValues.ToList())
+            foreach (var item in pageControl.Settings.TokenValues.ToList())
             {
                 if (String.IsNullOrEmpty(item.Value))
                 {
-                    CommentType enumKey = ((CommentType)Enum.Parse(typeof(CommentType), item.Key));
-                    String defaultValue = enumKey.GetAttribute<CommentDefaultAttribute>()?.Value;
+                    var enumKey = ((CommentType)Enum.Parse(typeof(CommentType), item.Key));
+                    var defaultValue = enumKey.GetAttribute<CommentDefaultAttribute>()?.Value;
                     pageControl.Settings.TokenValues[item.Key] = defaultValue;
                 }
             }

@@ -12,14 +12,14 @@ namespace BetterComments.Options
 
         public static readonly DependencyProperty TokensProperty = DependencyProperty.Register(
             "Tokens",
-            typeof(Dictionary<String, String>),
+            typeof(Dictionary<string, string>),
             typeof(TokenValuesToValueConverter),
             new PropertyMetadata(null)
         );
 
-        public Dictionary<String, String> Tokens
+        public Dictionary<string, string> Tokens
         {
-            get { return (Dictionary<String, String>)GetValue(TokensProperty); }
+            get { return (Dictionary<string, string>)GetValue(TokensProperty); }
             set { SetValue(TokensProperty, value); }
         }
 
@@ -27,7 +27,7 @@ namespace BetterComments.Options
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Tokens != null && value is String key)
+            if (Tokens != null && value is string key)
             {
                 if (!Tokens.ContainsKey(key))
                 {

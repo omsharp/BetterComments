@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.Shell.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -56,7 +55,9 @@ namespace BetterComments.Options
         {
             var saved = false;
 
-            foreach (var prop in GetProperties(settings))
+            var properties = GetProperties(settings);
+
+            foreach (var prop in properties)
             {
                 switch (prop.GetValue(settings))
                 {
@@ -79,24 +80,6 @@ namespace BetterComments.Options
                         store.SetString(settings.Key, prop.Name, s);
                         saved = true;
                         break;
-
-                    case Dictionary<string, string> dico:
-                        var collectionName = GetSubCollectionName(settings, prop);
-                        if (!store.CollectionExists(collectionName))
-                        {
-                            store.CreateCollection(collectionName);
-                        }
-                        else
-                        {
-                            store.GetPropertyNames(collectionName).ToList().ForEach(p => store.DeleteProperty(collectionName, p));
-                        }
-
-                        foreach (var item in dico)
-                        {
-                            store.SetString(collectionName, item.Key, item.Value);
-                        }
-                        saved = true;
-                        break;
                 }
             }
 
@@ -105,8 +88,12 @@ namespace BetterComments.Options
 
         private static void LoadSettingsFromStore(ISettings settings)
         {
-            foreach (var prop in GetProperties(settings))
+            var properties = GetProperties(settings);
+
+            foreach (var prop in properties)
             {
+                Debug.WriteLine($"{prop.Name} : {store.PropertyExists(settings.Key, prop.Name)}");
+
                 if (store.PropertyExists(settings.Key, prop.Name))
                 {
                     switch (prop.GetValue(settings))
@@ -126,32 +113,11 @@ namespace BetterComments.Options
                         case string s:
                             prop.SetValue(settings, store.GetString(settings.Key, prop.Name));
                             break;
-
-                        case Dictionary<String, String> dico:
-                            var collectionName = GetSubCollectionName(settings, prop);
-
-                            if (store.CollectionExists(collectionName))
-                            {
-                                var dicoToLoad = new Dictionary<string, string>();
-
-                                foreach (var property in store.GetPropertyNames(collectionName))
-                                {
-                                    dicoToLoad.Add(property, store.GetString(collectionName, property));
-                                }
-
-                                prop.SetValue(settings, dicoToLoad);
-                            }
-                            break;
                     }
                 }
             }
         }
-
-        private static String GetSubCollectionName(ISettings settings, PropertyInfo property)
-        {
-            return Path.Combine(settings.Key, property.Name);
-        }
-
+        
         private static IEnumerable<PropertyInfo> GetProperties(ISettings settings)
         {
             return settings.GetType()

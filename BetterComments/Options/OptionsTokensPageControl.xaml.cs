@@ -11,7 +11,7 @@ namespace BetterComments.Options
 
         public OptionsTokensPageControl()
         {
-            DataContext = Settings;
+            DataContext = Settings.Instance;
 
             InitializeComponent();
             ListTokens.ItemsSource = GetCommentTypeTokens();

@@ -12,17 +12,17 @@ namespace BetterComments.Options
 
         public static readonly DependencyProperty KeyProperty = DependencyProperty.RegisterAttached(
             "Key",
-            typeof(String),
+            typeof(string),
             typeof(TokenValuesBehavior),
             new PropertyMetadata(null, KeyChanged)
         );
 
-        public static String GetKey(DependencyObject target)
+        public static string GetKey(DependencyObject target)
         {
-            return (String)target.GetValue(KeyProperty);
+            return (string)target.GetValue(KeyProperty);
         }
 
-        public static void SetKey(DependencyObject target, String value)
+        public static void SetKey(DependencyObject target, string value)
         {
             target.SetValue(KeyProperty, value);
         }
@@ -32,7 +32,7 @@ namespace BetterComments.Options
             if (target is TextBox control)
             {
                 var behavior = GetOrCreateBehavior(control);
-                behavior.Key = e.NewValue as String;
+                behavior.Key = e.NewValue as string;
             }
         }
 
@@ -102,9 +102,9 @@ namespace BetterComments.Options
 
         #region Key
 
-        private String key;
+        private string key;
 
-        public String Key
+        public string Key
         {
             get { return key; }
             set
@@ -151,7 +151,7 @@ namespace BetterComments.Options
             {
                 if (!Converter.Tokens.ContainsKey(Key))
                 {
-                    Converter.Tokens.Add(Key, String.Empty);
+                    Converter.Tokens.Add(Key, string.Empty);
                 }
 
                 ValidateControl(control);
@@ -196,7 +196,7 @@ namespace BetterComments.Options
 
         private Boolean IsValid
         {
-            get { return Converter != null && !String.IsNullOrEmpty(Key); }
+            get { return Converter != null && !string.IsNullOrEmpty(Key); }
         }
     }
 }

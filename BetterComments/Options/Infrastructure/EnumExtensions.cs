@@ -10,10 +10,12 @@ namespace BetterComments.Options
         {
             var enumType = enumValue.GetType();
             var member = enumType.GetMember(enumValue.ToString());
+
             if (member != null && member.Count() != 0)
             {
                 return member[0].GetCustomAttribute<T>(false);
             }
+
             return default(T);
         }
     }

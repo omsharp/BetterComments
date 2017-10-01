@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace BetterComments.Options
 {
     public class Settings : ISettings, INotifyPropertyChanged
     {
-        private static Lazy<Settings> instance = new Lazy<Settings>(() => new Settings());
-
         #region Fields
 
         private string font = string.Empty;
@@ -20,20 +19,44 @@ namespace BetterComments.Options
         private bool highlightTaskKeywordOnly = false;
         private bool underlineImportantComments = false;
         private bool strikethroughDoubleComments = false;
-        private Dictionary<string, string> tokenValues = GetTokenDefaultValues();
+
+        private string tokensString;
+        private Dictionary<string, string> tokenValues;
 
         #endregion Fields
 
+        #region Singleton
+
+        private static volatile Settings instance;
+        private static readonly object syncLock = new object();
+
+        public static Settings Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncLock)
+                    {
+                        if (instance == null)
+                            instance = new Settings();
+                    }
+                }
+
+                return instance;
+            }
+        }
+
         private Settings()
         {
+            tokenValues = GetTokenDefaultValues();
+            tokensString = ConvertTokenValuesDictionaryToString();
+
             SettingsStore.LoadSettings(this);
             SettingsStore.SettingsChanged += OnSettingsChanged;
         }
 
-        public static Settings Instance
-        {
-            get { return instance.Value; }
-        }
+        #endregion
 
         #region Settings Properties
 
@@ -87,14 +110,31 @@ namespace BetterComments.Options
         }
 
         [Setting]
+        public string TokensString
+        {
+            get
+            {
+                return ConvertTokenValuesDictionaryToString();
+            }
+            set
+            {
+                tokensString = value;
+                BuildTokenValuesDictionary();
+            }
+        }
+
+        #endregion Settings Properties
+
+        #region Non-Settings Properties
+
         public Dictionary<string, string> TokenValues
         {
             get { return tokenValues; }
             set { SetField(ref tokenValues, value); }
         }
 
-        #endregion Settings Properties
-        
+        #endregion
+
         #region ISettings Members
 
         public string Key => "BetterComments";
@@ -120,11 +160,12 @@ namespace BetterComments.Options
             OnPropertyChanged(propertyName);
         }
 
-        #endregion INotifyPropertyChanged Members
+        #endregion INotifyPropertyChanged Members 
+
 
         public static Dictionary<string, string> GetTokenDefaultValues()
         {
-            var dictionary = new Dictionary<String, String>();
+            var dictionary = new Dictionary<string, string>();
             var keys = Enum.GetNames(typeof(CommentType)).Where(p => ((CommentType)Enum.Parse(typeof(CommentType), p)).GetAttribute<CommentIgnoreAttribute>() == null);
 
             foreach (var key in keys)
@@ -133,6 +174,18 @@ namespace BetterComments.Options
             }
 
             return dictionary;
+        }
+
+        private void BuildTokenValuesDictionary()
+        {
+            TokenValues = tokensString.Split('|')
+                                      .Select(str => str.Split(','))
+                                      .ToDictionary(sa => sa[0].Trim(), sa => sa[1].Trim());
+        }
+
+        private string ConvertTokenValuesDictionaryToString()
+        {
+            return string.Join("|", TokenValues.Select(p => $"{p.Key},{p.Value}"));
         }
 
         private void OnSettingsChanged()

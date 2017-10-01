@@ -21,7 +21,9 @@ namespace BetterComments.Options
             IEnumerable<string> result;
 
             using (var fonts = new InstalledFontCollection())
+            {
                 result = fonts.Families.Select(f => f.Name);
+            }
 
             return result;
         }
