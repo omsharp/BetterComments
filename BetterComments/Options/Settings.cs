@@ -11,11 +11,6 @@ namespace BetterComments.Options
     {
         private static Lazy<Settings> instance = new Lazy<Settings>(() => new Settings());
 
-        public static Settings Instance
-        {
-            get { return instance.Value; }
-        }
-
         #region Fields
 
         private string font = string.Empty;
@@ -28,6 +23,17 @@ namespace BetterComments.Options
         private Dictionary<string, string> tokenValues = GetTokenDefaultValues();
 
         #endregion Fields
+
+        private Settings()
+        {
+            SettingsStore.LoadSettings(this);
+            SettingsStore.SettingsChanged += OnSettingsChanged;
+        }
+
+        public static Settings Instance
+        {
+            get { return instance.Value; }
+        }
 
         #region Settings Properties
 
@@ -88,13 +94,7 @@ namespace BetterComments.Options
         }
 
         #endregion Settings Properties
-
-        private Settings()
-        {
-            SettingsStore.LoadSettings(this);
-            SettingsStore.SettingsChanged += OnSettingsChanged;
-        }
-
+        
         #region ISettings Members
 
         public string Key => "BetterComments";

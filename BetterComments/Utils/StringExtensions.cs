@@ -5,17 +5,18 @@ namespace BetterComments
 {
     internal static class StringExtensions
     {
+        const int NEGATIVE_ONE = -1;
+
         public static int IndexOfFirstChar(this string source, int start = 0)
         {
-            var index = 0;
+            if (source.IsNullOrWhiteSpace())
+                return NEGATIVE_ONE;
 
-            for (var i = start; i < source.Length; i++)
+            var index = start;
+
+            while ((source[index] == ' ' || source[index] == '\t') && index < source.Length)
             {
-                if (source[i] != ' ')
-                {
-                    index = i;
-                    break;
-                }
+                index++;
             }
 
             return index;
@@ -23,15 +24,14 @@ namespace BetterComments
 
         public static int IndexOfFirstCharReverse(this string source, int start)
         {
-            var index = -1;
+            if (source.IsNullOrWhiteSpace())
+                return NEGATIVE_ONE;
+                
+            var index = start;
 
-            for (var i = start; i >= 0; i--)
+            while ((source[index] == ' ' || source[index] == '\t') && index > NEGATIVE_ONE)
             {
-                if (source[i] != ' ')
-                {
-                    index = i;
-                    break;
-                }
+                index--;
             }
 
             return index;

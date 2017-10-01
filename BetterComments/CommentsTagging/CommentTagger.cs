@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 
 namespace BetterComments.CommentsTagging
 {
@@ -70,8 +71,9 @@ namespace BetterComments.CommentsTagging
                     }
                     catch (Exception ex)
                     {
-                        //! Yeah. I'm ignoring the exception!
-                        Debug.Fail($"Tagging Exception /n/n {ex.ToString()}");
+                        //MessageBox.Show("Better Comments - Exception", ex.ToString());
+                        // Debug.Fail($"Tagging Exception /n/n {ex.ToString()}");
+                        Debug.WriteLine($"Exception in tagger : {ex}");
                     }
                 }
             }
@@ -108,33 +110,30 @@ namespace BetterComments.CommentsTagging
         private ICommentParser CreateCommentParser(IContentType contentType)
         {
             if (contentType.IsOfType("CSharp"))
-                return new CSharpCommentParser(settings);
+                return new CSharpCommentParser();
 
             if (contentType.IsOfType("Basic"))
-                return new VBCommentParser(settings);
+                return new VBCommentParser();
 
             if (contentType.IsOfType("Python"))
-                return new PythonCommentParser(settings);
+                return new PythonCommentParser();
 
             if (contentType.IsOfType("F#"))
-                return new FSharpCommentParser(settings);
+                return new FSharpCommentParser();
 
             if (contentType.IsOfType("C/C++"))
-                return new CppCommentParser(settings);
+                return new CppCommentParser();
 
             if (contentType.IsOfType("JScript") || contentType.IsOfType("TypeScript"))
-                return new JavaScriptCommentParser(settings);
+                return new JavaScriptCommentParser();
 
             if (contentType.IsOfType("RazorCSharp"))
-                return new HTMLCommentParser(settings);
-
+                return new MarkupCommentParser();
+            
             var temp = contentType.TypeName.ToLower();
 
-            if (temp.Contains("html"))
-                return new HTMLCommentParser(settings);
-
-            if (temp.Contains("xaml"))
-                return new XAMLCommentParser(settings);
+            if (temp.Contains("xaml") || temp.Contains("html"))
+                return new MarkupCommentParser();
 
             return null;
         }

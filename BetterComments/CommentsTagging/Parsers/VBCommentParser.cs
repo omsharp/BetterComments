@@ -1,54 +1,36 @@
 ﻿using BetterComments.Options;
 using Microsoft.VisualStudio.Text;
-using System.Collections.Generic;
 
 namespace BetterComments.CommentsTagging
 {
     internal class VBCommentParser : CommentParser
     {
-        public VBCommentParser(Settings settings)
-           : base(settings)
-        {
-        }
-
         public override bool IsValidComment(SnapshotSpan span)
         {
             return span.GetText().Trim().StartsWith("'");
         }
 
-        public override Comment Parse(SnapshotSpan span)
+        protected override Comment SpecificParse(SnapshotSpan span, CommentType commentType)
         {
             var spanText = span.GetText().ToLower();
-            var commentType = GetCommentType(spanText);
-            var commentSpans = new List<SnapshotSpan>();
-
-            if (commentType == CommentType.Normal)
-            {
-                commentSpans.Add(span);
-            }
-            else if (Settings.HighlightTaskKeywordOnly && commentType == CommentType.Task) // Color only the "Todo" keyword.
-            {
-                commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + spanText.IndexOfFirstChar(1), 4));
-            }
-            else //! CommentType is not Normal and HighlightTaskKeywordOnly is off  == Process the whole span.
-            {
-                string keyword = Settings.TokenValues[commentType.ToString()];
-                var startOffset = spanText.IndexOf(keyword);
-
-                commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - startOffset));
-            }
-
-            return new Comment(commentSpans, commentType);
+            var startOffset = ParseHelper.ComputeSingleLineCommentStartIndex(spanText, "''", commentType);
+            
+            return new Comment(
+                new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - startOffset),
+                commentType);
         }
 
-        protected override CommentType GetCommentType(string commentText)
+        protected override CommentType GetCommentType(SnapshotSpan span)
         {
-            var commentWithoutStarter = commentText.Substring(1);
-
-            if (commentWithoutStarter.StartsWith("'") && Settings.StrikethroughDoubleComments)
+            if (span.GetText().StartsWith("''") && Settings.StrikethroughDoubleComments)
                 return CommentType.Crossed;
 
-            return base.GetCommentType(commentWithoutStarter);
+            return base.GetCommentType(span);
+        }
+
+        protected override string SpanTextWithoutCommentStarter(SnapshotSpan span)
+        {
+            return span.GetText().Substring(1);
         }
     }
 }

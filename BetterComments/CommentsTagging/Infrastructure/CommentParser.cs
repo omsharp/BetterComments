@@ -1,19 +1,45 @@
 ﻿using BetterComments.Options;
 using Microsoft.VisualStudio.Text;
+using System.Collections.Generic;
 
 namespace BetterComments.CommentsTagging
 {
     internal abstract class CommentParser : ICommentParser
     {
-        protected Settings Settings;
+        protected Settings Settings = Settings.Instance;
+        
+        #region ICommentParser Members
 
-        protected CommentParser(Settings settings)
+        public Comment Parse(SnapshotSpan span)
         {
-            Settings = settings;
+            var commentType = GetCommentType(span);
+
+            if (commentType == CommentType.Normal)
+                return new Comment(new List<SnapshotSpan> { span }, CommentType.Normal);
+
+            // Color only the "Todo" keyword.
+            if (Settings.HighlightTaskKeywordOnly && commentType == CommentType.Task)
+            {
+                var spanText = span.GetText().ToLower();
+                var token = Settings.TokenValues[CommentType.Task.ToString()];
+                var start = spanText.IndexOf(token);
+
+                return new Comment(
+                    new SnapshotSpan(span.Snapshot, span.Start + start, token.Length),
+                    CommentType.Task);
+            }
+
+            return SpecificParse(span, commentType);
         }
 
-        protected virtual CommentType GetCommentType(string commentText)
+        public abstract bool IsValidComment(SnapshotSpan span);
+
+        #endregion
+
+        protected virtual CommentType GetCommentType(SnapshotSpan span)
         {
+            var commentText = SpanTextWithoutCommentStarter(span).ToLower();
+
             if (commentText.StartsWith(Settings.TokenValues[CommentType.Important.ToString()]))
                 return CommentType.Important;
 
@@ -29,8 +55,8 @@ namespace BetterComments.CommentsTagging
             return CommentType.Normal;
         }
 
-        public abstract bool IsValidComment(SnapshotSpan span);
+        protected abstract Comment SpecificParse(SnapshotSpan span, CommentType commentType);
 
-        public abstract Comment Parse(SnapshotSpan span);
+        protected abstract string SpanTextWithoutCommentStarter(SnapshotSpan span);
     }
 }

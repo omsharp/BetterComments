@@ -6,10 +6,6 @@ namespace BetterComments.CommentsTagging
 {
     internal class CppCommentParser : CommentParser
     {
-        public CppCommentParser(Settings settings) : base(settings)
-        {
-        }
-
         public override bool IsValidComment(SnapshotSpan span)
         {
             var txt = span.GetText();
@@ -17,52 +13,41 @@ namespace BetterComments.CommentsTagging
             return txt.StartsWith("//") || txt.StartsWith("/*");
         }
 
-        public override Comment Parse(SnapshotSpan span)
+        protected override Comment SpecificParse(SnapshotSpan span, CommentType commentType)
         {
             var spanText = span.GetText().ToLower();
-            var commentType = GetCommentType(spanText);
+
             var commentSpans = new List<SnapshotSpan>();
 
-            if (commentType == CommentType.Normal)
-            {
-                commentSpans.Add(span);
-            }
-            else if (Settings.HighlightTaskKeywordOnly && commentType == CommentType.Task) // Color only the "Todo" keyword.
-            {
-                commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + spanText.IndexOfFirstChar(2), 4));
-            }
-            else if (spanText.StartsWith("//"))
-            {
-                string keyword = Settings.TokenValues[commentType.ToString()];
-                var startOffset = spanText.IndexOf(keyword);
+            var startOffset = ParseHelper.ComputeSingleLineCommentStartIndex(spanText, "////", commentType);
 
+            if (spanText.StartsWith("//"))
+            {
                 commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - startOffset));
             }
-            else if (spanText.StartsWith("/*") && spanText.EndsWith("*/"))
+            else if (spanText.StartsWith("/*") && spanText.EndsWith("*/") && spanText.Length > 5)
             {
-                if (spanText.Length > 5)
-                {
-                    var keyword = Settings.TokenValues[commentType.ToString()];
-                    var startOffset = spanText.IndexOf(keyword);
+                startOffset = ParseHelper.ComputeDelimitedCommentStartIndex(spanText, commentType);
+                var spanLength = spanText.IndexOfFirstCharReverse(spanText.IndexOf("*/") - 1) - (startOffset - 1);
 
-                    var spanLength = spanText.IndexOfFirstCharReverse(spanText.IndexOf("*/") - 1) - (startOffset - 1);
-
-                    if (spanLength > 0)
-                        commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, spanLength));
-                }
+                if (spanLength > 0)
+                    commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, spanLength));
             }
 
             return new Comment(commentSpans, commentType);
         }
 
-        protected override CommentType GetCommentType(string commentText)
+        protected override CommentType GetCommentType(SnapshotSpan span)
         {
-            var commentWithoutStarter = commentText.Substring(2);
-
-            if (commentWithoutStarter.StartsWith("//") && Settings.StrikethroughDoubleComments)
+            if (span.GetText().StartsWith("////") && Settings.StrikethroughDoubleComments)
                 return CommentType.Crossed;
 
-            return base.GetCommentType(commentWithoutStarter);
+            return base.GetCommentType(span);
+        }
+
+        protected override string SpanTextWithoutCommentStarter(SnapshotSpan span)
+        {
+            return span.GetText().Substring(2);
         }
     }
 }

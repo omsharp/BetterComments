@@ -13,5 +13,11 @@ namespace BetterComments.CommentsTagging
             Spans = spans;
             Type = type;
         }
+
+        public Comment(SnapshotSpan span, CommentType type)
+        {
+            Spans = new List<SnapshotSpan>(new[] { span });
+            Type = type;
+        }
     }
 }

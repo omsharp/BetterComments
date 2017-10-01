@@ -32,13 +32,11 @@
     <RootNamespace>BetterComments</RootNamespace>
     <AssemblyName>BetterComments</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-
-     <!-- Start the extension with devenv as external program in the experimental hive.-->
+    <!-- Start the extension with devenv as external program in the experimental hive.-->
     <StartAction>Program</StartAction>
-	  <StartProgram>$(DevEnvDir)\devenv.exe</StartProgram>
-	  <StartArguments>/rootsuffix Exp</StartArguments>
+    <StartProgram>$(DevEnvDir)\devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
     <!-- Ends here-->
-
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
@@ -72,6 +70,8 @@
     <Compile Include="CommentsTagging\Infrastructure\CommentAttribute.cs" />
     <Compile Include="CommentsTagging\Parsers\CppCommentParser.cs" />
     <Compile Include="CommentsTagging\Parsers\JavaScriptCommentParser.cs" />
+    <Compile Include="CommentsTagging\Parsers\MarkupCommentParser.cs" />
+    <Compile Include="CommentsTagging\Infrastructure\ParseHelper.cs" />
     <Compile Include="Options\OptionsTokensPageControl.xaml.cs">
       <DependentUpon>OptionsTokensPageControl.xaml</DependentUpon>
     </Compile>
@@ -84,11 +84,9 @@
     <Compile Include="CommentsTagging\Infrastructure\CommentParser.cs" />
     <Compile Include="CommentsTagging\Parsers\CSharpCommentParser.cs" />
     <Compile Include="CommentsTagging\Parsers\FSharpCommentParser.cs" />
-    <Compile Include="CommentsTagging\Parsers\HTMLCommentParser.cs" />
     <Compile Include="CommentsTagging\Infrastructure\ICommentParser.cs" />
     <Compile Include="CommentsTagging\Parsers\PythonCommentParser.cs" />
     <Compile Include="CommentsTagging\Parsers\VBCommentParser.cs" />
-    <Compile Include="CommentsTagging\Parsers\XAMLCommentParser.cs" />
     <Compile Include="CommentsViewCustomization\CommentViewDecorator.cs" />
     <Compile Include="CommentsViewCustomization\CommentViewCreationListener.cs" />
     <Compile Include="Options\Infrastructure\ISettings.cs" />
