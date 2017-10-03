@@ -29,6 +29,16 @@ Download the latest build from [VSIX Gallery](http://vsixgallery.com/extension/B
 - Use "Todo" (Case ignored) for Task.
 - Use 'x', 'X', or double comment for strikethrough (Crossed).
 
+
+Or you can use your own custom tokens:
+
+![Sample1](screenshots/CustomTokensExample.png)
+
+![Sample1](screenshots/CustomTokensOptionsPage.png)
+
+
+
+
 C#, F#, C/C++, and JavaScript 
 
 ![Sample1](screenshots/ClassificationC.png)
