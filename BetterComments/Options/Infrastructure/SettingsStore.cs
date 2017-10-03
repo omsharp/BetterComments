@@ -92,8 +92,6 @@ namespace BetterComments.Options
 
             foreach (var prop in properties)
             {
-                Debug.WriteLine($"{prop.Name} : {store.PropertyExists(settings.Key, prop.Name)}");
-
                 if (store.PropertyExists(settings.Key, prop.Name))
                 {
                     switch (prop.GetValue(settings))

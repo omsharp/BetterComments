@@ -6,11 +6,9 @@ namespace BetterComments.Options
 {
     public partial class OptionsGeneralPageControl
     {
-        public Settings Settings { get; } = Settings.Instance;
-
         public OptionsGeneralPageControl()
         {
-            DataContext = Settings;
+            DataContext = Settings.Instance;
 
             InitializeComponent();
             FontsComboBox.ItemsSource = GetInstalledFonts();

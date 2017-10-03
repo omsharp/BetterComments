@@ -8,25 +8,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows;
 
 namespace BetterComments.CommentsTagging
 {
     public enum CommentType
     {
-        [CommentIgnore]
         Normal,
-
-        [CommentDefault("!")]
         Important,
-
-        [CommentDefault("?")]
         Question,
-
-        [CommentDefault("x")]
         Crossed,
-
-        [CommentDefault("todo")]
         Task
     }
 

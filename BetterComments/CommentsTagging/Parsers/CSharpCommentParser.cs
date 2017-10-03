@@ -39,7 +39,7 @@ namespace BetterComments.CommentsTagging
 
                 for (var curr = firstLineNumber; curr <= lastLineNumber; curr++)
                 {
-                    var token = Settings.TokenValues[commentType.ToString()];
+                    var token = Settings.Instance.GetTokenValue(commentType);
                     var line = span.Snapshot.GetLineFromLineNumber(curr);
                     var lineText = line.GetText().ToLower();
 

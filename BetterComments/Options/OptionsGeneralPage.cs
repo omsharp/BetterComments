@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.Shell;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -18,9 +19,7 @@ namespace BetterComments.Options
 
         protected override void OnApply(PageApplyEventArgs e)
         {
-            if (e.ApplyBehavior == ApplyKind.Apply)
-                SettingsStore.SaveSettings(pageControl.Settings);
-
+            //! To prevent saving twice or saving invalid tokens, saving logic is handled only in OptionsTokensPage.cs.
             base.OnApply(e);
         }
     }

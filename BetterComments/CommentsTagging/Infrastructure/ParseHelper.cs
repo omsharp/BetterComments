@@ -9,7 +9,7 @@ namespace BetterComments.CommentsTagging
     {
         public static int ComputeSingleLineCommentStartIndex(string comment, string doubleCommentStarter, CommentType type)
         {
-            var token = Settings.Instance.TokenValues[type.ToString()];
+            var token = Settings.Instance.GetTokenValue(type);
 
             if (comment.StartsWith(doubleCommentStarter) && Settings.Instance.StrikethroughDoubleComments)
             {
@@ -21,7 +21,7 @@ namespace BetterComments.CommentsTagging
 
         public static int ComputeDelimitedCommentStartIndex(string comment, CommentType type)
         {
-            var token = Settings.Instance.TokenValues[type.ToString()];
+            var token = Settings.Instance.GetTokenValue(type);
 
             return ComptuteCommentStartIndex(comment, token, type);
         }

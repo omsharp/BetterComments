@@ -21,7 +21,7 @@ namespace BetterComments.CommentsTagging
             if (Settings.HighlightTaskKeywordOnly && commentType == CommentType.Task)
             {
                 var spanText = span.GetText().ToLower();
-                var token = Settings.TokenValues[CommentType.Task.ToString()];
+                var token = Settings.GetTokenValue(CommentType.Task);
                 var start = spanText.IndexOf(token);
 
                 return new Comment(
@@ -40,16 +40,16 @@ namespace BetterComments.CommentsTagging
         {
             var commentText = SpanTextWithoutCommentStarter(span).ToLower();
 
-            if (commentText.StartsWith(Settings.TokenValues[CommentType.Important.ToString()]))
+            if (commentText.StartsWith(Settings.GetTokenValue(CommentType.Important)))
                 return CommentType.Important;
 
-            if (commentText.StartsWith(Settings.TokenValues[CommentType.Question.ToString()]))
+            if (commentText.StartsWith(Settings.GetTokenValue(CommentType.Question)))
                 return CommentType.Question;
 
-            if (commentText.StartsWith(Settings.TokenValues[CommentType.Crossed.ToString()]))
+            if (commentText.StartsWith(Settings.GetTokenValue(CommentType.Crossed)))
                 return CommentType.Crossed;
 
-            if (commentText.Trim().StartsWith(Settings.TokenValues[CommentType.Task.ToString()]))
+            if (commentText.Trim().StartsWith(Settings.GetTokenValue(CommentType.Task)))
                 return CommentType.Task;
 
             return CommentType.Normal;

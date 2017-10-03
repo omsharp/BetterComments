@@ -1,9 +1,8 @@
-using BetterComments.CommentsTagging;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
+using System.Globalization;
+using System.Media;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -14,6 +13,7 @@ namespace BetterComments.Options
     [Guid("3F4564D7-3A70-4322-81FF-45E94C606D7B")]
     public class OptionsTokensPage : UIElementDialogPage
     {
+        private bool tokensValidated = false;
         private OptionsTokensPageControl pageControl;
 
         protected override UIElement Child
@@ -21,34 +21,66 @@ namespace BetterComments.Options
             get { return pageControl ?? (pageControl = new OptionsTokensPageControl()); }
         }
 
-        protected override void OnActivate(CancelEventArgs e)
-        {
-            pageControl.RefreshItemControls();
-
-            base.OnActivate(e);
-        }
-
         protected override void OnApply(PageApplyEventArgs e)
         {
-            CheckTokensAndReplaceInvalidByDefault();
+            tokensValidated = ValidateTokens();
 
-            if (e.ApplyBehavior == ApplyKind.Apply)
-                SettingsStore.SaveSettings(pageControl.Settings);
+            if (tokensValidated) //ToDo: validation check should be here
+            {
+                e.ApplyBehavior = ApplyKind.Apply;
+            }
+            else
+            {
+                e.ApplyBehavior = ApplyKind.CancelNoNavigate;
+                ShowInvalidTokenMessage();
+            }
 
             base.OnApply(e);
         }
 
-        private void CheckTokensAndReplaceInvalidByDefault()
+        protected override void OnDeactivate(CancelEventArgs e)
         {
-            foreach (var item in pageControl.Settings.TokenValues.ToList())
+            if (!tokensValidated && !ValidateTokens())
             {
-                if (String.IsNullOrEmpty(item.Value))
-                {
-                    var enumKey = ((CommentType)Enum.Parse(typeof(CommentType), item.Key));
-                    var defaultValue = enumKey.GetAttribute<CommentDefaultAttribute>()?.Value;
-                    pageControl.Settings.TokenValues[item.Key] = defaultValue;
-                }
+                e.Cancel = true;
+                ShowInvalidTokenMessage();
             }
+
+            base.OnDeactivate(e);
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            if (tokensValidated)
+            {
+                SettingsStore.SaveSettings(Settings.Instance);
+            }
+            else
+            {
+                SettingsStore.LoadSettings(Settings.Instance);
+            }
+
+            tokensValidated = false;
+            base.OnClosed(e);
+        }
+
+        private bool ValidateTokens()
+        {
+            var rule = new RequiredAndUniqueRule();
+
+            foreach (var tk in Settings.Instance.CommentTokens)
+            {
+                if (!rule.Validate(tk.CurrentValue, CultureInfo.InvariantCulture).IsValid)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private void ShowInvalidTokenMessage()
+        {
+            SystemSounds.Exclamation.Play();
+            MessageBox.Show("Invalid token!", "Better Comments", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

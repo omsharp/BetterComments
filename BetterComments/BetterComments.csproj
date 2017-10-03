@@ -67,18 +67,20 @@
     <Compile Include="CommentsClassification\Constants.cs" />
     <Compile Include="CommentsTagging\CommentTagger.cs" />
     <Compile Include="CommentsTagging\CommentTaggerProvider.cs" />
-    <Compile Include="CommentsTagging\Infrastructure\CommentAttribute.cs" />
     <Compile Include="CommentsTagging\Parsers\CppCommentParser.cs" />
     <Compile Include="CommentsTagging\Parsers\JavaScriptCommentParser.cs" />
     <Compile Include="CommentsTagging\Parsers\MarkupCommentParser.cs" />
     <Compile Include="CommentsTagging\Infrastructure\ParseHelper.cs" />
+    <Compile Include="Options\Infrastructure\CommentToken.cs" />
+    <Compile Include="Options\Infrastructure\EnumToStringConverter.cs" />
+    <Compile Include="Options\Infrastructure\RelayCommand.cs" />
     <Compile Include="Options\OptionsTokensPageControl.xaml.cs">
       <DependentUpon>OptionsTokensPageControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\OptionsTokensPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Options\Infrastructure\EnumExtensions.cs" />
+    <Compile Include="Options\Infrastructure\PropertyChangeNotifier.cs" />
     <Compile Include="Utils\IClassificationTagExtensions.cs" />
     <Compile Include="CommentsTagging\Infrastructure\Comment.cs" />
     <Compile Include="CommentsTagging\Infrastructure\CommentParser.cs" />
@@ -97,8 +99,6 @@
     </Compile>
     <Compile Include="Options\Infrastructure\RequiredAndUniqueRule.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
-    <Compile Include="Options\Infrastructure\TokenValuesBehavior.cs" />
-    <Compile Include="Options\Infrastructure\TokenValuesToValueConverter.cs" />
     <Compile Include="VSPackage.cs" />
     <Compile Include="Options\OptionsGeneralPage.cs">
       <SubType>Component</SubType>

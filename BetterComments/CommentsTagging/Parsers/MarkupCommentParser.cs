@@ -20,7 +20,7 @@ namespace BetterComments.CommentsTagging
         {
             var spanText = span.GetText().ToLower();
 
-            var token = Settings.TokenValues[commentType.ToString()];
+            var token = Settings.Instance.GetTokenValue(commentType);
 
             var startOffset = commentType == CommentType.Task
                             ? spanText.IndexOf(token, 3)

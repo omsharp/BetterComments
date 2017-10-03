@@ -1,14 +1,11 @@
 using BetterComments.CommentsTagging;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
+using System;
 
 namespace BetterComments.Options
 {
-    public class Settings : ISettings, INotifyPropertyChanged
+    public class Settings : PropertyChangeNotifier, ISettings
     {
         #region Fields
 
@@ -20,8 +17,14 @@ namespace BetterComments.Options
         private bool underlineImportantComments = false;
         private bool strikethroughDoubleComments = false;
 
-        private string tokensString;
-        private Dictionary<string, string> tokenValues;
+        private readonly ObservableCollection<CommentToken> commentTokens
+            = new ObservableCollection<CommentToken>
+            {
+                new CommentToken(type: CommentType.Important, defaultValue: "!", value: "!"),
+                new CommentToken(type: CommentType.Crossed, defaultValue: "x", value: "x"),
+                new CommentToken(type: CommentType.Question, defaultValue: "?", value: "?"),
+                new CommentToken(type: CommentType.Task, defaultValue: "todo", value: "todo")
+            };
 
         #endregion Fields
 
@@ -49,11 +52,8 @@ namespace BetterComments.Options
 
         private Settings()
         {
-            tokenValues = GetTokenDefaultValues();
-            tokensString = ConvertTokenValuesDictionaryToString();
-
+            ResetTokens = new RelayCommand(SetTokensToDefault);
             SettingsStore.LoadSettings(this);
-            SettingsStore.SettingsChanged += OnSettingsChanged;
         }
 
         #endregion
@@ -110,27 +110,21 @@ namespace BetterComments.Options
         }
 
         [Setting]
-        public string TokensString
+        public string CommentTokensAsString
         {
-            get
-            {
-                return ConvertTokenValuesDictionaryToString();
-            }
-            set
-            {
-                tokensString = value;
-                BuildTokenValuesDictionary();
-            }
+            get { return ConvertCommentTokensToString(); }
+            set { UpdateCommentTokens(value); }
         }
 
         #endregion Settings Properties
 
-        #region Non-Settings Properties
+        #region Non-Settings Properties & Commands
 
-        public Dictionary<string, string> TokenValues
+        public RelayCommand ResetTokens { get; }
+
+        public ObservableCollection<CommentToken> CommentTokens
         {
-            get { return tokenValues; }
-            set { SetField(ref tokenValues, value); }
+            get { return commentTokens; }
         }
 
         #endregion
@@ -141,56 +135,48 @@ namespace BetterComments.Options
 
         #endregion ISettings Members
 
-        #region INotifyPropertyChanged Members
+        #region Public Methods
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public CommentToken GetToken(CommentType type)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return commentTokens.Single(t => t.Type == type);
         }
 
-        private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        public string GetTokenValue(CommentType type)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value))
+            return GetToken(type).CurrentValue;
+        }
+
+        #endregion
+
+        #region Private Helpers
+
+        private void SetTokensToDefault()
+        {
+            foreach (var token in commentTokens)
+                token.CurrentValue = token.DefaultValue;
+        }
+
+        private void UpdateCommentTokens(string tokensString)
+        {
+            if (tokensString.IsNullOrWhiteSpace())
                 return;
 
-            field = value;
-
-            OnPropertyChanged(propertyName);
-        }
-
-        #endregion INotifyPropertyChanged Members 
-
-
-        public static Dictionary<string, string> GetTokenDefaultValues()
-        {
-            var dictionary = new Dictionary<string, string>();
-            var keys = Enum.GetNames(typeof(CommentType)).Where(p => ((CommentType)Enum.Parse(typeof(CommentType), p)).GetAttribute<CommentIgnoreAttribute>() == null);
-
-            foreach (var key in keys)
+            foreach (var pair in tokensString.Split('|').Select(p => p.Split(',')))
             {
-                dictionary.Add(key, ((CommentType)Enum.Parse(typeof(CommentType), key)).GetAttribute<CommentDefaultAttribute>()?.Value);
+                var token = commentTokens.SingleOrDefault(t => t.IsOfType(pair[0]));
+
+                if (token != null)
+                    token.CurrentValue = pair[1].Trim();
             }
-
-            return dictionary;
         }
 
-        private void BuildTokenValuesDictionary()
+        private string ConvertCommentTokensToString()
         {
-            TokenValues = tokensString.Split('|')
-                                      .Select(str => str.Split(','))
-                                      .ToDictionary(sa => sa[0].Trim(), sa => sa[1].Trim());
+            var r = string.Join("|", commentTokens.Select(t => t.ToString()));
+            return r;
         }
 
-        private string ConvertTokenValuesDictionaryToString()
-        {
-            return string.Join("|", TokenValues.Select(p => $"{p.Key},{p.Value}"));
-        }
-
-        private void OnSettingsChanged()
-        {
-            SettingsStore.LoadSettings(this);
-        }
+        #endregion
     }
 }
