@@ -16,26 +16,16 @@ namespace BetterComments.CommentsTagging
                 return comment.IndexOfFirstChar(doubleCommentStarter.Length);
             }
 
-            return ComptuteCommentStartIndex(comment, token, type);
+            return comment.IndexOfFirstChar(comment.IndexOf(token) + token.Length);
         }
 
         public static int ComputeDelimitedCommentStartIndex(string comment, CommentType type)
         {
             var token = Settings.Instance.GetTokenValue(type);
 
-            return ComptuteCommentStartIndex(comment, token, type);
-        }
-
-        private static int ComptuteCommentStartIndex(string comment, string token, CommentType type)
-        {
-            if (type == CommentType.Task)
-            {
-                return comment.IndexOf(token);
-            }
-
             return comment.IndexOfFirstChar(comment.IndexOf(token) + token.Length);
         }
-
+        
         public static SnapshotSpan CompleteSingleLineCommentSpan(SnapshotSpan source, string startString)
         {
             var spanText = source.GetText();
