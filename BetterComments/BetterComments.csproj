@@ -74,6 +74,9 @@
     <Compile Include="Options\Infrastructure\CommentToken.cs" />
     <Compile Include="Options\Infrastructure\EnumToStringConverter.cs" />
     <Compile Include="Options\Infrastructure\RelayCommand.cs" />
+    <Compile Include="Options\OptionsPageBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Options\OptionsTokensPageControl.xaml.cs">
       <DependentUpon>OptionsTokensPageControl.xaml</DependentUpon>
     </Compile>

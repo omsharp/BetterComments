@@ -24,7 +24,7 @@ namespace BetterComments.Options
         {
             get { return defaultValue; }
         }
-
+        
         public CommentToken(CommentType type, string defaultValue, string value)
         {
             this.type = type;

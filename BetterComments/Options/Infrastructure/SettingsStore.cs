@@ -14,7 +14,7 @@ namespace BetterComments.Options
         private static readonly WritableSettingsStore store
             = new ShellSettingsManager(ServiceProvider.GlobalProvider).GetWritableSettingsStore(SettingsScope.UserSettings);
 
-        public static event Action SettingsChanged;
+        public static event Action SettingsSaved;
 
         public static void SaveSettings(ISettings settings)
         {
@@ -27,7 +27,7 @@ namespace BetterComments.Options
 
                 if (SaveSettingsIntoStore(settings))
                 {
-                    SettingsChanged?.Invoke();
+                    SettingsSaved?.Invoke();
                 }
             }
             catch (Exception ex)
