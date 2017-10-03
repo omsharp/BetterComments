@@ -6,6 +6,13 @@
 
 ## Changelog
 
+### 2.1
+
+**2017-10-4**
+
+- [x] The user can use custom comment tokens
+
+
 ### 2.0
 
 **2017-06-12**
