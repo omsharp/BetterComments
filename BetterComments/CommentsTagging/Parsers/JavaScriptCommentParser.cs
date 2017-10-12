@@ -14,6 +14,14 @@ namespace BetterComments.CommentsTagging
             return (txt.StartsWith("//") || txt.StartsWith("/*"));
         }
 
+        public override Comment Parse(SnapshotSpan span)
+        {
+            // Just get enough length for GetCommentType() to work.
+            var len = Settings.CommentTokens.Max(t => t.CurrentValue.Length) * 2;
+
+            return base.Parse(new SnapshotSpan(span.Snapshot, span.Start, len));
+        }
+
         protected override Comment SpecificParse(SnapshotSpan span, CommentType commentType)
         {
             var spanText = span.GetText().ToLower();

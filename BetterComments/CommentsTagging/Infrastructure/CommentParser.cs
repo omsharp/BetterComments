@@ -10,7 +10,7 @@ namespace BetterComments.CommentsTagging
         
         #region ICommentParser Members
 
-        public Comment Parse(SnapshotSpan span)
+        public virtual Comment Parse(SnapshotSpan span)
         {
             var commentType = GetCommentType(span);
 
