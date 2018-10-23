@@ -1,13 +1,12 @@
-﻿
-namespace BetterComments.Options
+﻿namespace BetterComments.Options
 {
-    public partial class OptionsTokensPageControl
-    {
-        public OptionsTokensPageControl()
-        {
-            DataContext = Settings.Instance;
+   public partial class OptionsTokensPageControl
+   {
+      public OptionsTokensPageControl()
+      {
+         DataContext = Settings.Instance;
 
-            InitializeComponent();
-        }
-    }
+         InitializeComponent();
+      }
+   }
 }

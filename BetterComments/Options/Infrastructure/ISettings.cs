@@ -1,7 +1,7 @@
 ﻿namespace BetterComments.Options
 {
-    public interface ISettings
-    {
-        string Key { get; }
-    }
+   public interface ISettings
+   {
+      string Key { get; }
+   }
 }

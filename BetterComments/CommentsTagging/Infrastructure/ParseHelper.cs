@@ -5,65 +5,65 @@ using System.Collections.Generic;
 
 namespace BetterComments.CommentsTagging
 {
-    public static class ParseHelper
-    {
-        public static int ComputeSingleLineCommentStartIndex(string comment, string doubleCommentStarter, CommentType type)
-        {
-            var token = Settings.Instance.GetTokenValue(type);
+   public static class ParseHelper
+   {
+      public static int ComputeSingleLineCommentStartIndex(string comment, string doubleCommentStarter, CommentType type)
+      {
+         var token = Settings.Instance.GetTokenValue(type);
 
-            if (comment.StartsWith(doubleCommentStarter) && Settings.Instance.StrikethroughDoubleComments)
-            {
-                return comment.IndexOfFirstChar(doubleCommentStarter.Length);
-            }
+         if (comment.StartsWith(doubleCommentStarter) && Settings.Instance.StrikethroughDoubleComments)
+         {
+            return comment.IndexOfFirstChar(doubleCommentStarter.Length);
+         }
 
-            return comment.IndexOfFirstChar(comment.IndexOf(token) + token.Length);
-        }
+         return comment.IndexOfFirstChar(comment.IndexOf(token) + token.Length);
+      }
 
-        public static int ComputeDelimitedCommentStartIndex(string comment, CommentType type)
-        {
-            var token = Settings.Instance.GetTokenValue(type);
+      public static int ComputeDelimitedCommentStartIndex(string comment, CommentType type)
+      {
+         var token = Settings.Instance.GetTokenValue(type);
 
-            return comment.IndexOfFirstChar(comment.IndexOf(token) + token.Length);
-        }
-        
-        public static SnapshotSpan CompleteSingleLineCommentSpan(SnapshotSpan source, string startString)
-        {
-            var spanText = source.GetText();
+         return comment.IndexOfFirstChar(comment.IndexOf(token) + token.Length);
+      }
 
-            if (!spanText.Contains(startString))
-                throw new ArgumentException($"The SnapshotSpan does not contain \"{startString}\"", nameof(startString));
+      public static SnapshotSpan CompleteSingleLineCommentSpan(SnapshotSpan source, string startString)
+      {
+         var spanText = source.GetText();
 
-            var line = source.Snapshot.GetLineFromPosition(source.Start);
+         if (!spanText.Contains(startString))
+            throw new ArgumentException($"The SnapshotSpan does not contain \"{startString}\"", nameof(startString));
 
-            var offset = line.GetText().IndexOf(startString);
+         var line = source.Snapshot.GetLineFromPosition(source.Start);
 
-            return new SnapshotSpan(source.Snapshot, line.Start + offset, line.Length - offset);
-        }
+         var offset = line.GetText().IndexOf(startString);
 
-        public static List<SnapshotSpan> CompleteDelimitedCommentSpan(SnapshotSpan source, string start, string end)
-        {
-            var spanText = source.GetText();
+         return new SnapshotSpan(source.Snapshot, line.Start + offset, line.Length - offset);
+      }
 
-            if (!spanText.Contains(start))
-                throw new ArgumentException($"The SnapshotSpan does not contain \"{start}\"", nameof(start));
+      public static List<SnapshotSpan> CompleteDelimitedCommentSpan(SnapshotSpan source, string start, string end)
+      {
+         var spanText = source.GetText();
 
-            var commentSpans = new List<SnapshotSpan>();
+         if (!spanText.Contains(start))
+            throw new ArgumentException($"The SnapshotSpan does not contain \"{start}\"", nameof(start));
 
-            var currentLine = source.Snapshot.GetLineFromPosition(source.Start);
-            var curLineText = currentLine.GetText(); ;
+         var commentSpans = new List<SnapshotSpan>();
 
-            //! One line
-            if (curLineText.Contains(start) && curLineText.Contains(end))
-            {
-                var startIndex = curLineText.IndexOf(start);
-                var len = curLineText.IndexOf(end) - curLineText.IndexOf(start) + end.Length;
+         var currentLine = source.Snapshot.GetLineFromPosition(source.Start);
+         var curLineText = currentLine.GetText(); ;
 
-                commentSpans.Add(new SnapshotSpan(source.Snapshot, currentLine.Start + startIndex, len));
-            }
+         //! One line
+         if (curLineText.Contains(start) && curLineText.Contains(end))
+         {
+            var startIndex = curLineText.IndexOf(start);
+            var len = curLineText.IndexOf(end) - curLineText.IndexOf(start) + end.Length;
 
-            //TODO: Handle multi-line comments.
+            commentSpans.Add(new SnapshotSpan(source.Snapshot, currentLine.Start + startIndex, len));
+         }
 
-            return commentSpans;
-        }
-    }
+         //TODO: Handle multi-line comments.
+
+         return commentSpans;
+      }
+   }
 }
