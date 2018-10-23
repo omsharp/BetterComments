@@ -16,7 +16,7 @@ namespace BetterComments.CommentsTagging
 
             if (commentType == CommentType.Normal)
                 return new Comment(new List<SnapshotSpan> { span }, CommentType.Normal);
-
+            
             // Color only the "Todo" keyword.
             if (Settings.HighlightTaskKeywordOnly && commentType == CommentType.Task)
             {
