@@ -7,13 +7,13 @@ namespace BetterComments.CommentsTagging
    {
       public override bool IsValidComment(SnapshotSpan span)
       {
-         return span.GetText().Trim().StartsWith("'");
+         return span.GetText().Trim().StartsWith("'", OrdinalIgnoreCase);
       }
 
       protected override Comment SpecificParse(SnapshotSpan span, CommentType commentType)
       {
          var spanText = span.GetText().ToLower();
-         var startOffset = ParseHelper.ComputeSingleLineCommentStartIndex(spanText, "''", commentType);
+         var startOffset = ParseHelper.SingleLineCommentStartIndex(spanText, "''", commentType);
 
          return new Comment(
              new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - startOffset),
@@ -22,7 +22,7 @@ namespace BetterComments.CommentsTagging
 
       protected override CommentType GetCommentType(SnapshotSpan span)
       {
-         if (span.GetText().StartsWith("''") && Settings.StrikethroughDoubleComments)
+         if (Settings.StrikethroughDoubleComments && span.GetText().StartsWith("''", OrdinalIgnoreCase))
             return CommentType.Crossed;
 
          return base.GetCommentType(span);

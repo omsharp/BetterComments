@@ -1,5 +1,6 @@
 ﻿using BetterComments.Options;
 using Microsoft.VisualStudio.Text;
+using System;
 using System.Collections.Generic;
 
 namespace BetterComments.CommentsTagging
@@ -10,7 +11,7 @@ namespace BetterComments.CommentsTagging
       {
          var txt = span.GetText();
 
-         return txt.StartsWith("//") || txt.StartsWith("/*");
+         return txt.StartsWith("//", OrdinalIgnoreCase) || txt.StartsWith("/*", OrdinalIgnoreCase);
       }
 
       protected override Comment SpecificParse(SnapshotSpan span, CommentType commentType)
@@ -19,16 +20,23 @@ namespace BetterComments.CommentsTagging
 
          var commentSpans = new List<SnapshotSpan>();
 
-         var startOffset = ParseHelper.ComputeSingleLineCommentStartIndex(spanText, "////", commentType);
+         var startOffset = ParseHelper.SingleLineCommentStartIndex(spanText, "////", commentType);
 
-         if (spanText.StartsWith("//"))
+         // single line comment
+         if (spanText.StartsWith("//", OrdinalIgnoreCase))
          {
-            commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - startOffset));
+            commentSpans.Add(
+               new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - startOffset));
          }
-         else if (spanText.StartsWith("/*") && spanText.EndsWith("*/") && spanText.Length > 5)
+         // delimited comment in a single line
+         else if (spanText.StartsWith("/*", OrdinalIgnoreCase)
+               && spanText.EndsWith("*/", OrdinalIgnoreCase)
+               && spanText.Length > 5)
          {
-            startOffset = ParseHelper.ComputeDelimitedCommentStartIndex(spanText, commentType);
-            var spanLength = spanText.IndexOfFirstCharReverse(spanText.IndexOf("*/") - 1) - (startOffset - 1);
+            startOffset = ParseHelper.DelimitedCommentStartIndex(spanText, commentType);
+
+            var indexOfStarter = spanText.IndexOf("*/", OrdinalIgnoreCase);
+            var spanLength = spanText.IndexOfFirstCharReverse(indexOfStarter - 1) - (startOffset - 1);
 
             if (spanLength > 0)
                commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, spanLength));
@@ -39,7 +47,7 @@ namespace BetterComments.CommentsTagging
 
       protected override CommentType GetCommentType(SnapshotSpan span)
       {
-         if (span.GetText().StartsWith("////") && Settings.StrikethroughDoubleComments)
+         if (Settings.StrikethroughDoubleComments && span.GetText().StartsWith("////", OrdinalIgnoreCase))
             return CommentType.Crossed;
 
          return base.GetCommentType(span);

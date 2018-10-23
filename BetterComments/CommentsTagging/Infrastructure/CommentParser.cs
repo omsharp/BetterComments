@@ -7,7 +7,9 @@ namespace BetterComments.CommentsTagging
 {
    internal abstract class CommentParser : ICommentParser
    {
-      protected Settings Settings = Settings.Instance;
+      protected readonly StringComparison OrdinalIgnoreCase = StringComparison.OrdinalIgnoreCase;
+
+      protected readonly Settings Settings = Settings.Instance;
 
       #region ICommentParser Members
 
@@ -23,7 +25,7 @@ namespace BetterComments.CommentsTagging
          {
             var spanText = span.GetText().ToLower();
             var token = Settings.GetTokenValue(CommentType.Task);
-            var start = spanText.IndexOf(token);
+            var start = spanText.IndexOf(token, OrdinalIgnoreCase);
 
             return new Comment(
                 new SnapshotSpan(span.Snapshot, span.Start + start, token.Length),
@@ -41,16 +43,16 @@ namespace BetterComments.CommentsTagging
       {
          var commentText = SpanTextWithoutCommentStarter(span).ToLower().Trim();
 
-         if (commentText.StartsWith(Settings.GetTokenValue(CommentType.Important), StringComparison.Ordinal))
+         if (commentText.StartsWith(Settings.GetTokenValue(CommentType.Important), OrdinalIgnoreCase))
             return CommentType.Important;
 
-         if (commentText.StartsWith(Settings.GetTokenValue(CommentType.Question), StringComparison.Ordinal))
+         if (commentText.StartsWith(Settings.GetTokenValue(CommentType.Question), OrdinalIgnoreCase))
             return CommentType.Question;
 
-         if (commentText.StartsWith(Settings.GetTokenValue(CommentType.Crossed), StringComparison.Ordinal))
+         if (commentText.StartsWith(Settings.GetTokenValue(CommentType.Crossed), OrdinalIgnoreCase))
             return CommentType.Crossed;
 
-         if (commentText.StartsWith(Settings.GetTokenValue(CommentType.Task), StringComparison.Ordinal))
+         if (commentText.StartsWith(Settings.GetTokenValue(CommentType.Task), OrdinalIgnoreCase))
             return CommentType.Task;
 
          return CommentType.Normal;

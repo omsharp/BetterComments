@@ -10,7 +10,8 @@ namespace BetterComments.CommentsTagging
       {
          var txt = span.GetText();
 
-         return txt.StartsWith("//") || txt.StartsWith("/*");
+         return txt.StartsWith("//", OrdinalIgnoreCase)
+             || txt.StartsWith("/*", OrdinalIgnoreCase);
       }
 
       protected override Comment SpecificParse(SnapshotSpan span, CommentType commentType)
@@ -24,18 +25,24 @@ namespace BetterComments.CommentsTagging
 
          if (firstLineNumber == lastLineNumber) //! The comment span consists of a single line.
          {
-            var startOffset = ParseHelper.ComputeSingleLineCommentStartIndex(spanText, "////", commentType);
-
-            var spanLength = spanText.StartsWith("//")
-                           ? span.Length - startOffset
-                           : spanText.IndexOfFirstCharReverse(spanText.IndexOf("*/") - 1) - (startOffset - 1);
+            var startOffset = ParseHelper.SingleLineCommentStartIndex(spanText, "////", commentType);
+            var spanLength = 0;
+            if (spanText.StartsWith("//", OrdinalIgnoreCase))
+            {
+               spanLength = span.Length - startOffset;
+            }
+            else
+            {
+               var closerIndex = spanText.IndexOf("*/", OrdinalIgnoreCase);
+               spanLength = spanText.IndexOfFirstCharReverse(closerIndex - 1) - (startOffset - 1);
+            }
 
             if (spanLength > 0)
                commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, spanLength));
          }
          else //! The comment spans multiple lines
          {
-            var startOffset = ParseHelper.ComputeDelimitedCommentStartIndex(spanText, commentType);
+            var startOffset = ParseHelper.DelimitedCommentStartIndex(spanText, commentType);
             var token = Settings.Instance.GetTokenValue(commentType);
 
             for (var curr = firstLineNumber; curr <= lastLineNumber; curr++)
@@ -45,11 +52,16 @@ namespace BetterComments.CommentsTagging
 
                if (curr == firstLineNumber && lineText.Length > token.Length + 2) //! First line.
                {
-                  var index = lineText.IndexOf("/*");
-
-                  startOffset = commentType == CommentType.Task
-                              ? lineText.IndexOf(token)
-                              : lineText.IndexOfFirstChar(lineText.IndexOf(token) + token.Length);
+                  var index = lineText.IndexOf("/*", OrdinalIgnoreCase);
+                  if (commentType == CommentType.Task)
+                  {
+                     startOffset = lineText.IndexOf(token, OrdinalIgnoreCase);
+                  }
+                  else
+                  {
+                     var indexOfToken = lineText.IndexOf(token, OrdinalIgnoreCase);
+                     startOffset = lineText.IndexOfFirstChar(indexOfToken + token.Length);
+                  }
 
                   commentSpans.Add(new SnapshotSpan(span.Snapshot, line.Start + startOffset, line.Length - startOffset));
                }
@@ -61,10 +73,12 @@ namespace BetterComments.CommentsTagging
                      commentSpans.Add(new SnapshotSpan(span.Snapshot, line.Start + startOffset, line.Length - startOffset));
                   }
                }
-               else if (lineText.Contains("*/") && !lineText.Trim().StartsWith("*/"))//! Last line . Handle it ONLY if it is more than just a comment ender.
+               //! Last line . Handle it ONLY if it is more than just a comment ender.
+               else if (lineText.Contains("*/") && !lineText.Trim().StartsWith("*/", OrdinalIgnoreCase))
                {
                   startOffset = lineText.IndexOfFirstChar();
-                  var spanLength = lineText.IndexOfFirstCharReverse(lineText.IndexOf("*/") - 1) - startOffset + 1;
+                  var closerIndex = lineText.IndexOf("*/", OrdinalIgnoreCase);
+                  var spanLength = lineText.IndexOfFirstCharReverse(closerIndex - 1) - startOffset + 1;
 
                   commentSpans.Add(new SnapshotSpan(span.Snapshot, line.Start + startOffset, spanLength));
                }
@@ -76,7 +90,7 @@ namespace BetterComments.CommentsTagging
 
       protected override CommentType GetCommentType(SnapshotSpan span)
       {
-         if (span.GetText().StartsWith("////") && Settings.StrikethroughDoubleComments)
+         if (Settings.StrikethroughDoubleComments && span.GetText().StartsWith("////", OrdinalIgnoreCase))
             return CommentType.Crossed;
 
          return base.GetCommentType(span);

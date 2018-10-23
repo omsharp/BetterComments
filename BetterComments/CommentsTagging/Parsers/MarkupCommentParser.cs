@@ -21,10 +21,11 @@ namespace BetterComments.CommentsTagging
          var token = Settings.Instance.GetTokenValue(commentType);
 
          var startOffset = commentType == CommentType.Task
-                         ? spanText.IndexOf(token, 3)
-                         : spanText.IndexOfFirstChar(spanText.IndexOf(token, 3) + token.Length);
+                         ? spanText.IndexOf(token, 3, OrdinalIgnoreCase)
+                         : spanText.IndexOfFirstChar(spanText.IndexOf(token, 3, OrdinalIgnoreCase) + token.Length);
 
-         var spanLength = spanText.IndexOfFirstCharReverse(spanText.IndexOf("-->") - 1) - (startOffset - 1);
+         var closerIndex = spanText.IndexOf("-->", OrdinalIgnoreCase);
+         var spanLength = spanText.IndexOfFirstCharReverse(closerIndex - 1) - (startOffset - 1);
 
          return new Comment(
              new SnapshotSpan(span.Snapshot, span.Start + startOffset, spanLength),

@@ -9,24 +9,25 @@ namespace BetterComments.CommentsTagging
       public override bool IsValidComment(SnapshotSpan span)
       {
          var temp = span.GetText();
-         return temp.StartsWith("//") || temp.StartsWith("(*");
+         return temp.StartsWith("//", OrdinalIgnoreCase) || temp.StartsWith("(*", OrdinalIgnoreCase);
       }
 
       protected override Comment SpecificParse(SnapshotSpan span, CommentType commentType)
       {
          var spanText = span.GetText().ToLower();
          var commentSpans = new List<SnapshotSpan>();
-         var startOffset = ParseHelper.ComputeSingleLineCommentStartIndex(spanText, "////", commentType);
+         var startOffset = ParseHelper.SingleLineCommentStartIndex(spanText, "////", commentType);
 
-         if (spanText.StartsWith("//") && startOffset > 0)
+         if (spanText.StartsWith("//", OrdinalIgnoreCase) && startOffset > 0)
          {
             commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, span.Length - startOffset));
          }
          else if (spanText.Contains("(*") && spanText.Contains("*)"))
          {
-            startOffset = ParseHelper.ComputeDelimitedCommentStartIndex(spanText, commentType);
+            startOffset = ParseHelper.DelimitedCommentStartIndex(spanText, commentType);
 
-            var spanLength = spanText.IndexOfFirstCharReverse(spanText.IndexOf("*)") - 1) - (startOffset - 1);
+            var closerIndex = spanText.IndexOf("*)", OrdinalIgnoreCase);
+            var spanLength = spanText.IndexOfFirstCharReverse(closerIndex - 1) - (startOffset - 1);
 
             commentSpans.Add(new SnapshotSpan(span.Snapshot, span.Start + startOffset, spanLength));
          }
@@ -36,7 +37,7 @@ namespace BetterComments.CommentsTagging
 
       protected override CommentType GetCommentType(SnapshotSpan span)
       {
-         if (span.GetText().StartsWith("////") && Settings.StrikethroughDoubleComments)
+         if (Settings.StrikethroughDoubleComments && span.GetText().StartsWith("////", OrdinalIgnoreCase))
             return CommentType.Crossed;
 
          return base.GetCommentType(span);

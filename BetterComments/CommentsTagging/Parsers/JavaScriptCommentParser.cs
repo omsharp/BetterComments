@@ -11,7 +11,7 @@ namespace BetterComments.CommentsTagging
       {
          var txt = span.GetText();
 
-         return (txt.StartsWith("//") || txt.StartsWith("/*"));
+         return (txt.StartsWith("//", OrdinalIgnoreCase) || txt.StartsWith("/*", OrdinalIgnoreCase));
       }
 
       public override Comment Parse(SnapshotSpan span)
@@ -26,13 +26,13 @@ namespace BetterComments.CommentsTagging
       {
          var spanText = span.GetText().ToLower();
 
-         if (spanText.StartsWith("//")) //! The comment span consists of a single line.
+         if (spanText.StartsWith("//", OrdinalIgnoreCase)) //! The comment span consists of a single line.
          {
             var fullSpan = ParseHelper.CompleteSingleLineCommentSpan(span, "//");
 
             spanText = fullSpan.GetText().ToLower();
 
-            var startOffset = ParseHelper.ComputeSingleLineCommentStartIndex(spanText, "////", commentType);
+            var startOffset = ParseHelper.SingleLineCommentStartIndex(spanText, "////", commentType);
             var spanLength = spanText.Length - startOffset;
 
             if (spanLength > 0)
@@ -49,8 +49,9 @@ namespace BetterComments.CommentsTagging
             if (fullSpans.Count == 1)
             {
                spanText = fullSpans[0].GetText().ToLower();
-               var startOffset = ParseHelper.ComputeDelimitedCommentStartIndex(spanText, commentType);
-               var spanLength = spanText.IndexOfFirstCharReverse(spanText.IndexOf("*/") - 1) - (startOffset - 1);
+               var startOffset = ParseHelper.DelimitedCommentStartIndex(spanText, commentType);
+               var closerIndex = spanText.IndexOf("*/", OrdinalIgnoreCase);
+               var spanLength = spanText.IndexOfFirstCharReverse(closerIndex - 1) - (startOffset - 1);
 
                if (spanLength > 0)
                {
@@ -70,7 +71,7 @@ namespace BetterComments.CommentsTagging
                       ? ParseHelper.CompleteSingleLineCommentSpan(span, "//")
                       : ParseHelper.CompleteDelimitedCommentSpan(span, "/*", "*/").First();
 
-         if (fullSpan.GetText().StartsWith("////") && Settings.StrikethroughDoubleComments)
+         if (Settings.StrikethroughDoubleComments && fullSpan.GetText().StartsWith("////", OrdinalIgnoreCase))
             return CommentType.Crossed;
 
          return base.GetCommentType(fullSpan);
