@@ -1,10 +1,18 @@
 ## Things to look into
 
 - [ ] Add a preview pane in the options page. That would be a nice touch to have.
-
+- [ ] Custom tokens
 ---
 
 ## Changelog
+
+### 2.2
+
+**2018-10-23**
+
+- [x] Fixed issue #23
+- [x] Code cleanup 
+ 
 
 ### 2.1
 
