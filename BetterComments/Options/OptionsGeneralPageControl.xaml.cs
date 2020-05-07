@@ -25,5 +25,10 @@ namespace BetterComments.Options
 
          return result;
       }
+
+      private void Hyperlink_Click(object sender, System.Windows.RoutedEventArgs e)
+      {
+         System.Diagnostics.Process.Start("https://docs.google.com/forms/d/e/1FAIpQLScRNeHI2q4yiaAzfXtGOidp-Tu8E6TEaKNPWnE4Cos_osHX9w/viewform?usp=sf_link");
+      }
    }
 }
