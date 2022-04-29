@@ -1,5 +1,5 @@
-Branch: vs17 support for VS2022 only.
-Branch: vs16 support for VS2015, VS2017, and VS2019 on single vsix.
+- **Branch vs16 :** VS2015, VS2017, and VS2019 on single vsix.
+- **Branch vs17 :** VS2022 only.
 ---------------------------------------
 
 
