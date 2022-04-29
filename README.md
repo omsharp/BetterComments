@@ -1,15 +1,17 @@
+Branch: vs17 support for VS2022 only.
+Branch: vs16 support for VS2015, VS2017, and VS2019 on single vsix.
+---------------------------------------
+
+
+
 # Better Comments
 **Better Comments** is a Visual Studio extension that gives you the ability to customize the font and opacity of your comments independently of the editor's font settings. 
 It also adds four additional comment classifications, each classification with its own customizable foreground. 
 
 
-<!-- Replace this badge with your own-->
-[![Build status](https://ci.appveyor.com/api/projects/status/04caiutue4j1hq9d?svg=true)](https://ci.appveyor.com/project/omsharp/bettercomments)
 
 <!-- Update the VS Gallery link after you upload the VSIX-->
-Download this extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=OmarRwemi.BetterComments).
-
-Download the latest build from [VSIX Gallery](http://vsixgallery.com/extension/BetterComments.Omar%20Rwemi.e985519f-8696-40b7-9400-807054b4ec76/).
+Download this extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=OmarRwemi.BetterCommentsVS2022).
 
 ---------------------------------------
 
