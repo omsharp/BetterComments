@@ -1,5 +1,5 @@
-Branch: vs16 support for VS2015, VS2017, and VS2019 on single vsix.
-Branch: vs17 support for VS2022 only.
+- **Branch vs16 :** VS2015, VS2017, and VS2019 on single vsix.
+- **Branch vs17 :** VS2022 only.
 ---------------------------------------
 
 
@@ -9,8 +9,6 @@ It also adds four additional comment classifications, each classification with i
 
 
 
-
-<!-- Update the VS Gallery link after you upload the VSIX-->
 Download this extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=OmarRwemi.BetterComments).
 ---------------------------------------
 
